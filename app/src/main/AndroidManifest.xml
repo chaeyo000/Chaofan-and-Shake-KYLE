@@ -13,12 +13,6 @@
         android:theme="@style/Theme.ChaofanAndShake"
         tools:targetApi="31">
         <activity
-            android:name=".TanginamoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Accounts"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -32,6 +26,12 @@
         <activity android:name=".DashboardbtnActivity" />
         <activity android:name=".CartbtnActivity" />
         <activity android:name=".ActivityCheckout"/>
+        <activity android:name=".HomeActivity"/>
+        <activity android:name=".ContactActivity"/>
+        <activity android:name=".AccountActivity"/>
+        <activity android:name=".TermsActivity"/>
+        <activity android:name=".OrderActivity"/>
+
     </application>
 
 </manifest>

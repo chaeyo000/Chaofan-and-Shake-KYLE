@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F8F9FA">
+    android:background="#F8F9FA"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
+            android:layout_marginTop="30dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#FFFFFF"
             android:padding="16dp">
@@ -27,9 +30,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:text="Cart Summary"
+                android:textColor="@color/meduimblack"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:layout_marginLeft="10dp"
                 android:paddingBottom="8dp" />
 
             <LinearLayout
@@ -42,20 +48,24 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/swirls"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/rounded_border"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_border" />
+                    android:src="@drawable/swirls" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginTop="30dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Chaofan Special"
+                        android:textColor="@color/meduimblack"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -63,16 +73,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Qty: 2"
-                        android:textSize="14sp"
-                        android:textColor="#666666" />
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="₱120.00"
+                        android:textColor="#FF5722"
                         android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#FF5722" />
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -85,7 +95,6 @@
             android:hint="Full Name"
             android:padding="12dp" />
 
-        <!-- Payment Method -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,9 +102,9 @@
             android:background="@drawable/input_bg"
             android:hint="Phone Number"
             android:inputType="phone"
-            android:layout_marginBottom="5dp"
             android:padding="12dp" />
 
+        <!-- Payment Method -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,11 +112,15 @@
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#FFFFFF"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/meduimblack"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
                 android:text="Payment Method"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -121,22 +134,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Cash on Delivery" />
+                    android:textColor="@color/meduimblack"
+                    android:buttonTint="@color/meduimblack"
+                    android:text="Cash on Pickup" />
 
                 <RadioButton
+                    android:id="@+id/gcash"
+                    android:textColor="@color/meduimblack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/meduimblack"
                     android:text="GCash" />
-
             </RadioGroup>
+            <ImageView
+                android:id="@+id/gcashqr"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginTop="70dp"
+                android:src="@drawable/gcashqr"
+                android:visibility="gone"/>
         </androidx.cardview.widget.CardView>
 
         <!-- Order Summary -->
+
+
+
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
+            android:textColor="@color/meduimblack"
+            android:layout_marginLeft="10dp"
             android:text="Order Summary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -144,32 +174,27 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#FFFFFF"
-            android:padding="16dp">
+            android:padding="16dp"
+ />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Subtotal: ₱240.00"
-                android:textSize="16sp" />
-
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Chaofan Special 2x: ₱240.00"
+            android:textColor="@color/meduimblack"
+            android:textSize="16sp" />
 
         <!-- Pickup Notice -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delivery Fee: ₱50.00"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:paddingTop="4dp"
-            android:text="Total: ₱290.00"
+            android:layout_marginLeft="10dp"
+            android:text="Total: ₱240.00"
             android:textColor="#FF5722"
             android:textSize="18sp"
             android:textStyle="bold" />

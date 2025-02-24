@@ -3,19 +3,31 @@ package com.example.chaofanandshake;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chaofanandshake.Adapter.ProductAdapter;
 import com.example.chaofanandshake.Domain.ProductDomain;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class DashboardbtnActivity extends AppCompatActivity {
+public class DashboardbtnActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
     private RecyclerView recyclerView;
 
     @Override
@@ -34,6 +46,23 @@ public class DashboardbtnActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.orange_dark));
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        if (savedInstanceState == null) {
+            navigationView.setCheckedItem(R.id.home);
+        }
+
     }
 
     private void initRecyclerView() {
@@ -44,7 +73,7 @@ public class DashboardbtnActivity extends AppCompatActivity {
             return;
         }
 
-        // Set RecyclerView to slide vertically
+        // Set RecyclerView to slide horizontally
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -57,5 +86,46 @@ public class DashboardbtnActivity extends AppCompatActivity {
         // Set Adapter
         ProductAdapter adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        // Get current activity name
+        String currentActivity = this.getClass().getSimpleName();
+
+        if (itemId == R.id.home) {
+            Intent intent = new Intent(this, DashboardbtnActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (itemId == R.id.terms) {
+            Intent intent = new Intent(this, TermsActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (itemId == R.id.contact) {
+            Intent intent = new Intent(this, ContactActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (itemId == R.id.logout) {
+            Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
