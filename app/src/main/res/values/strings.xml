@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chao Rolls &amp; Swirls</string>
+
+    <string name="what_would_you_like_to_eat">Hello Sayieeh, \nWhat would you like to <font color="#FFC107">eat?</font></string>
+</resources>

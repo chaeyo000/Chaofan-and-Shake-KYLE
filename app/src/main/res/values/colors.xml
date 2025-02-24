@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="meduimblack">#212020</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF4C4C</color>
+
+    <color name="prim_login">#F2B362</color>
+    <color name="nae">#FFC107</color>
+    <color name="secon_login">#FF9800</color>
+    <color name="dashboard_primary">#FDF2E7</color>
+    <color name="dashboard_primary2">#FFEEE2</color>
+    <color name="gray">#767676</color>
+
+
+    <color name="primaryColor">#FF6F61</color> <!-- Warm Red for Buttons -->
+    <color name="lightGray">#F5F5F5</color> <!-- Light Gray Background -->
+    <color name="darkGray">#707070</color> <!-- Dark Gray for Text -->
+    <color name="red1">#D32F2F</color> <!-- Red for Delete Button -->
+
+
+</resources>

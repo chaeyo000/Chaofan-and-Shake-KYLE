@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ChaofanAndShake" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/prim_login</item>
+        <item name="colorPrimaryVariant">@color/prim_login</item>
+        <item name="colorSecondary">@color/secon_login</item>
+        <item name="colorSecondaryVariant">@color/secon_login</item>
+        <item name="android:statusBarColor">@color/prim_login</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorHint">@android:color/black</item>
+    </style>
+
+    <style name="Theme.ChaofanAndShake" parent="Base.Theme.ChaofanAndShake" />
+</resources>
