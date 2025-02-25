@@ -48,8 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login with your information"
-            android:alpha="0.7"
-            />
+            android:alpha="0.7"/>
 
         <View
             android:layout_width="wrap_content"

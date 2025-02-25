@@ -9,7 +9,7 @@
         android:id="@+id/hehe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange_light"
+        android:background="@color/transparent"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
         android:paddingVertical="12dp"

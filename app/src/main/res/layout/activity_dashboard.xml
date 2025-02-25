@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    tools:openDrawer="start"
     android:background="@color/dashboard_primary"
     tools:context=".DashboardbtnActivity">
 
@@ -123,7 +124,7 @@
         android:layout_gravity="start"
         app:menu="@menu/menu"
         app:headerLayout="@layout/nav_header"
-        android:background="@color/orange_light"
+        android:background="@drawable/sidebarbackground"
         app:itemIconPadding="30dp"
         android:theme="@style/Theme.Navigation"/>
 

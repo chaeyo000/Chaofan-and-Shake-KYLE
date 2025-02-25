@@ -55,7 +55,7 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close);
-        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.orange_dark));
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.meduimblack));
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
