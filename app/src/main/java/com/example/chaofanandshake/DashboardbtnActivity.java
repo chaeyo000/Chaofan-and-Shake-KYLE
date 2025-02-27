@@ -47,6 +47,8 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             }
         });
 
+
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,22 +98,38 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         // Get current activity name
         String currentActivity = this.getClass().getSimpleName();
 
+        // Define a map of menu items to their corresponding activities
+        Class<?> targetActivity = null;
+
         if (itemId == R.id.home) {
-            Intent intent = new Intent(this, DashboardbtnActivity.class);
-            startActivity(intent);
-            finish();
+            targetActivity = DashboardbtnActivity.class;
         } else if (itemId == R.id.terms) {
-            Intent intent = new Intent(this, TermsActivity.class);
-            startActivity(intent);
-            finish();
+            targetActivity = TermsActivity.class;
         } else if (itemId == R.id.contact) {
-            Intent intent = new Intent(this, ContactActivity.class);
-            startActivity(intent);
-            finish();
+            targetActivity = ContactActivity.class;
         } else if (itemId == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
+
+            // Redirect to login activity
+            Intent logout = new Intent(this, LoginActivity.class);
+            startActivity(logout);
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
+        }
+
+
+        // If the user is already in the selected activity, just close the drawer
+        if (targetActivity != null && targetActivity.getSimpleName().equals(currentActivity)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        // If not in the current activity, navigate to the selected one
+        if (targetActivity != null) {
+            Intent intent = new Intent(this, targetActivity);
+            startActivity(intent);
+            finish();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -128,4 +146,11 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             super.onBackPressed();
         }
     }
+
+    public void onClick(View view) {
+        if (view.getId() == R.id.accountbtn) {
+            startActivity(new Intent(this, AccountActivity.class));
+        }
+    }
+
 }

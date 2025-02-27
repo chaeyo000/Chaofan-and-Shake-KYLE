@@ -35,11 +35,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
+        Intent intent;
         if (view.getId() == R.id.signupbtn) {
-            startActivity(new Intent(this, SignupActivity.class));
+            intent = new Intent(this, SignupActivity.class);
         } else if (view.getId() == R.id.loginbtn) {
-            startActivity(new Intent(this, LoginActivity.class));
+            intent = new Intent(this, LoginActivity.class);
+        } else {
+            return;
         }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // Ensures the activity isn't reopened if it's already on top
+        startActivity(intent);
     }
 
     @Override

@@ -3,18 +3,25 @@ package com.example.chaofanandshake;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
-public class ContactActivity extends AppCompatActivity {
+public class ProductdetailsActivity extends AppCompatActivity {
 
-    private ImageView backBtn; // Declare only
+    private ImageView backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_productdetails);
 
         backBtn = findViewById(R.id.backBtn); // Initialize after setting layout
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -23,6 +30,16 @@ public class ContactActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        Button button = findViewById(R.id.cartbtn);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(ProductdetailsActivity.this, CartbtnActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
@@ -33,4 +50,7 @@ public class ContactActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
+
 }

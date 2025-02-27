@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F8F9FA"
+    android:background="@color/dashboard_primary"
     android:fillViewport="true">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +16,23 @@
         android:paddingBottom="16dp"
         android:divider="?android:attr/dividerHorizontal"
         android:showDividers="middle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                app:layout_constraintHorizontal_bias="0.123"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/baseline_arrow_back_ios_new_24" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <!-- Cart Summary -->
         <androidx.cardview.widget.CardView

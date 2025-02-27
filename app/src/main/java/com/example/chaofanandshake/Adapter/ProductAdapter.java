@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chaofanandshake.Domain.ProductDomain;
+import com.example.chaofanandshake.ProductdetailsActivity;
 import com.example.chaofanandshake.R;
 
 import java.util.List;
@@ -39,7 +40,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.title.setText(product.getTitle());
         holder.fee.setText("₱" + product.getPrice());
 
-        // Load image correctly
         int imageResId = holder.itemView.getContext().getResources().getIdentifier(
                 product.getImageName(), "drawable", holder.itemView.getContext().getPackageName()
         );
@@ -50,9 +50,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             holder.imageView.setImageResource(R.drawable.swirls); // Fallback image
         }
 
-
-
+        // Set click listener to open ProductDetailsActivity
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductdetailsActivity.class);
+            context.startActivity(intent);
+        });
     }
+
 
     @Override
     public int getItemCount() {

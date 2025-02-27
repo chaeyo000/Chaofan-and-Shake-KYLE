@@ -31,6 +31,7 @@
 
 
     <TextView
+        android:id="@+id/accountbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
@@ -38,9 +39,11 @@
         android:layout_marginTop="-30dp"
         android:textColor="@color/black"
         android:textSize="20dp"
+        android:onClick="onClick"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/accounbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
@@ -48,6 +51,7 @@
         android:text="sayieehhwang@gmail.com"
         android:textColor="@color/black"
         android:textSize="10dp"
+        android:onClick="onClick"
         android:textStyle="bold"
         android:paddingBottom="10dp"/>
 </LinearLayout>

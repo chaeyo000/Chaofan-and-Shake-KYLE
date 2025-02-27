@@ -8,6 +8,9 @@ import android.widget.RadioButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ActivityCheckout extends AppCompatActivity {
+
+    private ImageView backBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +26,27 @@ public class ActivityCheckout extends AppCompatActivity {
                 gcashImageView.setVisibility(View.GONE); // Hide ImageView
             }
         });
+
+        backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
+    }
+
     }
 
 
-}
+
