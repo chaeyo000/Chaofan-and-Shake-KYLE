@@ -8,7 +8,8 @@
         <item name="colorSecondaryVariant">@color/secon_login</item>
         <item name="android:statusBarColor">@color/prim_login</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:textColorHint">@android:color/black</item>
+        <item name="android:textColorHint">@color/gray2</item>
+        <item name="android:textColor">@color/meduimblack</item>
     </style>
 
     <style name="Theme.ChaofanAndShake" parent="Base.Theme.ChaofanAndShake" />

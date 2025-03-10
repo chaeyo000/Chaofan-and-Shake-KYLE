@@ -14,11 +14,6 @@
 
 
         <item
-            android:id="@+id/order"
-            android:icon="@drawable/order"
-            android:title="@string/title_order"/>
-
-        <item
             android:id="@+id/terms"
             android:icon="@drawable/terms"
             android:title="@string/title_terms"/>
