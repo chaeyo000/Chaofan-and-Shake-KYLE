@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_arrow_back_ios_new_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terms and Conditions"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tvTerms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Welcome to Chao Rolls and Swirls! By using our app, you agree to the following terms and conditions. Please read them carefully.
+
+1. ACCEPTANCE OF TERMS
+By accessing or using the Chao Rolls and Swirls app, you agree to comply with these terms. If you do not agree, please do not use the app.
+
+2. USE OF THE APP
+- The app provides menu browsing, promotions, and other features related to Chao Rolls and Swirls.
+- You must use the app responsibly and lawfully.
+- Any misuse, hacking, or unauthorized access is strictly prohibited.
+
+3. ORDERS AND PAYMENTS
+- Prices and availability are subject to change without notice.
+- Payments are processed securely through third-party providers.
+- Refunds and cancellations are subject to our refund policy.
+
+4. USER ACCOUNTS
+- You may be required to create an account. Keep your credentials secure.
+- We reserve the right to suspend or terminate accounts for violations of these terms.
+
+5. PRIVACY POLICY
+- We collect and process user data as outlined in our Privacy Policy.
+- By using the app, you consent to our data practices.
+
+6. LIMITATION OF LIABILITY
+- Chao Rolls and Swirls is not responsible for any losses, damages, or service interruptions.
+- We strive for accuracy but do not guarantee the app is error-free.
+
+7. CHANGES TO TERMS
+- We may update these terms at any time. Continued use of the app means you accept the new terms.
+
+8. CONTACT US
+For any questions, contact us at [Insert Contact Email]." />
+    </ScrollView>
+
+</LinearLayout>

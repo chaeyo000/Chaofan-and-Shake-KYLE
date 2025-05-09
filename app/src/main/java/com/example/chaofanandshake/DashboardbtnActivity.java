@@ -141,7 +141,7 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         if (itemId == R.id.home) {
             targetActivity = DashboardbtnActivity.class;
         } else if (itemId == R.id.terms) {
-            targetActivity = TermsActivity.class;
+            targetActivity = TermsandcondiActivity.class;
         } else if (itemId == R.id.contact) {
             targetActivity = ContactActivity.class;
         } else if (itemId == R.id.logout) {
