@@ -9,6 +9,12 @@
         <item name="android:statusBarColor">@color/prim_login</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorHint">@android:color/black</item>
+
+    </style>
+
+    <style name="hehehe">
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorHint">#000000</item>
     </style>
 
     <style name="Theme.ChaofanAndShake" parent="Base.Theme.ChaofanAndShake" />
@@ -24,4 +30,6 @@
     <style name="Theme.Navigation" parent="Base.Theme.Menu">
         <item name="colorControlHighlight">@android:color/transparent</item>
     </style>
+
+
 </resources>

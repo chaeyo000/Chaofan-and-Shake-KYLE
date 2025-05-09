@@ -24,14 +24,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/welcomeTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,14 +53,14 @@
 
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/welcomeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:shadowColor="@color/black"
                 android:shadowDx="-1"
                 android:shadowDy="-1"
                 android:shadowRadius="0.2"
-                android:text="@string/what_would_you_like_to_eat"
+                android:text="Welcome User, What would you like to eat?"
                 android:textColor="@color/meduimblack"
                 android:textSize="23dp"
                 android:textStyle="bold"
@@ -78,6 +78,7 @@
                 android:background="@drawable/searchview_bg"
                 android:iconifiedByDefault="false"
                 android:queryHint="Search"
+                android:theme="@style/hehehe"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.47"

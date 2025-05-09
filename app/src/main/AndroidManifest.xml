@@ -26,7 +26,10 @@
         </activity>
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".DashboardbtnActivity" />
+        <activity android:name=".DashboardbtnActivity"
+
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".CartbtnActivity" />
         <activity android:name=".ActivityCheckout" />
         <activity android:name=".HomeActivity" />

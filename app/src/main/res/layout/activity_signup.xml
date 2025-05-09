@@ -58,11 +58,13 @@
                 android:alpha="0.7"
                 android:textStyle="bold"
                 />
+
             <EditText
+                android:id="@+id/nameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:drawableEnd="@drawable/done_icon" />
+                android:drawableEnd="@drawable/done_icon"
+                android:inputType="textPersonName" />
 
 
             <View
@@ -75,11 +77,13 @@
                 android:alpha="0.7"
                 android:textStyle="bold"
                 />
+
             <EditText
+                android:id="@+id/emailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:drawableEnd="@drawable/done_icon" />
+                android:drawableEnd="@drawable/done_icon"
+                android:inputType="textEmailAddress" />
 
             <View
                 android:layout_width="wrap_content"
@@ -91,11 +95,13 @@
                 android:alpha="0.7"
                 android:textStyle="bold"
                 />
+
             <EditText
+                android:id="@+id/phoneEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:drawableEnd="@drawable/done_icon"/>
+                android:drawableEnd="@drawable/done_icon"
+                android:inputType="phone" />
 
             <View
                 android:layout_width="wrap_content"
@@ -107,11 +113,13 @@
                 android:alpha="0.7"
                 android:textStyle="bold"
                 />
+
             <EditText
+                android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/passwordicon" />
+                android:drawableEnd="@drawable/passwordicon"
+                android:inputType="textVisiblePassword" />
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"/>
@@ -122,22 +130,25 @@
                 android:alpha="0.7"
                 android:textStyle="bold"
                 />
+
             <EditText
+                android:id="@+id/confirmPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/passwordicon" />
+                android:drawableEnd="@drawable/passwordicon"
+                android:inputType="textVisiblePassword" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <CheckBox
+                    android:id="@+id/termsCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Agree to Terms &amp; Condition"
                     android:layout_centerVertical="true"
-                    android:alpha="0.7"/>
+                    android:alpha="0.7"
+                    android:text="Agree to Terms &amp; Condition" />
 
 
             </RelativeLayout>
@@ -145,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="10dp"/>
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/signupbuttonn"
+                android:id="@+id/signUpButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Signup"
@@ -163,21 +174,14 @@
                     android:id="@+id/loginbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
                     android:text="Login"
                     android:layout_toEndOf="@id/dont"
                     android:textColor="@color/prim_login"
                     android:onClick="onClick"
                     android:clickable="true"/>
             </RelativeLayout>
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Or signup with"
-                android:layout_gravity="center"
-                android:alpha="0.7"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -185,10 +189,6 @@
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/fbicon"/>
             </LinearLayout>
         </LinearLayout>
 
