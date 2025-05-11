@@ -7,7 +7,7 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="6dp"
     android:layout_marginBottom="12dp"
-    android:background="@android:color/white">
+    android:background="@android:color/black">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -27,20 +27,23 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <!-- Food Name -->
+
+        <!-- Food Price -->
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
             android:text="title"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
-            app:layout_constraintStart_toEndOf="@id/cartImage"
-            app:layout_constraintTop_toTopOf="@id/cartImage"
             app:layout_constraintEnd_toStartOf="@id/removeItem"
-            android:layout_marginStart="12dp"/>
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/cartImage"
+            app:layout_constraintTop_toTopOf="@id/cartImage" />
 
-        <!-- Food Price -->
         <TextView
             android:id="@+id/cartPrice"
             android:layout_width="wrap_content"

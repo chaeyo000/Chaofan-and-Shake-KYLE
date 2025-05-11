@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,34 +30,46 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
     NavigationView navigationView;
     Toolbar toolbar;
     private RecyclerView recyclerView;
+    private TextView welcomeTextView;
+    private DatabaseHelper dbHelper;
+    private TextView navName;
+    private TextView navEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Initialize RecyclerView
-        initRecyclerView();
+        dbHelper = new DatabaseHelper(DashboardbtnActivity.this);
 
-        // Cart Button - Redirect to Cart page
-        Button button = findViewById(R.id.cartbtn);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(DashboardbtnActivity.this, CartbtnActivity.class);
-                startActivity(intent);
-            }
+        navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        navName = headerView.findViewById(R.id.nav_name);
+        navEmail = headerView.findViewById(R.id.nav_email);
+
+        // OnClick to go to AccountActivity
+        navName.setOnClickListener(v -> {
+            Toast.makeText(DashboardbtnActivity.this, "Clicked name!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(DashboardbtnActivity.this, AccountActivity.class);
+            intent.putExtra("email", navEmail.getText().toString());  // Pass current email
+            startActivity(intent);
         });
 
+        initRecyclerView();
 
+        Button button = findViewById(R.id.cartbtn);
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardbtnActivity.this, CartbtnActivity.class);
+            startActivity(intent);
+        });
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.meduimblack));
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -65,40 +78,64 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             navigationView.setCheckedItem(R.id.home);
         }
 
+        String email = getIntent().getStringExtra("email");
+        if (email != null) {
+            String userName = dbHelper.getUserName(email);
+            if (userName != null && !userName.isEmpty()) {
+                welcomeTextView = findViewById(R.id.welcomeTextView);
+                welcomeTextView.setText("Welcome " + userName + ", What would you like to eat?");
+                navName.setText(userName);
+                navEmail.setText(email);
+            } else {
+                navName.setText("User");
+                navEmail.setText(email);
+            }
+        }
     }
+
+
+    // Refresh data when returning from AccountActivity
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (navEmail != null && navName != null) {
+            String email = navEmail.getText().toString();
+            String userName = dbHelper.getUserName(email);
+            if (userName != null && !userName.isEmpty()) {
+                welcomeTextView = findViewById(R.id.welcomeTextView);
+                welcomeTextView.setText("Welcome " + userName + ", What would you like to eat?");
+                navName.setText(userName);
+            }
+        }
+    }
+
+
+
+
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView);
-
         if (recyclerView == null) {
             Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
             return;
         }
 
-        // Set RecyclerView to slide horizontally
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Sample Product List
         ArrayList<ProductDomain> productList = new ArrayList<>();
         productList.add(new ProductDomain("swirls", "Swirls Ice Cream", 50.0));
         productList.add(new ProductDomain("rolls", "Chaofan", 99.0));
         productList.add(new ProductDomain("swirls", "Basta Ice Cream", 50.0));
 
-        // Set Adapter
         ProductAdapter adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-
-        // Get current activity name
         String currentActivity = this.getClass().getSimpleName();
-
-        // Define a map of menu items to their corresponding activities
         Class<?> targetActivity = null;
 
         if (itemId == R.id.home) {
@@ -109,23 +146,17 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             targetActivity = ContactActivity.class;
         } else if (itemId == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
-
-            // Redirect to login activity
             Intent logout = new Intent(this, LoginActivity.class);
             startActivity(logout);
-
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
 
-
-        // If the user is already in the selected activity, just close the drawer
         if (targetActivity != null && targetActivity.getSimpleName().equals(currentActivity)) {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
 
-        // If not in the current activity, navigate to the selected one
         if (targetActivity != null) {
             Intent intent = new Intent(this, targetActivity);
             startActivity(intent);
@@ -135,22 +166,5 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    public void onClick(View view) {
-        if (view.getId() == R.id.accountbtn) {
-            startActivity(new Intent(this, AccountActivity.class));
-        }
-    }
-
 }
+

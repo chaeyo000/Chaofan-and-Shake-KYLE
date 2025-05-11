@@ -56,7 +56,7 @@
                 android:layout_weight="1">
 
                 <ImageView
-                    android:id="@+id/personalinfo_editbtn"
+                    android:id="@+id/ivEditPersonal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -74,32 +74,42 @@
             android:text="Name"
             android:textColor="@color/gray" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="Sayieeh Hwang"
             android:layout_marginLeft="23dp"
             android:textStyle="bold"
-            android:textColor="@color/meduimblack"/>
+            android:textSize="18dp"
+            android:textColor="@color/meduimblack"
+            android:enabled="false"
+            android:inputType="textPersonName"
+            />
+
 
         <TextView
-            android:id="@+id/idcategory"
-            android:layout_marginTop="5dp"
+            android:id="@+id/emailcategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gender"
             android:layout_marginLeft="20dp"
+            android:text="Email"
             android:textColor="@color/gray" />
 
-        <TextView
-            android:id="@+id/gender"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="Male"
             android:layout_marginLeft="23dp"
             android:textStyle="bold"
-            android:textColor="@color/meduimblack"/>
+            android:textSize="18dp"
+            android:textColor="@color/meduimblack"
+            android:enabled="false"
+            android:inputType="textEmailAddress"
+            />
+
+
+
+
 
     </LinearLayout>
 
@@ -132,14 +142,14 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/contactinfo_editbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/edit_icon" />
+                <ImageView
+                    android:id="@+id/ivEditContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/edit_icon" />
             </FrameLayout>
         </LinearLayout>
 
@@ -151,48 +161,43 @@
             android:text="Phone Number 1"
             android:textColor="@color/gray" />
 
-        <TextView
-            android:id="@+id/phone1"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="09062783788"
             android:layout_marginLeft="23dp"
             android:textStyle="bold"
-            android:textColor="@color/meduimblack"/>
-
-        <TextView
-            android:id="@+id/phone2category"
-            android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone Number 2"
-            android:layout_marginLeft="20dp"
-            android:textColor="@color/gray" />
-
-        <TextView
-            android:id="@+id/phone2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="09764654890"
-            android:layout_marginLeft="23dp"
-            android:textStyle="bold"
-            android:textColor="@color/meduimblack"/>
+            android:textColor="@color/meduimblack"
+            android:enabled="false"
+            android:inputType="phone"
+/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/deleteacc_btn"
-            android:layout_width="265dp"
+            android:id="@+id/btnSave"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:elevation="5dp"
+            android:layout_marginRight="10dp"
+            android:translationZ="5dp"
+            android:textStyle="bold"
+            android:text="Save"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:elevation="5dp"
             android:translationZ="5dp"
             android:textStyle="bold"
-            android:text="Delete account"
+            android:text="Delete Account"
             android:textColor="@color/red" />
 
     </LinearLayout>

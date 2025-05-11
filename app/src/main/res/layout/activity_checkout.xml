@@ -105,13 +105,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Billing Details -->
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/input_bg"
-            android:hint="Full Name"
-            android:padding="12dp" />
 
         <EditText
             android:layout_width="match_parent"

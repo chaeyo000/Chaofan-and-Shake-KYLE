@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="280dp"
+    android:layout_width="match_parent"
     android:layout_height="180dp"
     android:orientation="vertical"
     android:background="@drawable/sidebarpic">
@@ -17,33 +17,33 @@
         android:padding="10dp">
 
         <ImageView
+            android:id="@+id/imahe"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/user" />
-
-
-
-
     </LinearLayout>
 
 
 
     <TextView
-        android:id="@+id/accountbtn"
+        android:id="@+id/nav_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
+        android:clickable="true"
+        android:focusable="true"
         android:text="Sayieeh Hwang"
         android:layout_marginTop="-30dp"
         android:textColor="@color/black"
         android:textSize="20dp"
-        android:onClick="onClick"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/accounbtn"
+        android:id="@+id/nav_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
@@ -51,7 +51,6 @@
         android:text="sayieehhwang@gmail.com"
         android:textColor="@color/black"
         android:textSize="10dp"
-        android:onClick="onClick"
         android:textStyle="bold"
         android:paddingBottom="10dp"/>
 </LinearLayout>
