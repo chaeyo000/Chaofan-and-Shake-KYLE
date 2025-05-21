@@ -12,6 +12,19 @@
 
     </style>
 
+    <style name="CustomTextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="colorControlActivated">@android:color/black</item>
+
+    </style>
+
+
+
+
     <style name="hehehe">
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorHint">#000000</item>
@@ -21,8 +34,9 @@
 
     <!-- Corrected Base.Menu theme -->
     <style name="Base.Theme.Menu" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Customize the menu theme here -->
+        <!-- Mag kakakulay pag may clinick sa sidebar example sa home sheesh -->
         <item name="colorPrimary">@color/prim_login</item>
+
         <item name="colorPrimaryVariant">@color/prim_login</item>
     </style>
 

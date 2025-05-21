@@ -5,13 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/accountbg">
-
+    android:background="@color/dashboard_primary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <include layout="@layout/toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -36,8 +34,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp">
 
             <TextView
@@ -45,27 +44,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="Personal Information"
+                android:text="Personal Details"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="@color/meduimblack"/>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/ivEditPersonal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/edit_icon" />
-
-            </FrameLayout>
         </LinearLayout>
 
+        <!-- Name Field -->
         <TextView
             android:id="@+id/namecategory"
             android:layout_width="wrap_content"
@@ -74,103 +60,135 @@
             android:text="Name"
             android:textColor="@color/gray" />
 
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:textColor="@color/meduimblack"
-            android:enabled="false"
-            android:inputType="textPersonName"
-            />
-
-
-        <TextView
-            android:id="@+id/emailcategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Email"
-            android:textColor="@color/gray" />
-
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:textColor="@color/meduimblack"
-            android:enabled="false"
-            android:inputType="textEmailAddress"
-            />
-
-
-
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:elevation="5dp"
-        android:background="@drawable/accountlayoutbg"
-        android:paddingBottom="30dp">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:padding="8dp"
+            android:layout_marginRight="23dp">
 
-            <TextView
-                android:id="@+id/contactinfo"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="351dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="20dp"
-                android:text="Contact Information"
+                android:enabled="false"
+                android:inputType="textPersonName"
+                android:paddingEnd="40dp"
                 android:textColor="@color/meduimblack"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/ivEditContact"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/edit_icon" />
-            </FrameLayout>
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/ivEditName"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit_icon" />
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/phone1category"
+            android:id="@+id/usernamecategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="Phone Number 1"
+            android:text="Username"
             android:textColor="@color/gray" />
 
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_width="320dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:textStyle="bold"
-            android:textColor="@color/meduimblack"
-            android:enabled="false"
-            android:inputType="phone"
-/>
+            android:layout_marginLeft="15dp"
+            android:padding="8dp"
+            android:layout_marginRight="23dp">
+
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:textColor="@color/meduimblack"
+                android:enabled="false"
+                android:inputType="textEmailAddress"
+                android:paddingEnd="40dp"/>
+
+            <ImageView
+                android:id="@+id/ivEditUsername"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/phonecategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Phone number"
+            android:textColor="@color/gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:padding="8dp"
+            android:layout_marginRight="23dp">
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/meduimblack"
+                android:enabled="false"
+                android:inputType="phone"
+                android:paddingEnd="40dp"/>
+
+            <ImageView
+                android:id="@+id/ivEditPhone"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/passwordcategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Password"
+            android:textColor="@color/gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:padding="8dp"
+            android:layout_marginRight="23dp">
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/meduimblack"
+                android:enabled="false"
+                android:inputType="textWebPassword"
+                android:paddingEnd="40dp"/>
+
+            <ImageView
+                android:id="@+id/ivEditPassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit_icon" />
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -180,27 +198,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnSave"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:elevation="5dp"
-            android:layout_marginRight="10dp"
-            android:translationZ="5dp"
-            android:textStyle="bold"
-            android:text="Save"
-            android:textColor="@color/black" />
-
-        <Button
             android:id="@+id/btnDelete"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:elevation="5dp"
             android:translationZ="5dp"
             android:textStyle="bold"
+            android:backgroundTint="@color/dashboard_primary"
             android:text="Delete Account"
             android:textColor="@color/red" />
-
     </LinearLayout>
-
-
 </LinearLayout>
