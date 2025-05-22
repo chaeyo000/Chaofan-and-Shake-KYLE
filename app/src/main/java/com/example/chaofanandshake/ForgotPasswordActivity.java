@@ -1,69 +1,189 @@
 package com.example.chaofanandshake;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    EditText etUsername, etPhone, etNewPassword;
-    Button btnForgotPassword;
+    private TextInputEditText etUsername, etPhone, etNewPassword;
+    private TextInputLayout layoutUsername, layoutPhonenumber, layoutNewPassword;
+    private Button btnSave;
+    private ImageView backBtn;
+    private DatabaseHelper dbHelper;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable validationRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_password);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootLayout), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        dbHelper = new DatabaseHelper(this);
 
-        // Initialize your views
         etUsername = findViewById(R.id.etUsername);
         etPhone = findViewById(R.id.etPhone);
         etNewPassword = findViewById(R.id.etNewPassword);
-        btnForgotPassword = findViewById(R.id.btnForgotPassword);
 
-        // Set click listener
-        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+        layoutUsername = findViewById(R.id.layoutUsername);
+        layoutPhonenumber = findViewById(R.id.layoutPhonenumber);
+        layoutNewPassword = findViewById(R.id.layoutNewPassword);
+
+        layoutUsername.setErrorIconDrawable(null);
+        layoutPhonenumber.setErrorIconDrawable(null);
+        layoutNewPassword.setErrorIconDrawable(null);
+
+        btnSave = findViewById(R.id.btnForgotPassword);
+        backBtn = findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(v -> finish());
+
+        // Live validation: listen to username and phone changes
+        TextWatcher liveValidationWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Clear errors immediately when typing
+                layoutPhonenumber.setError(null);
+                layoutUsername.setError(null);
+            }
             @Override
-            public void onClick(View v) {
-                String username = etUsername.getText().toString().trim();
-                String phone = etPhone.getText().toString().trim();
-                String newPassword = etNewPassword.getText().toString().trim();
-
-                if (username.isEmpty() || phone.isEmpty() || newPassword.isEmpty()) {
-                    Toast.makeText(ForgotPasswordActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                    return;
+            public void afterTextChanged(Editable s) {
+                // Debounce validation to run 500ms after user stops typing
+                if (validationRunnable != null) {
+                    handler.removeCallbacks(validationRunnable);
                 }
+                validationRunnable = () -> validateUsernamePhone();
+                handler.postDelayed(validationRunnable, 500);
+            }
+        };
 
-                DatabaseHelper db = new DatabaseHelper(ForgotPasswordActivity.this);
-                boolean isValid = db.checkUserPhone(username, phone); // You will create this method
-                if (isValid) {
-                    boolean updated = db.updatePassword(username, newPassword); // You will create this method too
-                    if (updated) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(ForgotPasswordActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
-                    }
+        etUsername.addTextChangedListener(liveValidationWatcher);
+        etPhone.addTextChangedListener(liveValidationWatcher);
+
+        btnSave.setOnClickListener(v -> {
+            // Clear previous errors
+            layoutUsername.setError(null);
+            layoutPhonenumber.setError(null);
+            layoutNewPassword.setError(null);
+
+            String username = etUsername.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+            String newPassword = etNewPassword.getText().toString().trim();
+
+            boolean hasError = false;
+
+            if (username.isEmpty()) {
+                layoutUsername.setError("Username is required");
+                hasError = true;
+            }
+
+            if (phone.isEmpty()) {
+                layoutPhonenumber.setError("Phone number is required");
+                hasError = true;
+            }
+
+            if (newPassword.isEmpty()) {
+                layoutNewPassword.setError("New password is required");
+                hasError = true;
+            } else if (newPassword.length() < 6) {
+                layoutNewPassword.setError("Password must be at least 6 characters");
+                hasError = true;
+            }
+
+            if (!hasError) {
+                // Verify user again before confirming password reset
+                if (verifyUser(username, phone)) {
+                    showConfirmationDialog(username, newPassword);
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Invalid username or phone number", Toast.LENGTH_SHORT).show();
+                    layoutPhonenumber.setError("Username and phone number do not match");
                 }
             }
         });
     }
 
+    private void validateUsernamePhone() {
+        String username = etUsername.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
 
+        if (username.isEmpty() || phone.isEmpty()) {
+            // Don’t validate if either is empty
+            return;
+        }
+
+        if (!verifyUser(username, phone)) {
+            runOnUiThread(() -> {
+                layoutPhonenumber.setError("Username and phone number do not match");
+            });
+        } else {
+            runOnUiThread(() -> {
+                layoutPhonenumber.setError(null);
+            });
+        }
+    }
+
+    private boolean verifyUser(String username, String phone) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ? AND phone = ?", new String[]{username, phone});
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return found;
+    }
+
+    private void showConfirmationDialog(String username, String newPassword) {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.custom_confirm_dialog, null);
+
+        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+
+        dialogTitle.setText("Password Reset");
+        dialogMessage.setText("Are you sure you want to change your password?");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        btnConfirm.setOnClickListener(v -> {
+            updatePassword(username, newPassword);
+            dialog.dismiss();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    private void updatePassword(String username, String newPassword) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("password", newPassword);
+        int rows = db.update("users", values, "username = ?", new String[]{username});
+        db.close();
+
+        if (rows > 0) {
+            Toast.makeText(this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Failed to update password", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

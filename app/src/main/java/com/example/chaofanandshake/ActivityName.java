@@ -50,8 +50,35 @@ public class ActivityName extends AppCompatActivity {
             etNewName.setText(currentName);
         }
 
+        // Limit to 12 characters para sa name
+        etNewName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // chinicheck nito kung ang ang text sa name ay lumampas sa 12 characters
+                if (charSequence.length() > 12 ) {
+                    // ang ginagawa nito ay pinipigilan nito ang text na lumampas sa 12 characters lang, kahit ipilit ni user na mag type eyy full stack
+                    etNewName.setText(charSequence.subSequence(0, 12));
+                    etNewName.setSelection(12);
+                    Toast.makeText(ActivityName.this, "Name must not exceed 12 characters", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
         // Back button
         backBtn.setOnClickListener(v -> finish());
+
+
 
         // Live validation habang nagta-type
         etNewName.addTextChangedListener(new TextWatcher() {
