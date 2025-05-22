@@ -1,7 +1,9 @@
 package com.example.chaofanandshake.Domain;
 
-public class ProductDomain {
-    private String imageName; // Kept consistent with ProductAdapter.java
+import java.io.Serializable;
+
+public class ProductDomain implements Serializable {
+    private String imageName;
     private String title;
     private double price;
 
@@ -23,3 +25,4 @@ public class ProductDomain {
         return price;
     }
 }
+

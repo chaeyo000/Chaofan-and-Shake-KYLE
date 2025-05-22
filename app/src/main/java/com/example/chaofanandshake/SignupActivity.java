@@ -133,7 +133,7 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "Please fill out this field", Toast.LENGTH_SHORT).show();
             } else if (!name.matches("^[a-zA-Z\\s]+$")) {
                 Toast.makeText(SignupActivity.this, "Name must contain only letters", Toast.LENGTH_SHORT).show();
-            } else if (username.isEmpty() || username.length() < 11 || !username.matches("^[a-zA-Z0-9._-]{11,}$")) {
+            } else if (username.isEmpty() || username.length() < 5 || !username.matches("^[a-zA-Z0-9._-]{5,}$")) {
                 usernameEditText.setError("Username must be at least 11 characters and valid format.");
                 usernameEditText.requestFocus();
             } else if (!phone.matches("^09\\d{9}$")) {

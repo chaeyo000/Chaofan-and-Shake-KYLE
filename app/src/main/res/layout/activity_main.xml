@@ -100,9 +100,12 @@
                 android:text="Remember me" />
 
             <TextView
+                android:id="@+id/btnForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Forgot password?"
+                android:textColor="@color/prim_login"
+                android:onClick="onClick"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"/>
 
@@ -135,6 +138,7 @@
             android:layout_toEndOf="@id/dont"
             android:textColor="@color/prim_login"
             android:onClick="onClick"
+            android:layout_marginBottom="20dp"
             android:clickable="true"/>
         </RelativeLayout>
 

@@ -178,6 +178,7 @@
                     android:layout_toEndOf="@id/dont"
                     android:textColor="@color/prim_login"
                     android:onClick="onClick"
+                    android:layout_marginBottom="20dp"
                     android:clickable="true"/>
             </RelativeLayout>
 

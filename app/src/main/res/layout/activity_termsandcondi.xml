@@ -62,14 +62,15 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="20dp"
             app:cardBackgroundColor="@color/dashboard_primary">
-        <TextView
-            android:id="@+id/tvTerms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:text="@string/terms" />
+            <TextView
+                android:id="@+id/tvTerms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:autoLink="web"
+                android:textColor="@android:color/black"
+                android:text="@string/terms" />
         </androidx.cardview.widget.CardView>
 
     </ScrollView>

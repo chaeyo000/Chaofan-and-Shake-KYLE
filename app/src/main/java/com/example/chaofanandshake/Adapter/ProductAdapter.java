@@ -47,15 +47,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (imageResId != 0) {
             holder.imageView.setImageResource(imageResId);
         } else {
-            holder.imageView.setImageResource(R.drawable.swirls); // Fallback image
+            holder.imageView.setImageResource(R.drawable.swirls); // fallback image
         }
 
-        // Set click listener to open ProductDetailsActivity
+        // Pass the product object to ProductdetailsActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductdetailsActivity.class);
+            intent.putExtra("product", product);
             context.startActivity(intent);
         });
     }
+
 
 
     @Override
