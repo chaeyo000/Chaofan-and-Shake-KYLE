@@ -13,6 +13,12 @@
         android:theme="@style/Theme.ChaofanAndShake"
         tools:targetApi="31">
         <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false" />
+        <activity
             android:name=".ActivityPassword"
             android:exported="false" />
         <activity
@@ -51,6 +57,7 @@
         <activity android:name=".ContactActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".TermsActivity" />
+        <activity android:name=".AdminDashboardActivity" />
     </application>
 
 </manifest>

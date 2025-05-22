@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         usernameEditText = findViewById(R.id.usernameEditText);
         checkBox = findViewById(R.id.checkBox);
 
@@ -36,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         originalTypeface = passwordEditText.getTypeface();
+
+
+
 
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
@@ -78,10 +80,24 @@ public class MainActivity extends AppCompatActivity {
                 if (isValid) {
                     Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(MainActivity.this, DashboardbtnActivity.class);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
-                    finish();
+                    DatabaseHelper db = new DatabaseHelper(this);
+
+                    if (db.isAdmin(username)) {
+                        // Redirect to Admin Dashboard
+                        Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                    } else {
+                        // Redirect to User Dashboard
+                        Intent intent = new Intent(MainActivity.this, DashboardbtnActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+
+                    }
+
+
+
+
                 } else {
                     Toast.makeText(MainActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
 
@@ -101,12 +117,16 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, SignupActivity.class);
         } else if (view.getId() == R.id.loginbtn) {
             intent = new Intent(this, MainActivity.class);
+        } else if (view.getId() == R.id.btnForgotPassword) {
+            intent = new Intent(this, ForgotPasswordActivity.class);
         } else {
             return;
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
+
+
 
     @Override
     public void onBackPressed() {

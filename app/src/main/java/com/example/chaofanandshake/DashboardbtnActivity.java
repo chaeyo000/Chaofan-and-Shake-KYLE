@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +46,9 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_dashboard);
 
         dbHelper = new DatabaseHelper(this);
+
+
+
 
         // Setup Navigation Drawer
         toolbar = findViewById(R.id.toolbar);
@@ -141,16 +145,20 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             return;
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // Set GridLayoutManager with 2 columns (vertical scrolling)
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         ArrayList<ProductDomain> productList = new ArrayList<>();
-        productList.add(new ProductDomain("swirls", "Swirls Ice Cream", 50.0));
-        productList.add(new ProductDomain("rolls", "Chaofan", 99.0));
-        productList.add(new ProductDomain("swirls", "Basta Ice Cream", 50.0));
+        productList.add(new ProductDomain("swirls", "ChaoRolls", 45.0));
+        productList.add(new ProductDomain("rolls", "FanSizzle", 65.0));
+        productList.add(new ProductDomain("swirls", "ChaoSiRolls", 85.0));
+        productList.add(new ProductDomain("rolls", "Swirls", 45.0));
+        productList.add(new ProductDomain("rolls", "Fruit Tea", 45.0));
 
         ProductAdapter adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -172,4 +180,7 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
 }

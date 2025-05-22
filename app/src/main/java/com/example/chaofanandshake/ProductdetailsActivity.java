@@ -9,13 +9,14 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.chaofanandshake.Domain.ProductDomain;
 
 public class ProductdetailsActivity extends AppCompatActivity {
 
-    private ImageView backBtn;
+    private ImageView backBtn, productImage;
+    private TextView titleText, priceText;
+    private Button cartBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,23 +24,37 @@ public class ProductdetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_productdetails);
 
-        backBtn = findViewById(R.id.backBtn); // Initialize after setting layout
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
+        // Initialize views after setContentView
+        backBtn = findViewById(R.id.backBtn);
+        titleText = findViewById(R.id.title);
+        priceText = findViewById(R.id.price);
+        productImage = findViewById(R.id.image);
+        cartBtn = findViewById(R.id.cartbtn);
+
+        backBtn.setOnClickListener(view -> onBackPressed());
+
+        cartBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductdetailsActivity.this, CartbtnActivity.class);
+            startActivity(intent);
         });
 
-        Button button = findViewById(R.id.cartbtn);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(ProductdetailsActivity.this, CartbtnActivity.class);
-                startActivity(intent);
+        // Get product data from intent
+        ProductDomain product = (ProductDomain) getIntent().getSerializableExtra("product");
+
+        if (product != null) {
+            titleText.setText(product.getTitle());
+            priceText.setText("₱" + product.getPrice());
+
+            int imageResId = getResources().getIdentifier(
+                    product.getImageName(), "drawable", getPackageName()
+            );
+
+            if (imageResId != 0) {
+                productImage.setImageResource(imageResId);
+            } else {
+                productImage.setImageResource(R.drawable.swirls); // fallback image
             }
-        });
-
-
+        }
     }
 
     @Override
@@ -50,7 +65,4 @@ public class ProductdetailsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
-
 }
