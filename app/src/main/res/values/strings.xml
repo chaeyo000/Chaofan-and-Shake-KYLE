@@ -1,8 +1,37 @@
 <resources>
     <string name="app_name">Chao Rolls &amp; Swirls</string>
 
-    <string name="what_would_you_like_to_eat">Hello Sayieeh, \nWhat would you like to <font color="#FFC107">eat?</font></string>
+    <string name="what_would_you_like_to_eat">Hello User, \nWhat would you like to <font color="#FFC107">eat?</font></string>
     <string name="description_swirls">Swirls bread is a soft, fluffy loaf with a distinctive spiral pattern inside, often created by rolling layers of dough with flavorful fillings like cinnamon, chocolate, or ube. The exterior is golden brown, while the inside remains tender and slightly sweet. Each slice reveals a beautiful swirl, making it as visually appealing as it is delicious. Perfect for breakfast, snacks, or desserts, swirls bread pairs well with coffee, tea, or a simple spread of butter.</string>
+    <string name="terms">
+            <![CDATA[
+        Welcome to Chao Rolls and Swirls! By using our app, you agree to the following terms and conditions. Please read them carefully.
+        <br><br><br> <font color="#F2B362"><b>1. ACCEPTANCE OF TERMS</b></font><br>- By accessing or using the Chao Rolls and Swirls app, you agree to comply with these terms. If you do not agree, please do not use the app.<br><br>
+
+2. <font color="#F2B362"><b>USE OF THE APP <br></b></font>
+- The app provides menu browsing, promotions, and other features related to Chao Rolls and Swirls.
+<br>- You must use the app responsibly and lawfully.
+<br>- Any misuse, hacking, or unauthorized access is strictly prohibited.
+
+<br><br><font color="#F2B362"><b> 3. ORDERS AND PAYMENTS <br></b></font>
+- Prices and availability are subject to change without notice.
+<br>- Payments are processed securely through third-party providers.
+<br>- Refunds and cancellations are subject to our refund policy.
+
+<br><br><font color="#F2B362"><b> 4. USER ACCOUNTS <br></b></font>
+- You may be required to create an account. Keep your credentials secure.
+<br>- We reserve the right to suspend or terminate accounts for violations of these terms.
+
+<br><br><font color="#F2B362"><b> 5. PRIVACY POLICY <br></b></font>
+- We collect and process user data as outlined in our Privacy Policy.
+<br>- By using the app, you consent to our data practices.
+
+<br><br><font color="#F2B362"><b> 6. LIMITATION OF LIABILITY <br></b></font>
+- Chao Rolls and Swirls is not responsible for any losses, damages, or service interruptions.
+<br>- We strive for accuracy but do not guarantee the app is error-free.
+
+<br><br><font color="#F2B362"><b> 7. CHANGES TO TERMS <br></b></font>
+- We may update these terms at any time. Continued use of the app means you accept the new terms.]]></string>
 
     <string name="title_home">Home</string>
     <string name="title_order">Ordering History</string>

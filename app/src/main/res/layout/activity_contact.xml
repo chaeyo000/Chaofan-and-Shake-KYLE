@@ -94,28 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/editTextText3"
-            android:layout_width="279dp"
-            android:layout_height="171dp"
-            android:layout_weight="1"
-            android:background="@drawable/messagebg"
-            android:ems="10"
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:layout_marginTop="-70dp"
-            android:layout_marginLeft="15dp"
-            android:minLines="5"
-            android:padding="7dp"
-            android:scrollbars="vertical"
-            android:hint="    Enter Your Message"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.689" />
+
 
         <Button
             android:id="@+id/button"
@@ -126,7 +105,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText3"
             app:layout_constraintVertical_bias="0.293" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

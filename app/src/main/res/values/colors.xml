@@ -13,16 +13,18 @@
     <color name="gray">#767676</color>
 
 
-    <color name="primaryColor">#FF6F61</color> <!-- Warm Red for Buttons -->
-    <color name="lightGray">#F5F5F5</color> <!-- Light Gray Background -->
-    <color name="darkGray">#707070</color> <!-- Dark Gray for Text -->
-    <color name="red1">#D32F2F</color> <!-- Red for Delete Button -->
+    <color name="primaryColor">#FF6F61</color>
+    <color name="lightGray">#F5F5F5</color>
+    <color name="darkGray">#707070</color>
+    <color name="red1">#D32F2F</color>
 
     <color name="orange_dark">#FF00F0</color>
     <color name="orange_medium">#D70000</color>
     <color name="orange_light">#1515E2</color>
     <color name="transparent">#00E6E6F6</color>
     <color name="gray2">#3C3C3C</color>
+
+
 
 
 </resources>

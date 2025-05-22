@@ -3,26 +3,28 @@ package com.example.chaofanandshake;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.text.TextUtils;
-import android.util.Patterns;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private ImageView backBtn, ivEditPersonal, ivEditContact;
-    private EditText etName, etEmail, etPhone;
-    private Button btnSave, btnDelete;
+    private ImageView backBtn, ivEditName, ivEditUsername, ivEditPhone, ivEditPassword;
+    private EditText etName, etUsername, etPhone, etPassword;
+    private Button btnDelete;
 
     private DatabaseHelper dbHelper;
-    private String currentEmail; // Email ng naka-login na user
+    private String currentUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,140 +32,140 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_accountdetails);
 
         dbHelper = new DatabaseHelper(this);
+        currentUsername = getIntent().getStringExtra("username");
 
-        // Kunin ang email mula sa Intent
-        currentEmail = getIntent().getStringExtra("email");
+        Log.d("AccountActivity", "Username received: " + currentUsername); // Debugging
 
-        // I-initialize ang mga view
+        // Initialize views
         backBtn = findViewById(R.id.backBtn);
-        ivEditPersonal = findViewById(R.id.ivEditPersonal);
-        ivEditContact = findViewById(R.id.ivEditContact);
+        ivEditName = findViewById(R.id.ivEditName);
+        ivEditUsername = findViewById(R.id.ivEditUsername);
+        ivEditPhone = findViewById(R.id.ivEditPhone);
+        ivEditPassword = findViewById(R.id.ivEditPassword);
+
+
         etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
+        etUsername = findViewById(R.id.etUsername);
         etPhone = findViewById(R.id.etPhone);
-        btnSave = findViewById(R.id.btnSave);
+        etPassword = findViewById(R.id.etPassword);
         btnDelete = findViewById(R.id.btnDelete);
 
-        // Default na hindi editable ang fields
-        setFieldsEditable(false);
+        loadUserData(); // Load user data
 
-        // I-load ang data ng user gamit ang currentEmail
-        loadUserData();
-
-        // Back button
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        // I-toggle editing ng name at email
-        ivEditPersonal.setOnClickListener(v -> toggleEditText(etName, etEmail, ivEditPersonal));
+        // Edit actions
+        ivEditName.setOnClickListener(view -> openEditActivity(ActivityName.class, "currentName", etName.getText().toString()));
+        ivEditUsername.setOnClickListener(view -> openEditActivity(ActivityUsername.class, "currentValue", etUsername.getText().toString()));
+        ivEditPhone.setOnClickListener(view -> openEditActivity(ActivityPhone.class, "currentPhone", etPhone.getText().toString()));
+        ivEditPassword.setOnClickListener(view -> openEditActivity(ActivityPassword.class, "currentPassword", etPassword.getText().toString()));
+        // Delete account
+        btnDelete.setOnClickListener(v -> confirmDelete());
+    }
 
-        // I-toggle editing ng phone
-        ivEditContact.setOnClickListener(v -> toggleEditText(etPhone, null, ivEditContact));
+    private void openEditActivity(Class<?> activityClass, String extraKey, String value) {
+        Intent intent = new Intent(AccountActivity.this, activityClass);
+        intent.putExtra(extraKey, value);
+        intent.putExtra("currentUsername", currentUsername);
+        startActivityForResult(intent, 1);
+    }
 
-        // Save button
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newName = etName.getText().toString();
-                String newEmail = etEmail.getText().toString();
-                String newPhone = etPhone.getText().toString();
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.delete_dialog, null);
+        builder.setView(dialogView);
 
-                if (newName.isEmpty() || newEmail.isEmpty() || newPhone.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!newName.matches("^[a-zA-Z\\s]+$")) {
-                    Toast.makeText(AccountActivity.this, "Name must contain only letters", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
-                    Toast.makeText(AccountActivity.this, "Please enter a valid email address (e.g., user@example.com)", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!newPhone.matches("^09\\d{9}$")) {
-                    Toast.makeText(AccountActivity.this, "Please enter a valid number (e.g., 09XXXXXXXXX)", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        AlertDialog dialog = builder.create();
 
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put("name", newName);
-                values.put("email", newEmail);
-                values.put("phone", newPhone);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
 
-                String whereClause = "email =?"; // kukunin ang currentEmail kung ano ang new Email mo na ipinalit
-                String[] whereArgs = new String[] {currentEmail }; // Ang ginagawa nito ay kung ano ang inilagay mong new email ay kukunin ni whereClause "?"
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-                int result = database.update("users", values, whereClause, whereArgs);
-
-                if (result > 0) {
-                    Toast.makeText(AccountActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-                    currentEmail = newEmail;
-                    setFieldsEditable(false);
-
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("newEmail", newEmail);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
-                } else {
-                    Toast.makeText(AccountActivity.this, "Updated Failed!", Toast.LENGTH_SHORT).show();
-                    setFieldsEditable(false);
-                    ivEditPersonal.setImageResource(R.drawable.edit_icon);
-                    ivEditContact.setImageResource(R.drawable.edit_icon);
-                }
-
-            }
-        });
-
-        // Delete account button
         btnDelete.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Delete Account")
-                    .setMessage("Are you sure you want to delete your account?")
-                    .setPositiveButton("Delete", (dialog, which) -> {
-                        boolean deleted = dbHelper.deleteUser(currentEmail);
-                        if (deleted) {
-                            Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(AccountActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            boolean deleted = dbHelper.deleteUser(currentUsername);
+            if (deleted) {
+                Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
         });
+
+        dialog.show();
     }
 
-    // Method para i-set kung editable ang mga fields
-    private void setFieldsEditable(boolean enabled) {
-        etName.setEnabled(enabled);
-        etEmail.setEnabled(enabled);
-        etPhone.setEnabled(enabled);
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            updateIfChanged("updatedName", etName, "name", data);
+            updateIfChanged("updatedUsername", etUsername, "username", data);
+            updateIfChanged("updatedPhone", etPhone, "phone", data);
+            updateIfChanged("updatedPassword", etPassword, "password", data);
+        }
     }
 
-    // Method para kunin at i-set ang user data mula sa database
+    private void updateIfChanged(String key, EditText editText, String dbField, Intent data) {
+        String updatedValue = data.getStringExtra(key);
+        if (updatedValue != null) {
+            editText.setText(updatedValue);
+            updateDatabase(dbField, updatedValue);
+
+            if (dbField.equals("username")) {
+                currentUsername = updatedValue; //
+            }
+
+            // Always return updated username sa result, kahit anong field ang binago
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("newUsername", currentUsername); // ← ITO ANG IBABALIK SA DASHBOARD
+            setResult(RESULT_OK, resultIntent);
+
+        }
+    }
+
+    private void updateDatabase(String field, String value) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(field, value);
+
+        int result = database.update("users", values, "username = ?", new String[]{currentUsername});
+
+        if (result > 0) {
+        } else {
+            Toast.makeText(this, "Failed to update ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void loadUserData() {
-        if (currentEmail == null || currentEmail.isEmpty()) {
+        if (currentUsername == null || currentUsername.isEmpty()) {
             Toast.makeText(this, "No user email provided", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String[] userData = dbHelper.getUserDataByEmail(currentEmail);
+        String[] userData = dbHelper.getUserDataByUsername(currentUsername);
         if (userData != null && userData.length >= 3) {
+            Log.d("AccountActivity", "User Data: Name=" + userData[0] + ", Username=" + userData[1] + ", Phone=" + userData[2] + ", Password=" + userData[3]);
+
             etName.setText(userData[0]);
-            etEmail.setText(userData[1]);
+            etUsername.setText(userData[1]);
             etPhone.setText(userData[2]);
+            etPassword.setText(userData[3]);
+
+            // Disable fields from editing
+            etName.setEnabled(false);
+            etUsername.setEnabled(false);
+            etPhone.setEnabled(false);
+            etPassword.setEnabled(false);
         } else {
             Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-    private void toggleEditText(EditText editText1, EditText editText2, ImageView imageView) {
-        boolean isEditable = !editText1.isEnabled();
-        editText1.setEnabled(isEditable);
-        if (editText2 != null) editText2.setEnabled(isEditable);
-        imageView.setImageResource(R.drawable.edit_icon);
-    }
 }
-
-//

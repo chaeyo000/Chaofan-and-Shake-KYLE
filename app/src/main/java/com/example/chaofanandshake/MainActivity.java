@@ -1,9 +1,12 @@
 package com.example.chaofanandshake;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -13,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText emailEditText, passwordEditText;
+    private EditText usernameEditText, passwordEditText;
+    private boolean isPasswordVisible = false;
+    private Typeface originalTypeface;
     private CheckBox checkBox;
     private DatabaseHelper dbHelper;
 
@@ -23,31 +28,62 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
+        usernameEditText = findViewById(R.id.usernameEditText);
         checkBox = findViewById(R.id.checkBox);
 
         dbHelper = new DatabaseHelper(MainActivity.this);
 
+        passwordEditText = findViewById(R.id.passwordEditText);
+
+        originalTypeface = passwordEditText.getTypeface();
+
+        passwordEditText.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_END = 2;
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (passwordEditText.getRight()
+                        - passwordEditText.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
+
+                    // Toggle password visibility
+                    if (isPasswordVisible) {
+                        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    } else {
+                        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    }
+
+                    // Restore font and cursor position
+                    passwordEditText.setTypeface(originalTypeface);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+
+                    isPasswordVisible = !isPasswordVisible;
+                    return true;
+                }
+            }
+            return false;
+        });
+
+
+
         findViewById(R.id.dashboardbtn).setOnClickListener(v -> {
-            String email = emailEditText.getText().toString();
+            String username = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
                 Toast.makeText(MainActivity.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(MainActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            } else if (username.isEmpty()) {
+
             } else {
-                boolean isValid = dbHelper.checkUser(email, password);
+                boolean isValid = dbHelper.checkUser(username, password);
 
                 if (isValid) {
                     Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(MainActivity.this, DashboardbtnActivity.class);
-                    intent.putExtra("email", email);
+                    intent.putExtra("username", username);
                     startActivity(intent);
+                    finish();
                 } else {
-                    Toast.makeText(MainActivity.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
 
                     SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -64,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (view.getId() == R.id.signupbtn) {
             intent = new Intent(this, SignupActivity.class);
         } else if (view.getId() == R.id.loginbtn) {
-            intent = new Intent(this, LoginActivity.class);
+            intent = new Intent(this, MainActivity.class);
         } else {
             return;
         }
@@ -82,3 +118,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+

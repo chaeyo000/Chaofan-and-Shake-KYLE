@@ -12,20 +12,23 @@ import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "UserDatabase";
-    private static final int DATABASE_VERSION = 1;
+    // DATABASE INFO
+    private static final String DATABASE_NAME = "ChaofanUserDb";
+    private static final int DATABASE_VERSION = 3; // Taasan kung may changes sa structure
 
+    // TABLE & COLUMNS
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_EMAIL = "email";
+    private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PHONE = "phone";
     private static final String COLUMN_PASSWORD = "password";
 
+    // CREATE TABLE QUERY
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_NAME + " TEXT, " +
-            COLUMN_EMAIL + " TEXT, " +
+            COLUMN_USERNAME + " TEXT, " +
             COLUMN_PHONE + " TEXT, " +
             COLUMN_PASSWORD + " TEXT);";
 
@@ -40,32 +43,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Kung kailangan i-drop at i-recreate ang table
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
 
-    // Check if email exists in the database
-    public boolean checkEmailExists(String email) {
+    // Check if username exists
+    public boolean checkUsernameExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE email = ?", new String[]{email});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + " = ?", new String[]{username});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
     }
 
-    // Check if phone exists in the database
+    // Check if phone exists
     public boolean checkPhoneExists(String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE phone = ?", new String[]{phone});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + " = ?", new String[]{phone});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
     }
 
-    // Insert new user into the database
-    public boolean insertUser(String name, String email, String phone, String password) {
-        if (checkEmailExists(email)) {
-            Log.d("DATABASE", "Email already exists");
+    // Insert new user
+    public boolean insertUser(String name, String username, String phone, String password) {
+        if (checkUsernameExists(username)) {
+            Log.d("DATABASE", "Username already exists");
             return false;
         }
         if (checkPhoneExists(phone)) {
@@ -76,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
-        values.put(COLUMN_EMAIL, email);
+        values.put(COLUMN_USERNAME, username);
         values.put(COLUMN_PHONE, phone);
         values.put(COLUMN_PASSWORD, password);
         long result = db.insert(TABLE_USERS, null, values);
@@ -85,50 +89,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    // Validate user login with email and password
-    public boolean checkUser(String email, String password) {
+    // Login validation
+    public boolean checkUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_EMAIL + "=? AND " + COLUMN_PASSWORD + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{email, password});
+        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
+        Cursor cursor = db.rawQuery(query, new String[]{username, password});
         boolean userExists = cursor.getCount() > 0;
         cursor.close();
         return userExists;
     }
 
-    // Get user name based on email
-    public String getUserName(String email) {
+    // Get name using username
+    public String getUserName(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COLUMN_NAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_EMAIL + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{email});
+        String query = "SELECT " + COLUMN_NAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?";
+        Cursor cursor = db.rawQuery(query, new String[]{username});
         String userName = "";
 
-        if (cursor != null && cursor.moveToFirst()) {
-            try {
-                int columnIndex = cursor.getColumnIndexOrThrow(COLUMN_NAME);
-                userName = cursor.getString(columnIndex);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (cursor.moveToFirst()) {
+            userName = cursor.getString(0);
         }
 
-        if (cursor != null) {
-            cursor.close();
-        }
+        cursor.close();
+        db.close();
 
         return userName;
     }
 
-    // Get user data by email
-    @SuppressLint("Range")
-    public String[] getUserDataByEmail(String email) {
+    // Get username using name
+    public String getUsernameByName(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_EMAIL + "=?", new String[]{email});
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_USERNAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_NAME + " = ?", new String[]{name});
+        if (cursor != null && cursor.moveToFirst()) {
+            String updatedUsername = cursor.getString(0);
+            cursor.close();
+            return updatedUsername;
+        }
+        return null;
+    }
+
+    // Get full user data by username
+    @SuppressLint("Range")
+    public String[] getUserDataByUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?", new String[]{username});
 
         if (cursor != null && cursor.moveToFirst()) {
-            String[] userData = new String[3];
+            String[] userData = new String[4];
             userData[0] = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
-            userData[1] = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL));
+            userData[1] = cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME));
             userData[2] = cursor.getString(cursor.getColumnIndex(COLUMN_PHONE));
+            userData[3] = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
             cursor.close();
             return userData;
         }
@@ -137,41 +148,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    //  Update user data using email — cleaned up & added phone check
-    public boolean updateUser(String currentEmail, String newEmail, String newName, String newPhone) {
-        // Check if the new email or phone number already exists
+    // Update user info
+    public boolean updateUser(String currentUsername, String newUsername, String newName, String newPhone, String newPassword) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Check if email already exists (excluding current email)
-        if (!currentEmail.equals(newEmail) && checkEmailExists(newEmail)) {
+        if (!currentUsername.equals(newUsername) && checkUsernameExists(newUsername)) {
             return false;
         }
 
-        // Check if phone number already exists (excluding current phone)
-        if (!checkPhoneExists(newPhone)) {
-            Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + "=? AND " + COLUMN_EMAIL + "!=?", new String[]{newPhone, newEmail});
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.close();
-                return false;
-            }
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + "=? AND " + COLUMN_USERNAME + "!=?", new String[]{newPhone, currentUsername});
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.close();
+            return false;
         }
+        if (cursor != null) cursor.close();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, newName);
-        values.put(COLUMN_EMAIL, newEmail);
+        values.put(COLUMN_USERNAME, newUsername);
         values.put(COLUMN_PHONE, newPhone);
+        values.put(COLUMN_PASSWORD, newPassword);
 
-        // Update user info
-        int rowsUpdated = db.update(TABLE_USERS, values, COLUMN_EMAIL + "=?", new String[]{currentEmail});
-
+        int rowsUpdated = db.update(TABLE_USERS, values, COLUMN_USERNAME + "=?", new String[]{currentUsername});
         return rowsUpdated > 0;
     }
 
-    // Delete user by email
-    public boolean deleteUser(String email) {
+    // Delete user by username
+    public boolean deleteUser(String username) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rowsDeleted = db.delete(TABLE_USERS, COLUMN_EMAIL + "=?", new String[]{email});
+        int rowsDeleted = db.delete(TABLE_USERS, COLUMN_USERNAME + "=?", new String[]{username});
         db.close();
         return rowsDeleted > 0;
     }
