@@ -71,14 +71,14 @@
 
             <TextView
                 android:id="@+id/nameError"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF0000"
-                android:textSize="14sp"
-                android:visibility="gone"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="2dp"
-                android:text="" />
+                android:text=""
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 
