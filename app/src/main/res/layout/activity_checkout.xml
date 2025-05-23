@@ -53,16 +53,26 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginBottom="12dp" />
 
-        <!-- Phone Input -->
-        <EditText
-            android:id="@+id/phoneTextView"
+        <TextView
+            android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/input_bg"
-            android:hint="Phone Number"
-            android:inputType="phone"
+            android:text="Username"
             android:padding="12dp" />
+
+        <!-- Phone Input -->
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/input_bg"
+            android:text="Phone"
+            android:padding="12dp" />
+
+
 
         <!-- Payment Method -->
         <androidx.cardview.widget.CardView
@@ -90,19 +100,22 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:paddingBottom="8dp" />
-
                 <RadioGroup
                     android:id="@+id/rgPaymentMethod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+
                     <RadioButton
                         android:id="@+id/cash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_margin="10dp"
+                        android:padding="20dp"
+                        android:background="@drawable/radio_selector"
+                        android:button="@color/transparent"
                         android:text="Cash on Pickup"
-                        android:textColor="@color/meduimblack"
+                        android:textColor="@drawable/text_color"
                         android:buttonTint="@color/meduimblack" />
 
                 </RadioGroup>

@@ -2,10 +2,7 @@ package com.example.chaofanandshake;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,37 +32,32 @@ public class ActivityCheckout extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         dbHelper = new DatabaseHelper(this);
-
         backBtn = findViewById(R.id.backBtn);
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        // Load cart from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
         String jsonCart = sharedPreferences.getString("cart_list", null);
 
         ArrayList<ProductDomain> cartList;
-
         if (jsonCart != null) {
-            Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
-            cartList = gson.fromJson(jsonCart, type);
+            cartList = new Gson().fromJson(jsonCart, type);
         } else {
             cartList = new ArrayList<>();
         }
 
-        // Setup RecyclerView
         recyclerCart = findViewById(R.id.recyclerCart);
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
         com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
         recyclerCart.setAdapter(adapter);
 
-        // Calculate total and prepare order summary
-        double totalPrice = 0;
+        // Calculate total price
+        final double[] totalPriceHolder = {0.0};
         StringBuilder orderSummaryBuilder = new StringBuilder();
 
         for (ProductDomain product : cartList) {
             double productTotal = product.getPrice() * product.getQuantity();
-            totalPrice += productTotal;
+            totalPriceHolder[0] += productTotal;
 
             orderSummaryBuilder.append(product.getTitle())
                     .append(" x")
@@ -77,40 +69,37 @@ public class ActivityCheckout extends AppCompatActivity {
 
         String orderSummary = orderSummaryBuilder.toString();
 
-        // Set summary and total price
         TextView tvOrderSummary = findViewById(R.id.tvOrderSummary);
         TextView tvTotalPrice = findViewById(R.id.totalPrice);
+        tvOrderSummary.setText(orderSummary);
+        tvTotalPrice.setText("₱" + String.format("%.2f", totalPriceHolder[0]));
 
-        // Phone input & payment
-        EditText phoneTextView = findViewById(R.id.phoneTextView);
+        // Display username and phone number from SharedPreferences or other source
+// Display username and phone number from SharedPreferences or other source
+// Declare once at the top of onCreate:
+        TextView usernameTextView = findViewById(R.id.username);
+        TextView phoneTextView = findViewById(R.id.phone);
+
+// Get values from SharedPreferences:
+        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        String username = userPrefs.getString("username", "");
+        String phone = userPrefs.getString("phone", "");
+
+// Set the text properly:
+        usernameTextView.setText(username);
+        phoneTextView.setText(phone);
+
+
+
+
         RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
         Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
 
-        // Limit phone to 11 digits
-        phoneTextView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-
-        double finalTotalPrice = totalPrice;
         btnPlaceOrder.setOnClickListener(v -> {
-            String phone = phoneTextView.getText().toString().trim();
+            String phoneInput = phoneTextView.getText().toString().trim();
+            String usernameInput = usernameTextView.getText().toString().trim();
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
 
-            boolean hasError = false;
-
-            if (phone.isEmpty()) {
-                phoneTextView.setError("Phone number required");
-                phoneTextView.requestFocus();
-                hasError = true;
-
-            } else if (!phone.matches("^09\\d{9}$")) {
-                phoneTextView.setError("Please enter a valid number (e.g., 09XXXXXXXXX)");
-                phoneTextView.requestFocus();
-                hasError = true;
-
-            } else {
-                phoneTextView.setError(null);
-            }
-
-            if (hasError) return;
 
             if (selectedPaymentId == -1) {
                 Toast.makeText(ActivityCheckout.this, "Select a payment method", Toast.LENGTH_SHORT).show();
@@ -120,16 +109,21 @@ public class ActivityCheckout extends AppCompatActivity {
             RadioButton selectedPayment = findViewById(selectedPaymentId);
             String paymentMethod = selectedPayment.getText().toString();
 
-            boolean inserted = dbHelper.insertOrder(orderSummary, phone, paymentMethod, finalTotalPrice);
-
+            // Insert order including username now
+            boolean inserted = dbHelper.insertOrder(orderSummary, phoneInput, usernameInput, paymentMethod, totalPriceHolder[0]);
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-                finish(); // Close checkout screen
+
+                // Clear cart after placing order
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("cart_list");
+                editor.apply();
+
+                finish();
             } else {
                 Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @Override

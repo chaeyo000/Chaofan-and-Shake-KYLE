@@ -18,11 +18,9 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // DATABASE INFO
     private static final String DATABASE_NAME = "ChaofanUserDb";
-    private static final int DATABASE_VERSION = 5; // Taasan kung may changes sa structure
+    private static final int DATABASE_VERSION = 5;
 
-    // TABLE & COLUMNS
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
@@ -32,14 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ROLE = "role";
 
     private static final String TABLE_ORDERS = "orders";
-    private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + " (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "order_summary TEXT, " +
-            "phone TEXT, " +
-            "payment_method TEXT, " +
-            "total_price REAL);";
 
-    // CREATE TABLE QUERY
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_NAME + " TEXT, " +
@@ -47,6 +38,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_PHONE + " TEXT, " +
             COLUMN_PASSWORD + " TEXT, " +
             COLUMN_ROLE + " TEXT);";
+
+    private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + " (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "order_summary TEXT, " +
+            "phone TEXT, " +
+            "username TEXT, " +
+            "payment_method TEXT, " +
+            "total_price REAL);";
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -68,13 +67,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Kung kailangan i-drop at i-recreate ang table
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         onCreate(db);
     }
-
-    // Check if username exists
     public boolean checkUsernameExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + " = ?", new String[]{username});
@@ -83,7 +79,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    // Check if phone exists
     public boolean checkPhoneExists(String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + " = ?", new String[]{phone});
@@ -92,20 +87,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    // Insert new user
     public boolean insertUser(String name, String username, String phone, String password) {
         return insertUser(name, username, phone, password, "user");
     }
 
     public boolean insertUser(String name, String username, String phone, String password, String role) {
-        if (checkUsernameExists(username)) {
-            Log.d("DATABASE", "Username already exists");
-            return false;
-        }
-        if (checkPhoneExists(phone)) {
-            Log.d("DATABASE", "Phone number already exists");
-            return false;
-        }
+        if (checkUsernameExists(username) || checkPhoneExists(phone)) return false;
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -114,9 +101,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PHONE, phone);
         values.put(COLUMN_PASSWORD, password);
         values.put(COLUMN_ROLE, role);
+
         long result = db.insert(TABLE_USERS, null, values);
         db.close();
-
         return result != -1;
     }
 
@@ -131,35 +118,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-
-    // Login validation
     public boolean checkUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{username, password});
-        boolean userExists = cursor.getCount() > 0;
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?", new String[]{username, password});
+        boolean exists = cursor.getCount() > 0;
         cursor.close();
-        return userExists;
+        return exists;
     }
 
-    // Get name using username
     public String getUserName(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COLUMN_NAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{username});
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_NAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?", new String[]{username});
         String userName = "";
-
         if (cursor.moveToFirst()) {
             userName = cursor.getString(0);
         }
-
         cursor.close();
-        db.close();
-
         return userName;
     }
 
-    // Get username using name
     public String getUsernameByName(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT " + COLUMN_USERNAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_NAME + " = ?", new String[]{name});
@@ -171,12 +148,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    // Get full user data by username
     @SuppressLint("Range")
     public String[] getUserDataByUsername(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?", new String[]{username});
-
         if (cursor != null && cursor.moveToFirst()) {
             String[] userData = new String[4];
             userData[0] = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
@@ -186,18 +161,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
             return userData;
         }
-
-        if (cursor != null) cursor.close();
         return null;
     }
 
-    // Update user info
     public boolean updateUser(String currentUsername, String newUsername, String newName, String newPhone, String newPassword) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        if (!currentUsername.equals(newUsername) && checkUsernameExists(newUsername)) {
-            return false;
-        }
+        if (!currentUsername.equals(newUsername) && checkUsernameExists(newUsername)) return false;
 
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + "=? AND " + COLUMN_USERNAME + "!=?", new String[]{newPhone, currentUsername});
         if (cursor != null && cursor.getCount() > 0) {
@@ -216,14 +185,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsUpdated > 0;
     }
 
-    // Delete user by username
     public boolean deleteUser(String username) {
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsDeleted = db.delete(TABLE_USERS, COLUMN_USERNAME + "=?", new String[]{username});
         db.close();
         return rowsDeleted > 0;
     }
-
 
     public boolean checkUserPhone(String username, String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -236,8 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean updatePassword(String username, String newPassword) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("password", newPassword); // Consider hashing this
-
+        values.put("password", newPassword);
         int rows = db.update("users", values, "username = ?", new String[]{username});
         return rows > 0;
     }
@@ -260,41 +226,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return users;
     }
 
-    public boolean insertOrder(String orderSummary, String phone, String paymentMethod, double totalPrice) {
+    public boolean insertOrder(String orderSummary, String phone, String username, String paymentMethod, double totalPrice) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("order_summary", orderSummary);
         values.put("phone", phone);
+        values.put("username", username);
         values.put("payment_method", paymentMethod);
         values.put("total_price", totalPrice);
 
-        long result = db.insert(TABLE_ORDERS, null, values);
-        db.close();
+        long result = -1;
+        try {
+            result = db.insertOrThrow("orders", null, values);
+            Log.i("DB_INSERT", "Insert result: " + result);
+        } catch (Exception e) {
+            Log.e("DB_INSERT", "Insert failed with exception: " + e.getMessage());
+        } finally {
+            db.close();
+        }
         return result != -1;
     }
 
 
+
+
+
+
+
+
+
+    @SuppressLint("Range")
     public List<Order> getAllOrders() {
         List<Order> orderList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM orders", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ORDERS, null);
 
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String summary = cursor.getString(cursor.getColumnIndex("order_summary"));
                 String phone = cursor.getString(cursor.getColumnIndex("phone"));
+                String username = cursor.getString(cursor.getColumnIndex("username"));
                 String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
                 double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
 
-                Order order = new Order(id, summary, phone, paymentMethod, totalPrice);
-                orderList.add(order);
+                orderList.add(new Order(id, summary, phone, username, paymentMethod, totalPrice));
             } while (cursor.moveToNext());
         }
+
         cursor.close();
         db.close();
-
         return orderList;
     }
-
 }

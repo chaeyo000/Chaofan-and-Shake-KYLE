@@ -2,6 +2,7 @@ package com.example.chaofanandshake;
 
 import com.example.chaofanandshake.DatabaseHelper;
 
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -158,7 +159,13 @@ public class SignupActivity extends AppCompatActivity {
                 if (isInserted) {
                     Toast.makeText(SignupActivity.this, "Sign Up Successful!", Toast.LENGTH_LONG).show();
 
-                    // Pag-set ng data sa Intent bago magtungo sa AccountActivity
+                    // Save user info in SharedPreferences so ActivityCheckout can access it
+                    SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = userPrefs.edit();
+                    editor.putString("username", username);
+                    editor.putString("phone", phone);
+                    editor.apply();
+
                     Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                     intent.putExtra("username", username);
                     intent.putExtra("name", name);
@@ -166,6 +173,7 @@ public class SignupActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
+
             }
 
         });
