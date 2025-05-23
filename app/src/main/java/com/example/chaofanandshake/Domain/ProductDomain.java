@@ -7,17 +7,31 @@ public class ProductDomain implements Serializable {
     private String title;
     private double price;
     private int quantity = 1;  // default 1
+    private double totalPrice;  // dagdag para sa total price ng product sa cart
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    // Default no-args constructor
+    public ProductDomain() {
+    }
 
-
+    // Parameterized constructor without quantity (default quantity = 1)
     public ProductDomain(String imageName, String title, double price) {
         this.imageName = imageName;
         this.title = title;
         this.price = price;
+        this.quantity = 1;
+        this.totalPrice = price * quantity;
     }
 
+    // Parameterized constructor with quantity
+    public ProductDomain(String imageName, String title, double price, int quantity) {
+        this.imageName = imageName;
+        this.title = title;
+        this.price = price;
+        this.quantity = quantity;
+        this.totalPrice = price * quantity;
+    }
+
+    // Getters
     public String getImageName() {
         return imageName;
     }
@@ -29,5 +43,30 @@ public class ProductDomain implements Serializable {
     public double getPrice() {
         return price;
     }
-}
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    // Setter for quantity - automatically update totalPrice when quantity changes
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+        this.totalPrice = this.price * this.quantity;
+    }
+
+    // Optional: Override toString() for easy debugging
+    @Override
+    public String toString() {
+        return "ProductDomain{" +
+                "imageName='" + imageName + '\'' +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+}

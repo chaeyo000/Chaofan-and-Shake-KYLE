@@ -17,6 +17,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private ArrayList<ProductDomain> cartItems;
     private Runnable saveCartCallback;  // callback to save cart externally
+    private OnQuantityChangeListener quantityChangeListener;
 
     public CartAdapter(ArrayList<ProductDomain> cartItems) {
         this.cartItems = cartItems;
@@ -24,6 +25,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public void setSaveCartCallback(Runnable callback) {
         this.saveCartCallback = callback;
+    }
+
+    public void setOnQuantityChangeListener(OnQuantityChangeListener listener) {
+        this.quantityChangeListener = listener;
+    }
+
+    public interface OnQuantityChangeListener {
+        void onQuantityChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,33 +62,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         ProductDomain item = cartItems.get(position);
         holder.title.setText(item.getTitle());
 
-        // Price multiplied by quantity
-        holder.price.setText("₱" + (item.getPrice() * item.getQuantity()));
+        // Format price properly
+        double totalPrice = item.getPrice() * item.getQuantity();
+        holder.price.setText(String.format("₱%.2f", totalPrice));
         holder.quantityText.setText(String.valueOf(item.getQuantity()));
-
-        // Increase quantity button
-        holder.increaseQuantity.setOnClickListener(v -> {
-            item.setQuantity(item.getQuantity() + 1);
-            notifyItemChanged(position);
-            if (saveCartCallback != null) saveCartCallback.run();
-        });
-
-        // Decrease quantity button (minimum 1)
-        holder.decreaseQuantity.setOnClickListener(v -> {
-            if (item.getQuantity() > 1) {
-                item.setQuantity(item.getQuantity() - 1);
-                notifyItemChanged(position);
-                if (saveCartCallback != null) saveCartCallback.run();
-            }
-        });
-
-        // Remove item button
-        holder.removeItem.setOnClickListener(v -> {
-            cartItems.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, cartItems.size());
-            if (saveCartCallback != null) saveCartCallback.run();
-        });
 
         // Increase quantity button
         holder.increaseQuantity.setOnClickListener(v -> {
@@ -89,7 +75,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             if (quantityChangeListener != null) quantityChangeListener.onQuantityChanged();
         });
 
-// Decrease quantity button
+        // Decrease quantity button (minimum 1)
         holder.decreaseQuantity.setOnClickListener(v -> {
             if (item.getQuantity() > 1) {
                 item.setQuantity(item.getQuantity() - 1);
@@ -99,7 +85,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             }
         });
 
-// Remove item button
+        // Remove item button
         holder.removeItem.setOnClickListener(v -> {
             cartItems.remove(position);
             notifyItemRemoved(position);
@@ -107,19 +93,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             if (saveCartCallback != null) saveCartCallback.run();
             if (quantityChangeListener != null) quantityChangeListener.onQuantityChanged();
         });
-
     }
-
-    public interface OnQuantityChangeListener {
-        void onQuantityChanged();
-    }
-
-    private OnQuantityChangeListener quantityChangeListener;
-
-    public void setOnQuantityChangeListener(OnQuantityChangeListener listener) {
-        this.quantityChangeListener = listener;
-    }
-
 
     @Override
     public int getItemCount() {

@@ -23,9 +23,10 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
     private ImageView backBtn, productImage;
     private TextView titleText, priceText;
-    private Button cartBtn;
+    private Button cartBtn, addtocart;
 
     private SharedPreferences sharedPreferences;
+    private ProductDomain product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         titleText = findViewById(R.id.title);
         priceText = findViewById(R.id.price);
         productImage = findViewById(R.id.image);
+        addtocart = findViewById(R.id.addtocart);
         cartBtn = findViewById(R.id.cartbtn);
 
         sharedPreferences = getSharedPreferences("MyCart", Context.MODE_PRIVATE);
@@ -45,58 +47,58 @@ public class ProductdetailsActivity extends AppCompatActivity {
         backBtn.setOnClickListener(view -> onBackPressed());
 
         // Get product from intent
-        ProductDomain product = (ProductDomain) getIntent().getSerializableExtra("product");
+        product = (ProductDomain) getIntent().getSerializableExtra("product");
 
         if (product != null) {
-            String title = product.getTitle();
-            double price = product.getPrice();
-            String imageName = product.getImageName();
+            titleText.setText(product.getTitle());
+            priceText.setText("₱" + product.getPrice());
 
-            titleText.setText(title);
-            priceText.setText("₱" + price);
-
-            int imageResId = getResources().getIdentifier(imageName, "drawable", getPackageName());
+            int imageResId = getResources().getIdentifier(product.getImageName(), "drawable", getPackageName());
             productImage.setImageResource(imageResId != 0 ? imageResId : R.drawable.swirls);
-
-            cartBtn.setOnClickListener(v -> {
-                Gson gson = new Gson();
-
-                // Load existing cart list
-                String json = sharedPreferences.getString("cart_list", null);
-                Type type = new TypeToken<ArrayList<ProductDomain>>(){}.getType();
-                ArrayList<ProductDomain> cartList = gson.fromJson(json, type);
-
-                if (cartList == null) {
-                    cartList = new ArrayList<>();
-                }
-
-                // Check if product already exists in cart to increase quantity (optional)
-                boolean found = false;
-                for (ProductDomain p : cartList) {
-                    if (p.getTitle().equals(product.getTitle())) {
-                        p.setQuantity(p.getQuantity() + 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    product.setQuantity(1);  // initialize quantity
-                    cartList.add(product);
-                }
-
-                // Save updated cart list
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("cart_list", gson.toJson(cartList));
-                editor.apply();
-
-                Toast.makeText(ProductdetailsActivity.this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
-
-                // Optionally open cart activity
-                Intent intent = new Intent(ProductdetailsActivity.this, CartbtnActivity.class);
-                startActivity(intent);
-            });
-
         }
+
+        // Add to cart button logic
+        addtocart.setOnClickListener(v -> {
+            addProductToCart(product);
+            Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, CartbtnActivity.class));
+        });
+
+        // Cart icon button logic
+        cartBtn.setOnClickListener(v -> {
+            addProductToCart(product);
+            Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, CartbtnActivity.class));
+        });
+    }
+
+    private void addProductToCart(ProductDomain product) {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("cart_list", null);
+        Type type = new TypeToken<ArrayList<ProductDomain>>(){}.getType();
+        ArrayList<ProductDomain> cartList = gson.fromJson(json, type);
+
+        if (cartList == null) {
+            cartList = new ArrayList<>();
+        }
+
+        boolean found = false;
+        for (ProductDomain p : cartList) {
+            if (p.getTitle().equals(product.getTitle())) {
+                p.setQuantity(p.getQuantity() + 1);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            product.setQuantity(1);
+            cartList.add(product);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("cart_list", gson.toJson(cartList));
+        editor.apply();
     }
 
     @Override

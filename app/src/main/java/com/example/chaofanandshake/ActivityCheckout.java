@@ -2,6 +2,7 @@ package com.example.chaofanandshake;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,11 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.chaofanandshake.Domain.ProductDomain;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class ActivityCheckout extends AppCompatActivity {
 
     private ImageView backBtn;
-    private DatabaseHelper dbHelper;  // your SQLite helper
+    private DatabaseHelper dbHelper;
+    private RecyclerView recyclerCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,55 +36,83 @@ public class ActivityCheckout extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
-        // Existing code...
-
-        RadioButton gcashRadioButton = findViewById(R.id.gcash);
-        ImageView gcashImageView = findViewById(R.id.gcashqr);
-
-        gcashRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                gcashImageView.setVisibility(View.VISIBLE);
-            } else {
-                gcashImageView.setVisibility(View.GONE);
-            }
-        });
-
         backBtn = findViewById(R.id.backBtn);
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        String username = getIntent().getStringExtra("username");
-        SharedPreferences sharedPref = getSharedPreferences("userPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("username", username);
-        editor.apply();
+        // Load cart from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
+        String jsonCart = sharedPreferences.getString("cart_list", null);
 
-        // New part: Checkout logic
+        ArrayList<ProductDomain> cartList;
+
+        if (jsonCart != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
+            cartList = gson.fromJson(jsonCart, type);
+        } else {
+            cartList = new ArrayList<>();
+        }
+
+        // Setup RecyclerView
+        recyclerCart = findViewById(R.id.recyclerCart);
+        recyclerCart.setLayoutManager(new LinearLayoutManager(this));
+        com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
+        recyclerCart.setAdapter(adapter);
+
+        // Calculate total and prepare order summary
+        double totalPrice = 0;
+        StringBuilder orderSummaryBuilder = new StringBuilder();
+
+        for (ProductDomain product : cartList) {
+            double productTotal = product.getPrice() * product.getQuantity();
+            totalPrice += productTotal;
+
+            orderSummaryBuilder.append(product.getTitle())
+                    .append(" x")
+                    .append(product.getQuantity())
+                    .append(" - ₱")
+                    .append(String.format("%.2f", productTotal))
+                    .append("\n");
+        }
+
+        String orderSummary = orderSummaryBuilder.toString();
+
+        // Set summary and total price
         TextView tvOrderSummary = findViewById(R.id.tvOrderSummary);
         TextView tvTotalPrice = findViewById(R.id.totalPrice);
+
+        // Phone input & payment
         EditText phoneTextView = findViewById(R.id.phoneTextView);
         RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
         Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
 
-        // Get order details from Intent extras (sent from previous activity)
-        String orderSummary = getIntent().getStringExtra("order_summary");
-        double totalPrice = getIntent().getDoubleExtra("total_price", 0);
+        // Limit phone to 11 digits
+        phoneTextView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
-        if(orderSummary != null) {
-            tvOrderSummary.setText(orderSummary);
-        }
-        tvTotalPrice.setText("Total: ₱" + String.format("%.2f", totalPrice));
-
+        double finalTotalPrice = totalPrice;
         btnPlaceOrder.setOnClickListener(v -> {
             String phone = phoneTextView.getText().toString().trim();
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
 
-            if(phone.isEmpty()) {
+            boolean hasError = false;
+
+            if (phone.isEmpty()) {
                 phoneTextView.setError("Phone number required");
                 phoneTextView.requestFocus();
-                return;
+                hasError = true;
+
+            } else if (!phone.matches("^09\\d{9}$")) {
+                phoneTextView.setError("Please enter a valid number (e.g., 09XXXXXXXXX)");
+                phoneTextView.requestFocus();
+                hasError = true;
+
+            } else {
+                phoneTextView.setError(null);
             }
 
-            if(selectedPaymentId == -1) {
+            if (hasError) return;
+
+            if (selectedPaymentId == -1) {
                 Toast.makeText(ActivityCheckout.this, "Select a payment method", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -81,9 +120,9 @@ public class ActivityCheckout extends AppCompatActivity {
             RadioButton selectedPayment = findViewById(selectedPaymentId);
             String paymentMethod = selectedPayment.getText().toString();
 
-            boolean inserted = dbHelper.insertOrder(orderSummary, phone, paymentMethod, totalPrice);
+            boolean inserted = dbHelper.insertOrder(orderSummary, phone, paymentMethod, finalTotalPrice);
 
-            if(inserted) {
+            if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
                 finish(); // Close checkout screen
             } else {
@@ -96,14 +135,6 @@ public class ActivityCheckout extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            finish();
-        }
+        finish();
     }
-
-    }
-
-
-
+}
