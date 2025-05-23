@@ -94,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
         phoneEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
 
-        // Limit to 11 characters para sa name
+        // Limit to 12 characters para sa name
         nameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,12 +103,12 @@ public class SignupActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // chinicheck nito kung ang ang text sa name ay lumampas sa 11 characters
-                if (charSequence.length() > 11) {
-                    // ang ginagawa nito ay pinipigilan nito ang text na lumampas sa 11 characters lang, kahit ipilit ni user na mag type eyy full stack
-                    nameEditText.setText(charSequence.subSequence(0, 11));
-                    nameEditText.setSelection(11);
-                    Toast.makeText(SignupActivity.this, "Name must not exceed 11 characters", Toast.LENGTH_SHORT).show();
+                // chinicheck nito kung ang ang text sa name ay lumampas sa 12 characters
+                if (charSequence.length() > 12 ) {
+                    // ang ginagawa nito ay pinipigilan nito ang text na lumampas sa 12 characters lang, kahit ipilit ni user na mag type eyy full stack
+                    nameEditText.setText(charSequence.subSequence(0, 12));
+                    nameEditText.setSelection(12);
+                    Toast.makeText(SignupActivity.this, "Name must not exceed 12 characters", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -149,15 +149,6 @@ public class SignupActivity extends AppCompatActivity {
                 if (dbHelper.checkUsernameExists(username)) {
                     Toast.makeText(SignupActivity.this, "Username already exists. Please use a different username.", Toast.LENGTH_SHORT).show();
                     return;  // Ititigil pag may kaparehong email
-                } else if (dbHelper.checkPhoneExists(phone)) {
-                    Toast.makeText(SignupActivity.this, "Phone number already exists. Please use a different phone number.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (dbHelper.checkUsernameExists(username)) {
-                    Toast.makeText(SignupActivity.this, "Username already exists. Please use a different username.", Toast.LENGTH_SHORT).show();
-                    return;
                 } else if (dbHelper.checkPhoneExists(phone)) {
                     Toast.makeText(SignupActivity.this, "Phone number already exists. Please use a different phone number.", Toast.LENGTH_SHORT).show();
                     return;

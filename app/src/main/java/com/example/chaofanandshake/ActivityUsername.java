@@ -14,13 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ActivityUsername extends AppCompatActivity {
 
     private ImageView backBtn;
-    private EditText etNewUsername;
-    private TextView nameError;
+    private TextInputEditText etNewUsername;
+    private TextInputLayout layoutUsername;
     private DatabaseHelper dbHelper;
     private Button btnSaveName;
     private String currentUsername;
@@ -34,8 +37,11 @@ public class ActivityUsername extends AppCompatActivity {
 
         backBtn = findViewById(R.id.backBtn);
         etNewUsername = findViewById(R.id.etNewUsername);
-        nameError = findViewById(R.id.nameError);
+        layoutUsername = findViewById(R.id.layoutUsername);
         btnSaveName = findViewById(R.id.btnSaveName);
+
+        //REMOVE ICON ERROR
+        layoutUsername.setErrorIconDrawable(null);
 
         String currentVal =  getIntent().getStringExtra("currentValue");
         currentUsername = getIntent().getStringExtra("currentUsername");
@@ -88,11 +94,10 @@ public class ActivityUsername extends AppCompatActivity {
     private boolean validateAndShowErrors(String Username) {
         String errors = validateUsername(Username);
         if (!errors.isEmpty()) {
-            nameError.setText(errors);
-            nameError.setVisibility(View.VISIBLE);
+           layoutUsername.setError(errors);
             return false;
         } else {
-            nameError.setVisibility(View.GONE);
+            layoutUsername.setError(null);
             return true;
         }
 

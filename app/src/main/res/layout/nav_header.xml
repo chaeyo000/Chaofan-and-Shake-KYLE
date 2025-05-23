@@ -43,7 +43,7 @@
         android:id="@+id/nav_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20sp"
+        android:layout_marginLeft="23sp"
         android:layout_marginTop="2dp"
         android:text="user123"
         android:textColor="@color/black"

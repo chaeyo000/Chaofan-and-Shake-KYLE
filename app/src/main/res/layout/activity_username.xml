@@ -59,26 +59,27 @@
                 android:textColor="#555555"
                 android:layout_marginBottom="8dp" />
 
-            <EditText
-                android:id="@+id/etNewUsername"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Enter your username"
-                android:background="@drawable/edit_text_background"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/nameError"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FF0000"
-                android:textSize="14sp"
-                android:visibility="gone"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="2dp"
-                android:text="" />
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNewUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </ScrollView>
 

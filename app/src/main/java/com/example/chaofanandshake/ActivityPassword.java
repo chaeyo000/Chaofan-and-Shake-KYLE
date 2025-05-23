@@ -131,7 +131,7 @@ public class ActivityPassword extends AppCompatActivity {
     private boolean validateCurrentPassword() {
         String inputPassword = etCurrentPassword.getText().toString().trim();
         if (inputPassword.isEmpty()) {
-            layoutCurrentPassword.setError("Current password cannot be empty");
+            layoutCurrentPassword.setError("Current pass word cannot be empty");
             return false;
         }
 

@@ -17,12 +17,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 public class ActivityPhone extends AppCompatActivity {
 
     private ImageView backBtn;
-    private EditText etNewPhone;
+    private TextInputEditText etNewPhone;
+    private TextInputLayout layoutPhone;
     private Button btnSavePhone;
-    private TextView nameError;
+
     private String currentUsername;
     private DatabaseHelper dbHelper;
 
@@ -33,11 +37,12 @@ public class ActivityPhone extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
-        // Initialize views
         backBtn = findViewById(R.id.backBtn);
         etNewPhone = findViewById(R.id.etNewPhone);
-        nameError = findViewById(R.id.nameError);
+        layoutPhone = findViewById(R.id.layoutPhone);
         btnSavePhone = findViewById(R.id.btnSavePhone);
+
+        layoutPhone.setErrorIconDrawable(null);
 
         etNewPhone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
@@ -94,11 +99,10 @@ public class ActivityPhone extends AppCompatActivity {
     private boolean validateAndShowErrors(String phone) {
         String errors = validatePhone(phone);
         if (!errors.isEmpty()) {
-            nameError.setText(errors);
-            nameError.setVisibility(View.VISIBLE);
+            layoutPhone.setError(errors);
             return false;
         } else {
-            nameError.setVisibility(View.GONE);
+            layoutPhone.setError(errors);
             return true;
         }
     }

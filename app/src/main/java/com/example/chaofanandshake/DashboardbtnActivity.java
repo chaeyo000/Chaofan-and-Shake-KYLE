@@ -1,7 +1,9 @@
 package com.example.chaofanandshake;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chaofanandshake.Adapter.ProductAdapter;
@@ -46,9 +46,6 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_dashboard);
 
         dbHelper = new DatabaseHelper(this);
-
-
-
 
         // Setup Navigation Drawer
         toolbar = findViewById(R.id.toolbar);
@@ -80,36 +77,47 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             startActivity(intent);
         });
 
-        // Recycler View for products
-        initRecyclerView();
-
-        // Get passed email
+        // Get passed username (email or id) from intent
         currentUsername = getIntent().getStringExtra("username");
+
         if (currentUsername != null) {
             String userName = dbHelper.getUserName(currentUsername);
             if (userName != null && !userName.isEmpty()) {
-                welcomeTextView.setText("Welcome " + userName + ", What would you like to eat?");
+                String welcomeMessage = "Welcome " + userName + ", What would you like to <font color='#FFC107'>eat?</font>";
+                setWelcomeMessage(welcomeMessage);
+
                 navName.setText(userName);
                 navUsername.setText(currentUsername);
             } else {
+                // If username not found in DB
                 navName.setText("User");
                 navUsername.setText(currentUsername);
+                setWelcomeMessage("Welcome User, What would you like to eat?");
             }
+        } else {
+            // No username passed
+            setWelcomeMessage("Welcome, What would you like to eat?");
+            navName.setText("User");
+            navUsername.setText("");
         }
+
+        // Recycler View for products
+        initRecyclerView();
 
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
-                        if (data != null && data.hasExtra("newUsername")){
+                        if (data != null && data.hasExtra("newUsername")) {
                             String updatedUsername = data.getStringExtra("newUsername");
                             navUsername.setText(updatedUsername);
 
                             String updatedName = dbHelper.getUserName(updatedUsername);
-                            if (updatedName != null) {
+                            if (updatedName != null && !updatedName.isEmpty()) {
                                 navName.setText(updatedName);
-                                welcomeTextView.setText("Welcome " + updatedName + ", What would you like to eat?");
+                                String welcomeMessage = "Welcome " + updatedName + ", What would you like to <font color='#FFC107'>eat?</font>";
+                                setWelcomeMessage(welcomeMessage);
                             }
                         }
                     }
@@ -132,9 +140,17 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
 
             if (updatedName != null && !updatedName.isEmpty()) {
                 navName.setText(updatedName);
-                welcomeTextView.setText("Welcome " + updatedName + ", What would you like to eat?");
+                String welcomeMessage = "Welcome " + updatedName + ", What would you like to <font color='#FFC107'>eat?</font>";
+                setWelcomeMessage(welcomeMessage);
             }
+        }
+    }
 
+    private void setWelcomeMessage(String htmlMessage) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            welcomeTextView.setText(Html.fromHtml(htmlMessage, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            welcomeTextView.setText(Html.fromHtml(htmlMessage));
         }
     }
 
@@ -145,7 +161,6 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             return;
         }
 
-        // Set GridLayoutManager with 2 columns (vertical scrolling)
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         ArrayList<ProductDomain> productList = new ArrayList<>();
@@ -158,7 +173,6 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         ProductAdapter adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -173,14 +187,14 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             startActivity(new Intent(this, ContactActivity.class));
         } else if (itemId == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
 }
