@@ -8,7 +8,6 @@
     android:background="@color/dashboard_primary"
     android:fillViewport="true">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,6 +16,7 @@
         android:divider="?android:attr/dividerHorizontal"
         android:showDividers="middle">
 
+        <!-- Back Button -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -26,87 +26,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-                app:layout_constraintHorizontal_bias="0.123"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_bias="0.123"
                 app:srcCompat="@drawable/baseline_arrow_back_ios_new_24" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Cart Summary Title -->
+        <TextView
+            android:id="@+id/tvOrderSummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Cart Summary"
+            android:textColor="@color/meduimblack"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:paddingBottom="8dp" />
 
-
-        <!-- Cart Summary -->
-        <androidx.cardview.widget.CardView
+        <!-- RecyclerView for Cart Items -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="12dp"
-            android:layout_marginTop="30dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF"
-            android:padding="16dp">
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="12dp" />
 
-            <TextView
-                android:id="@+id/tvOrderSummary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Cart Summary"
-                android:textColor="@color/meduimblack"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"
-                android:paddingBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/rounded_border"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/swirls" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="30dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chaofan Special"
-                        android:textColor="@color/meduimblack"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Qty: 2"
-                        android:textColor="#666666"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₱120.00"
-                        android:textColor="#FF5722"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-
+        <!-- Phone Input -->
         <EditText
             android:id="@+id/phoneTextView"
             android:layout_width="match_parent"
@@ -114,87 +61,75 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/input_bg"
             android:hint="Phone Number"
+            android:inputType="phone"
             android:padding="12dp" />
 
         <!-- Payment Method -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
+            android:padding="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF"
-            android:padding="16dp"
-            android:layout_marginTop="20dp">
+            app:cardBackgroundColor="#FFFFFF">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/meduimblack"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Payment Method"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:paddingBottom="8dp" />
+                android:orientation="vertical">
 
-            <RadioGroup
-                android:id="@+id/rgPaymentMethod"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:id="@+id/cash"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Payment Method"
                     android:textColor="@color/meduimblack"
-                    android:buttonTint="@color/meduimblack"
-                    android:text="Cash on Pickup" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="8dp" />
 
-                <RadioButton
-                    android:id="@+id/gcash"
-                    android:textColor="@color/meduimblack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/meduimblack"
-                    android:text="GCash" />
-            </RadioGroup>
-            <ImageView
-                android:id="@+id/gcashqr"
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:layout_marginTop="70dp"
-                android:src="@drawable/gcashqr"
-                android:visibility="gone"/>
+                <RadioGroup
+                    android:id="@+id/rgPaymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Cash on Pickup"
+                        android:textColor="@color/meduimblack"
+                        android:buttonTint="@color/meduimblack" />
+
+                </RadioGroup>
+
+                <ImageView
+                    android:id="@+id/gcashqr"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:layout_marginTop="70dp"
+                    android:src="@drawable/gcashqr"
+                    android:visibility="gone" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Order Summary -->
-
-
-
-
-
+        <!-- Order Summary Total -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:textColor="@color/meduimblack"
             android:layout_marginLeft="10dp"
             android:text="Order Summary"
+            android:textColor="@color/meduimblack"
             android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF"
-            android:padding="16dp"
- />
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
 
         <TextView
+            android:id="@+id/tvOrderSummaryItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -202,27 +137,27 @@
             android:textColor="@color/meduimblack"
             android:textSize="16sp" />
 
-        <!-- Pickup Notice -->
         <TextView
             android:id="@+id/totalPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
             android:layout_marginLeft="10dp"
+            android:paddingTop="4dp"
             android:text="Total: ₱240.00"
             android:textColor="#FF5722"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- Pickup Notice -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Available for Pickup After 10 Minutes"
-            android:textSize="14sp"
             android:textColor="#2E7D32"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="12dp" />
+            android:gravity="center" />
 
         <!-- Place Order Button -->
         <Button
@@ -230,11 +165,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Place Order"
+            android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
             android:backgroundTint="#FF5722"
-            android:textColor="#FFFFFF"
             android:padding="12dp" />
-
     </LinearLayout>
 </ScrollView>

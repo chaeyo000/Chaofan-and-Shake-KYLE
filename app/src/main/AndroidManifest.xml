@@ -16,9 +16,6 @@
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
-        <activity
             android:name=".ActivityPassword"
             android:exported="false" />
         <activity
@@ -26,9 +23,6 @@
             android:exported="false" />
         <activity
             android:name=".ActivityPhone"
-            android:exported="false" />
-        <activity
-            android:name=".ActivityEmail"
             android:exported="false" />
         <activity
             android:name=".ActivityName"
@@ -39,6 +33,7 @@
         <activity
             android:name=".ProductdetailsActivity"
             android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -53,11 +48,10 @@
             android:name=".DashboardbtnActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".CartbtnActivity" />
-        <activity android:name=".ActivityCheckout" />
         <activity android:name=".ContactActivity" />
         <activity android:name=".AccountActivity" />
-        <activity android:name=".TermsActivity" />
         <activity android:name=".AdminDashboardActivity" />
+        <activity android:name=".ActivityCheckout" />
     </application>
 
 </manifest>

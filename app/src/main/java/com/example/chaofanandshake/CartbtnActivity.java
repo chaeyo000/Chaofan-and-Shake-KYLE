@@ -59,28 +59,15 @@ public class CartbtnActivity extends AppCompatActivity {
         Type type = new TypeToken<ArrayList<ProductDomain>>(){}.getType();
 
         cartList = gson.fromJson(json, type);
-
         if (cartList == null) {
             cartList = new ArrayList<>();
         }
 
+        // Initialize adapter once
         adapter = new CartAdapter(cartList);
         recyclerView.setAdapter(adapter);
 
-        adapter.setSaveCartCallback(() -> {
-            saveCartItems();
-            updateTotalPrice();
-        });
-
-        float total = 0;
-        for (ProductDomain p : cartList) {
-            total += p.getPrice() * p.getQuantity();
-        }
-        totalPriceText.setText("Total: ₱" + total);
-
-        adapter = new CartAdapter(cartList);
-        recyclerView.setAdapter(adapter);
-
+        // Setup callbacks
         adapter.setSaveCartCallback(() -> {
             saveCartItems();
             updateTotalPrice();
@@ -89,11 +76,7 @@ public class CartbtnActivity extends AppCompatActivity {
         adapter.setOnQuantityChangeListener(() -> updateTotalPrice());
 
         updateTotalPrice();
-
-
-
     }
-
 
     private void saveCartItems() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyCart", Context.MODE_PRIVATE);
@@ -106,20 +89,36 @@ public class CartbtnActivity extends AppCompatActivity {
     }
 
     private void updateTotalPrice() {
-        float total = 0;
+        double total = 0;
         for (ProductDomain p : cartList) {
-            total += p.getPrice() * p.getQuantity();  // multiply by quantity
+            total += p.getPrice() * p.getQuantity();
         }
-        totalPriceText.setText("Total: ₱" + total);
+        totalPriceText.setText(String.format("Total: ₱%.2f", total));
     }
 
-
-
-    // Call this method whenever you add or remove items in the cart
+    // IMPORTANT: Make sure adapter is initialized before calling this
     private void addToCart(ProductDomain product) {
+        if (cartList == null) {
+            cartList = new ArrayList<>();
+        }
         cartList.add(product);
+
         saveCartItems();
-        adapter.notifyDataSetChanged();
+
+        if (adapter == null) {
+            adapter = new CartAdapter(cartList);
+            recyclerView.setAdapter(adapter);
+
+            adapter.setSaveCartCallback(() -> {
+                saveCartItems();
+                updateTotalPrice();
+            });
+
+            adapter.setOnQuantityChangeListener(() -> updateTotalPrice());
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+
         updateTotalPrice();
     }
 
