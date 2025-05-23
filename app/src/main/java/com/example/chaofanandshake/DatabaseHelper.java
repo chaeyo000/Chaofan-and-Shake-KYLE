@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.example.chaofanandshake.Domain.Order;
 import com.example.chaofanandshake.Domain.User;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // DATABASE INFO
     private static final String DATABASE_NAME = "ChaofanUserDb";
-    private static final int DATABASE_VERSION = 4; // Taasan kung may changes sa structure
+    private static final int DATABASE_VERSION = 5; // Taasan kung may changes sa structure
 
     // TABLE & COLUMNS
     private static final String TABLE_USERS = "users";
@@ -30,7 +31,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_ROLE = "role";
 
-
+    private static final String TABLE_ORDERS = "orders";
+    private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + " (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "order_summary TEXT, " +
+            "phone TEXT, " +
+            "payment_method TEXT, " +
+            "total_price REAL);";
 
     // CREATE TABLE QUERY
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + " (" +
@@ -48,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
+        db.execSQL(CREATE_TABLE_ORDERS);
 
         ContentValues admin = new ContentValues();
         admin.put(COLUMN_NAME, "Administrator");
@@ -62,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Kung kailangan i-drop at i-recreate ang table
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         onCreate(db);
     }
 
@@ -250,6 +259,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return users;
     }
+
+    public boolean insertOrder(String orderSummary, String phone, String paymentMethod, double totalPrice) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("order_summary", orderSummary);
+        values.put("phone", phone);
+        values.put("payment_method", paymentMethod);
+        values.put("total_price", totalPrice);
+
+        long result = db.insert(TABLE_ORDERS, null, values);
+        db.close();
+        return result != -1;
+    }
+
+
+    public List<Order> getAllOrders() {
+        List<Order> orderList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM orders", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String summary = cursor.getString(cursor.getColumnIndex("order_summary"));
+                String phone = cursor.getString(cursor.getColumnIndex("phone"));
+                String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
+                double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
+
+                Order order = new Order(id, summary, phone, paymentMethod, totalPrice);
+                orderList.add(order);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return orderList;
+    }
+
 
 
 }

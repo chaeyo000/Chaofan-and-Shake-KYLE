@@ -2,12 +2,14 @@ package com.example.chaofanandshake.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,14 +49,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (imageResId != 0) {
             holder.imageView.setImageResource(imageResId);
         } else {
-            holder.imageView.setImageResource(R.drawable.swirls); // fallback image
+            holder.imageView.setImageResource(R.drawable.swirls);
         }
 
-        // Pass the product object to ProductdetailsActivity
+        // Clicking product opens details
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductdetailsActivity.class);
             intent.putExtra("product", product);
             context.startActivity(intent);
+        });
+
+        // Add to cart button click
+        holder.addButton.setOnClickListener(v -> {
+            // Save product info to SharedPreferences
+            SharedPreferences sharedPreferences = context.getSharedPreferences("MyCart", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("product_name", product.getTitle());
+            editor.putFloat("product_price", (float) product.getPrice());
+            editor.putString("product_image", product.getImageName());
+            editor.apply();
+
+            Toast.makeText(context, product.getTitle() + " added to cart", Toast.LENGTH_SHORT).show();
         });
     }
 

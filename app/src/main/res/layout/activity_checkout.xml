@@ -46,6 +46,7 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/tvOrderSummary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -107,12 +108,12 @@
 
 
         <EditText
+            android:id="@+id/phoneTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/input_bg"
             android:hint="Phone Number"
-            android:inputType="phone"
             android:padding="12dp" />
 
         <!-- Payment Method -->
@@ -138,10 +139,12 @@
                 android:paddingBottom="8dp" />
 
             <RadioGroup
+                android:id="@+id/rgPaymentMethod"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <RadioButton
+                    android:id="@+id/cash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -201,6 +204,7 @@
 
         <!-- Pickup Notice -->
         <TextView
+            android:id="@+id/totalPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
@@ -222,6 +226,7 @@
 
         <!-- Place Order Button -->
         <Button
+            android:id="@+id/btnPlaceOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Place Order"

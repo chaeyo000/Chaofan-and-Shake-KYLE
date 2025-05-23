@@ -6,6 +6,11 @@ public class ProductDomain implements Serializable {
     private String imageName;
     private String title;
     private double price;
+    private int quantity = 1;  // default 1
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
 
     public ProductDomain(String imageName, String title, double price) {
         this.imageName = imageName;
