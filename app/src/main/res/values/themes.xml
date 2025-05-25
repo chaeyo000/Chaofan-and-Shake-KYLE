@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.ChaofanAndShake" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.ChaofanAndShake" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/prim_login</item>
         <item name="colorPrimaryVariant">@color/prim_login</item>
@@ -9,7 +9,7 @@
         <item name="android:statusBarColor">@color/prim_login</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorHint">@android:color/black</item>
-
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="CustomTextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
@@ -19,7 +19,6 @@
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="colorControlActivated">@android:color/black</item>
-
     </style>
 
     <style name="TopCornersOnly">
@@ -29,9 +28,6 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
-
-
-
     <style name="hehehe">
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorHint">#000000</item>
@@ -39,18 +35,15 @@
 
     <style name="Theme.ChaofanAndShake" parent="Base.Theme.ChaofanAndShake" />
 
-    <!-- Corrected Base.Menu theme -->
-    <style name="Base.Theme.Menu" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Mag kakakulay pag may clinick sa sidebar example sa home sheesh -->
+    <!-- Base.Menu theme with fixed light -->
+    <style name="Base.Theme.Menu" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Color kapag naka-click sa sidebar -->
         <item name="colorPrimary">@color/prim_login</item>
-
         <item name="colorPrimaryVariant">@color/prim_login</item>
     </style>
 
-    <!-- Corrected Navigation theme -->
+    <!-- Navigation theme -->
     <style name="Theme.Navigation" parent="Base.Theme.Menu">
         <item name="colorControlHighlight">@android:color/transparent</item>
     </style>
-
-
 </resources>

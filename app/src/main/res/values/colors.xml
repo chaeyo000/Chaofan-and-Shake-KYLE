@@ -12,11 +12,13 @@
     <color name="dashboard_primary2">#FFEEE2</color>
     <color name="gray">#767676</color>
 
-
     <color name="primaryColor">#FF6F61</color>
     <color name="lightGray">#F5F5F5</color>
     <color name="darkGray">#707070</color>
     <color name="red1">#D32F2F</color>
+    <color name="text_primary">@color/black</color>
+    <color name="hint_text">@color/gray</color>
+
 
     <color name="orange_dark">#FF00F0</color>
     <color name="orange_medium">#D70000</color>
