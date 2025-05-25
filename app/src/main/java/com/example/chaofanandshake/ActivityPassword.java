@@ -1,19 +1,23 @@
 package com.example.chaofanandshake;
 
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -68,28 +72,8 @@ public class ActivityPassword extends AppCompatActivity {
             boolean isConfirmValid = validateConfirmPassword();
 
             if (isCurrentValid && isNotSame && isConfirmValid) {
-                // Inflate custom dialog layout
-                View dialogView = LayoutInflater.from(ActivityPassword.this).inflate(R.layout.custom_confirm_dialog, null);
-
-                TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
-                TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
-                Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-                Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityPassword.this);
-                builder.setView(dialogView);
-
-                AlertDialog customDialog = builder.create();
-
-                btnCancel.setOnClickListener(view -> customDialog.dismiss());
-
-                btnConfirm.setOnClickListener(view -> {
-                    String newPassword = etNewPassword.getText().toString().trim();
-                    updatePasswordInDatabase(currentUsername, newPassword);
-                    customDialog.dismiss();
-                });
-
-                customDialog.show();
+                String newPassword = etNewPassword.getText().toString().trim();
+                showPasswordConfirmationDialog(newPassword);
             }
         });
     }
@@ -127,11 +111,10 @@ public class ActivityPassword extends AppCompatActivity {
         });
     }
 
-    // RED ERROR UNDERLINE IN TEXT_INPUT_LAYOUT
     private boolean validateCurrentPassword() {
         String inputPassword = etCurrentPassword.getText().toString().trim();
         if (inputPassword.isEmpty()) {
-            layoutCurrentPassword.setError("Current pass word cannot be empty");
+            layoutCurrentPassword.setError("Current password cannot be empty");
             return false;
         }
 
@@ -170,12 +153,12 @@ public class ActivityPassword extends AppCompatActivity {
         }
 
         if (newPass.length() < 6) {
-            layoutNewPassword.setError("Password must be at least 6 characters");
+            layoutNewPassword.setError("Choose a password that's at least 6 characters and not used anywhere else");
             return false;
         }
 
         if (current.equals(newPass)) {
-            layoutNewPassword.setError("New password must be different");
+            layoutNewPassword.setError("New password must be different from current password");
             return false;
         }
 
@@ -201,6 +184,33 @@ public class ActivityPassword extends AppCompatActivity {
         return true;
     }
 
+    private void showPasswordConfirmationDialog(String newPassword) {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.custom_confirm_dialog);
+
+        TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+        TextView dialogMessage = dialog.findViewById(R.id.dialogMessage);
+        Button btnCancel = dialog.findViewById(R.id.btnCancel);
+        Button btnConfirm = dialog.findViewById(R.id.btnConfirm);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        dialogTitle.setText("Change password");
+        dialogMessage.setText("Are you sure you want to change your password?");
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnConfirm.setOnClickListener(v -> {
+            updatePasswordInDatabase(currentUsername, newPassword);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
     private void updatePasswordInDatabase(String username, String newPassword) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -209,10 +219,25 @@ public class ActivityPassword extends AppCompatActivity {
 
         int updated = db.update("users", cv, "username = ?", new String[]{username});
         if (updated > 0) {
-            Toast.makeText(this, "Password updated successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Updated Successfully", Toast.LENGTH_LONG).show();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("updatedPassword", newPassword);
+            setResult(RESULT_OK, resultIntent);
             finish();
+
         } else {
             Toast.makeText(this, "Error updating password", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void onClick(View view) {
+        Intent intent;
+        if (view.getId() == R.id.btnForgotPassword) {
+            intent = new Intent(this, ForgotPasswordActivity.class);
+        } else {
+            return;
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 }

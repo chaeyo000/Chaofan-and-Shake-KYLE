@@ -90,22 +90,21 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
             boolean hasError = false;
 
-            if (username.isEmpty()) {
-                layoutUsername.setError("Username is required");
+            if (username.isEmpty() || phone.isEmpty() || newPassword.isEmpty()) {
+                layoutUsername.setError("Please fill out this field");
                 hasError = true;
+                return;
             }
 
-            if (phone.isEmpty()) {
-                layoutPhonenumber.setError("Phone number is required");
+            if (!phone.matches("^09\\d{9}$")) {
+                layoutPhonenumber.setError("Please enter a valid number (e.g., 09XXXXXXXXX)");
                 hasError = true;
+                return;
             }
-
-            if (newPassword.isEmpty()) {
-                layoutNewPassword.setError("New password is required");
+             if (newPassword.length() < 6) {
+                layoutNewPassword.setError("Choose a password that's at least 6 characters and not used anywhere else.");
                 hasError = true;
-            } else if (newPassword.length() < 6) {
-                layoutNewPassword.setError("Password must be at least 6 characters");
-                hasError = true;
+                return;
             }
 
             if (!hasError) {
@@ -180,7 +179,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         db.close();
 
         if (rows > 0) {
-            Toast.makeText(this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Password updated!", Toast.LENGTH_SHORT).show();
             finish();
         } else {
             Toast.makeText(this, "Failed to update password", Toast.LENGTH_SHORT).show();

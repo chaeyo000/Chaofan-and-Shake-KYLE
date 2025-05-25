@@ -110,6 +110,11 @@ public class AccountActivity extends AppCompatActivity {
             updateIfChanged("updatedUsername", etUsername, "username", data);
             updateIfChanged("updatedPhone", etPhone, "phone", data);
             updateIfChanged("updatedPassword", etPassword, "password", data);
+
+            String updatedPassword = data.getStringExtra("updatedPassword");
+            if (updatedPassword != null) {
+                etPassword.setText(updatedPassword);
+            }
         }
     }
 
@@ -140,7 +145,7 @@ public class AccountActivity extends AppCompatActivity {
 
         if (result > 0) {
         } else {
-            Toast.makeText(this, "Failed to update ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Updated Successfully", Toast.LENGTH_SHORT).show();
         }
     }
 

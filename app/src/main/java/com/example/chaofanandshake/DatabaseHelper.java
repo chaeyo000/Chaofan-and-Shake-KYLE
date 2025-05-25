@@ -247,14 +247,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-
-
-
-
-
-
-
-
     @SuppressLint("Range")
     public List<Order> getAllOrders() {
         List<Order> orderList = new ArrayList<>();

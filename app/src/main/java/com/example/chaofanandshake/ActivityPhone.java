@@ -4,11 +4,14 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -77,6 +80,11 @@ public class ActivityPhone extends AppCompatActivity {
     private void showSaveConfirmationDialog(String newNumber) {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.phone_dialog);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        }
 
         TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
         TextView dialogMessage = dialog.findViewById(R.id.dialogMessage);
