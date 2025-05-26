@@ -176,7 +176,7 @@ public class SignupActivity extends AppCompatActivity {
                 DatabaseHelper dbHelper = new DatabaseHelper(SignupActivity.this);
                 if (dbHelper.checkUsernameExists(username)) {
                     Toast.makeText(SignupActivity.this, "Username already exists. Please use a different username.", Toast.LENGTH_SHORT).show();
-                    return;  // Ititigil pag may kaparehong email
+                    return;  // Ititigil pag may kaparehong Username
 
                 } else if (dbHelper.checkPhoneExists(phone)) {
                     Toast.makeText(SignupActivity.this, "Phone number already exists. Please use a different phone number.", Toast.LENGTH_SHORT).show();
