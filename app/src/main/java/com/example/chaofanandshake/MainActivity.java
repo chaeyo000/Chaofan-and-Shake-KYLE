@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     // Signup, Login, Forgot Password
     public void onClick(View view) {
         Intent intent;
-        if (view.getId() == R.id .signupbtn) {
+        if (view.getId() == R.id.signupbtn) {
             intent = new Intent(this, SignupActivity.class);
         } else if (view.getId() == R.id.loginbtn) {
             intent = new Intent(this, MainActivity.class);

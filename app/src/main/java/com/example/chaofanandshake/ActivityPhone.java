@@ -3,7 +3,6 @@ package com.example.chaofanandshake;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,8 +10,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,13 +46,15 @@ public class ActivityPhone extends AppCompatActivity {
         btnSavePhone = findViewById(R.id.btnSavePhone);
 
         layoutPhone.setErrorIconDrawable(null);
+
         etNewPhone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
+        // Get current phone number and username passed from AccountActivity
         String currentPhone = getIntent().getStringExtra("currentPhone");
-        currentUsername = getIntent().getStringExtra("currentUsername");
+        currentUsername = getIntent().getStringExtra("currentUsername");  // Add this line to get currentUsername
 
         if (currentPhone != null) {
-            etNewPhone.setText(currentPhone);
+            etNewPhone.setText(currentPhone);  // Set current phone number in the EditText
         }
 
         backBtn.setOnClickListener(v -> finish());
@@ -65,40 +68,13 @@ public class ActivityPhone extends AppCompatActivity {
             }
         });
 
+        // Save button listener
         btnSavePhone.setOnClickListener(v -> {
             String input = etNewPhone.getText().toString().trim();
             if (validateAndShowErrors(input)) {
                 showSaveConfirmationDialog(input);
             }
         });
-    }
-
-    private boolean validateAndShowErrors(String phoneNumber) {
-        String errors = validatePhone(phoneNumber);
-        if (!errors.isEmpty()) {
-            layoutPhone.setError(errors);
-            return false;
-        } else {
-            layoutPhone.setError(null);
-            return true;
-        }
-    }
-
-    private String validatePhone(String phoneNumber) {
-        StringBuilder errors = new StringBuilder();
-
-        if (!phoneNumber.matches("^09\\d{9}$")) {
-            errors.append("• Please enter a valid number (e.g., 09XXXXXXXXX)\n");
-        } else if (dbHelper.checkPhoneExists(phoneNumber) && !isSameAsCurrent(phoneNumber)) {
-            errors.append("• This phone number is already in use\n");
-        }
-
-        return errors.toString();
-    }
-
-    private boolean isSameAsCurrent(String phoneNumber) {
-        // Optional check: skip error if user didn’t change their phone
-        return phoneNumber.equals(getIntent().getStringExtra("currentPhone"));
     }
 
     private void showSaveConfirmationDialog(String newNumber) {
@@ -128,20 +104,42 @@ public class ActivityPhone extends AppCompatActivity {
         dialog.show();
     }
 
+    private boolean validateAndShowErrors(String phone) {
+        String errors = validatePhone(phone);
+        if (!errors.isEmpty()) {
+            layoutPhone.setError(errors);
+            return false;
+        } else {
+            layoutPhone.setError(errors);
+            return true;
+        }
+    }
+
+        private String validatePhone(String phone) {
+            StringBuilder errors = new StringBuilder();
+
+            if ((!phone.matches("^09\\d{9}$"))) {
+                errors.append("• Please enter a valid number (e.g., 09XXXXXXXXX)\n");
+            }
+            return errors.toString();
+        }
+
     private void updatePhoneInDatabase(String updatedPhone) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("phone", updatedPhone);
+        values.put("phone", updatedPhone);  // Correct field name here is "phone"
 
+        // Update the phone number in the database using the current username
         int result = database.update("users", values, "username = ?", new String[]{currentUsername});
 
         if (result > 0) {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("updatedPhone", updatedPhone);
             setResult(RESULT_OK, resultIntent);
-            finish();
+            finish();  // Close ActivityPhone
         } else {
             Toast.makeText(this, "Update failed. Please try again.", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 }

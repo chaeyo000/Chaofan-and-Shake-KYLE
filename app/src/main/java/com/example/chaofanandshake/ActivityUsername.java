@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,20 +43,18 @@ public class ActivityUsername extends AppCompatActivity {
         layoutUsername = findViewById(R.id.layoutUsername);
         btnSaveName = findViewById(R.id.btnSaveName);
 
-        // REMOVE ICON ERROR
+        //REMOVE ICON ERROR
         layoutUsername.setErrorIconDrawable(null);
 
-        // Get current value and username
-        String currentVal = getIntent().getStringExtra("currentValue");
+        String currentVal =  getIntent().getStringExtra("currentValue");
         currentUsername = getIntent().getStringExtra("currentUsername");
 
-        if (currentVal != null) {
+        if (currentVal != null)
             etNewUsername.setText(currentVal);
-        }
 
         backBtn.setOnClickListener(v -> finish());
 
-        // Live validation habang nagta-type
+        // Live validation habang nagtatype
         etNewUsername.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -100,42 +99,38 @@ public class ActivityUsername extends AppCompatActivity {
         dialog.show();
     }
 
-    private boolean validateAndShowErrors(String username) {
-        String errors = validateUsername(username);
+    private boolean validateAndShowErrors(String Username) {
+        String errors = validateUsername(Username);
         if (!errors.isEmpty()) {
-            layoutUsername.setError(errors);
+           layoutUsername.setError(errors);
             return false;
         } else {
             layoutUsername.setError(null);
             return true;
         }
+
     }
 
-    private String validateUsername(String username) {
-        StringBuilder errors = new StringBuilder();
+        private String validateUsername(String Username) {
+            StringBuilder errors = new StringBuilder();
 
-        if (!username.matches(".*[A-Z].*")) {
-            errors.append("• At least one uppercase letter (A-Z)\n");
-        }
-        if (!username.matches(".*[a-z].*")) {
-            errors.append("• At least one lowercase letter (a-z)\n");
-        }
-        if (username.contains(" ")) {
-            errors.append("• Should not contain spaces\n");
-        }
-
-        // Kung walang format error, saka lang iche-check kung taken na
-        if (errors.length() == 0 && dbHelper.checkUsernameExists(username)) {
-            errors.append("• Username already exists\n");
+            if (!Username.matches(".*[A-Z].*")) {
+                errors.append("• At least one uppercase letter (A-Z)\n");
+            }
+            if (!Username.matches(".*[a-z].*")) {
+                errors.append("• At least one lowercase letter (a-z)\n");
+            }
+            if (Username.contains(" ")) {
+                errors.append("• Should not contain spaces\n");
+            }
+            return errors.toString();
         }
 
-        return errors.toString();
-    }
 
     private void updateUsernameInDatabase(String updatedUsername) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("username", updatedUsername); // dapat lowercase kung 'username' sa DB
+        values.put("Username", updatedUsername);
 
         int result = database.update("users", values, "username = ?", new String[]{currentUsername});
 
