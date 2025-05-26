@@ -4,10 +4,13 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -103,6 +106,11 @@ public class ActivityName extends AppCompatActivity {
     private void showSaveConfirmationDialog(String newName) {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.name_dialog); // Make sure this layout exists
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        }
 
         TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
         TextView dialogMessage = dialog.findViewById(R.id.dialogMessage);

@@ -1,9 +1,14 @@
 package com.example.chaofanandshake;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +38,6 @@ public class CartbtnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        // Initialize views
         backBtn = findViewById(R.id.backBtn);
         recyclerView = findViewById(R.id.cartRecyclerView);
         totalPriceText = findViewById(R.id.totalPrice);
@@ -42,13 +46,34 @@ public class CartbtnActivity extends AppCompatActivity {
         backBtn.setOnClickListener(view -> onBackPressed());
 
         checkoutButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ActivityCheckout.class);
-            startActivity(intent);
+            if (cartList == null || cartList.isEmpty()) {
+                showCartEmptyDialog();
+            } else {
+                Intent intent = new Intent(this, ActivityCheckout.class);
+                startActivity(intent);
+            }
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         loadCartItems();
+    }
+
+    private void showCartEmptyDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.cart_dialog);
+        dialog.setCancelable(true);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        Button btnClose = dialog.findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void loadCartItems() {
@@ -63,11 +88,9 @@ public class CartbtnActivity extends AppCompatActivity {
             cartList = new ArrayList<>();
         }
 
-        // Initialize adapter once
         adapter = new CartAdapter(cartList);
         recyclerView.setAdapter(adapter);
 
-        // Setup callbacks
         adapter.setSaveCartCallback(() -> {
             saveCartItems();
             updateTotalPrice();
@@ -96,7 +119,7 @@ public class CartbtnActivity extends AppCompatActivity {
         totalPriceText.setText(String.format("Total: ₱%.2f", total));
     }
 
-    // IMPORTANT: Make sure adapter is initialized before calling this
+    // Optional: addToCart method if needed in the activity
     private void addToCart(ProductDomain product) {
         if (cartList == null) {
             cartList = new ArrayList<>();

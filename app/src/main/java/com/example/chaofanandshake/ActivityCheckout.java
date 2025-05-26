@@ -1,5 +1,6 @@
 package com.example.chaofanandshake;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -75,17 +76,17 @@ public class ActivityCheckout extends AppCompatActivity {
         tvTotalPrice.setText("₱" + String.format("%.2f", totalPriceHolder[0]));
 
         // Display username and phone number from SharedPreferences or other source
-// Display username and phone number from SharedPreferences or other source
-// Declare once at the top of onCreate:
+        // Display username and phone number from SharedPreferences or other source
+        // Declare once at the top of onCreate:
         TextView usernameTextView = findViewById(R.id.username);
         TextView phoneTextView = findViewById(R.id.phone);
 
-// Get values from SharedPreferences:
+        // Get values from SharedPreferences:
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String username = userPrefs.getString("username", "");
         String phone = userPrefs.getString("phone", "");
 
-// Set the text properly:
+        // Set the text properly:
         usernameTextView.setText(username);
         phoneTextView.setText(phone);
 
@@ -113,12 +114,12 @@ public class ActivityCheckout extends AppCompatActivity {
             boolean inserted = dbHelper.insertOrder(orderSummary, phoneInput, usernameInput, paymentMethod, totalPriceHolder[0]);
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-
+                Intent intent = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
                 // Clear cart after placing order
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove("cart_list");
                 editor.apply();
-
+                startActivity(intent);
                 finish();
             } else {
                 Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();

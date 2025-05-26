@@ -1,58 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dialogRoot"
-    android:layout_width="320dp"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:elevation="12dp"
-    android:gravity="center"
-    android:layout_gravity="center">
-
-    <TextView
-        android:id="@+id/dialogTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Changes?"
-        android:textColor="@color/meduimblack"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center" />
-
-    <TextView
-        android:id="@+id/dialogMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Are you sure you want to update your password?"
-        android:textColor="@color/gray2"
-        android:textSize="15sp"
-        android:layout_marginTop="12dp"
-        android:gravity="center" />
+    android:background="@color/transparent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/dialogRoot"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp"
-        android:gravity="end">
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center"
+        android:background="@drawable/dialog_background"
+        android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Cancel"
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change password"
             android:textColor="@color/meduimblack"
-            android:textAllCaps="false"
-            android:background="@drawable/btn_light"
-            android:layout_marginEnd="40dp" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center" />
 
-        <Button
-            android:id="@+id/btnConfirm"
+        <TextView
+            android:id="@+id/dialogMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Are you sure you want to change your password?"
+            android:textColor="@color/gray2"
+            android:textSize="15sp"
+            android:layout_marginTop="12dp"
+            android:gravity="center" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Save"
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:background="@drawable/btn_primary" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Cancel"
+                android:textColor="@color/meduimblack"
+                android:textAllCaps="false"
+                android:background="@drawable/btn_light"
+                android:layout_marginEnd="40dp" />
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Save"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:background="@drawable/btn_primary" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

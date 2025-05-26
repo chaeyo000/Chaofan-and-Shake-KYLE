@@ -94,7 +94,6 @@ public class SignupActivity extends AppCompatActivity {
         // Limit kung lumampas sa 11 digits ang phone number sheshh
         phoneEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
-
         // Limit to 12 characters para sa name
         nameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -119,6 +118,28 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        usernameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 15 ) {
+                    usernameEditText.setText(charSequence.subSequence(0, 15));
+                    usernameEditText.setSelection(15);
+                    Toast.makeText(SignupActivity.this, "Username can be up to 15 characters only.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
         // Pag set ng OnClickListener para sa Sign Up button
         findViewById(R.id.signUpButton).setOnClickListener(v -> {
 
@@ -132,24 +153,31 @@ public class SignupActivity extends AppCompatActivity {
             // Validation kung may nawawalang input
             if (TextUtils.isEmpty(name) || TextUtils.isEmpty(username) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
                 Toast.makeText(SignupActivity.this, "Please fill out this field", Toast.LENGTH_SHORT).show();
+
             } else if (!name.matches("^[a-zA-Z\\s]+$")) {
                 Toast.makeText(SignupActivity.this, "Name must contain only letters", Toast.LENGTH_SHORT).show();
-            } else if (username.isEmpty() || username.length() < 5 || !username.matches("^[a-zA-Z0-9._-]{5,}$")) {
-                usernameEditText.setError("Username must be at least 11 characters and valid format.");
-                usernameEditText.requestFocus();
+
             } else if (!phone.matches("^09\\d{9}$")) {
                 Toast.makeText(SignupActivity.this, "Please enter a valid number (e.g., 09XXXXXXXXX)", Toast.LENGTH_SHORT).show();
+
+            } else if (password.length() < 6) {
+                Toast.makeText(SignupActivity.this, "Choose a password that's at least 6 characters and not used anywhere else.", Toast.LENGTH_SHORT).show();
+
             } else if (!password.equals(confirmPassword)) {
                 // Validation kung magkaiba ng password at confirmPassword
                 Toast.makeText(SignupActivity.this, "Password do not match", Toast.LENGTH_SHORT).show();
+
             } else if (!termsCheckBox.isChecked()) {
                 Toast.makeText(SignupActivity.this,"You must agree to the Terms & Conditions to create an account.", Toast.LENGTH_SHORT).show();
+
             } else {
+
                 // Pag-check kung may existing email sa database
                 DatabaseHelper dbHelper = new DatabaseHelper(SignupActivity.this);
                 if (dbHelper.checkUsernameExists(username)) {
                     Toast.makeText(SignupActivity.this, "Username already exists. Please use a different username.", Toast.LENGTH_SHORT).show();
                     return;  // Ititigil pag may kaparehong email
+
                 } else if (dbHelper.checkPhoneExists(phone)) {
                     Toast.makeText(SignupActivity.this, "Phone number already exists. Please use a different phone number.", Toast.LENGTH_SHORT).show();
                     return;
