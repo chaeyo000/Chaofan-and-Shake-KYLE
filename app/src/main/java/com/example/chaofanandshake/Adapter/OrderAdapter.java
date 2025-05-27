@@ -33,11 +33,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
+        holder.name.setText("Customer Name: " + order.getName());
         holder.username.setText("Username: " + order.getUsername());
         holder.orderSummary.setText("Orders: " + order.getOrderSummary());
         holder.phone.setText("Phone Number: " + order.getPhone());
         holder.paymentMethod.setText(order.getPaymentMethod());
-        holder.total.setText("₱" + String.format("%.2f", order.getTotal()));
+        holder.total.setText("Total Amount: ₱" + String.format("%.2f", order.getTotal()));
     }
 
     @Override
@@ -46,10 +47,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView username, orderSummary, phone, paymentMethod, total;
+        TextView username, orderSummary, phone, paymentMethod, total, name;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
+            name = itemView.findViewById(R.id.name);
             username = itemView.findViewById(R.id.username);
             orderSummary = itemView.findViewById(R.id.orderSummary);
             phone = itemView.findViewById(R.id.phone);

@@ -1,6 +1,7 @@
 package com.example.chaofanandshake.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         final TextView usernameText;
         final TextView phoneText;
+        final TextView nameText;
         final Button deleteButton;
+        final Button editButton;  // added edit button
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameText = itemView.findViewById(R.id.usernameText);
+            nameText = itemView.findViewById(R.id.nameText);
             phoneText = itemView.findViewById(R.id.phoneText);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            editButton = itemView.findViewById(R.id.editButton);  // initialize edit button
         }
     }
 
@@ -53,10 +58,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
         holder.usernameText.setText(user.getUsername());
+        holder.nameText.setText(user.getName());
         holder.phoneText.setText(user.getPhone());
 
         holder.deleteButton.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUser(user.getUsername());
+            boolean deleted = dbHelper.deleteUser(user.getId());
             if (deleted) {
                 userList.remove(position);
                 notifyItemRemoved(position);
@@ -65,6 +71,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             } else {
                 Toast.makeText(context, "Failed to delete user", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        holder.editButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditUserActivity.class);
+            intent.putExtra("userId", user.getId());
+            intent.putExtra("name", user.getName());
+            intent.putExtra("username", user.getUsername());
+            intent.putExtra("phone", user.getPhone());
+            context.startActivity(intent);
         });
     }
 

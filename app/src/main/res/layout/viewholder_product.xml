@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/card_background">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -33,37 +34,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="5dp"
                 android:text="title"
-                android:textColor="#373b54"
+                android:textSize="18dp"
+                android:textColor="#f90"
                 android:textStyle="bold" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/fee"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0.0"
-                android:textColor="#373b54"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
-
-            <Button
-                android:id="@+id/addbtn"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:elevation="4dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="+"
-                android:textColor="@color/white"
-                android:layout_marginLeft="10dp"
-                android:textSize="25dp" />
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fee"
+                    android:layout_marginTop="2dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.0"
+                    android:textColor="#373b54"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="0dp"/>
+
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
