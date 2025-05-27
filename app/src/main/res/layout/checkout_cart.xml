@@ -20,8 +20,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@drawable/rounded_border"
-            android:scaleType="centerCrop"
-            android:src="@drawable/swirls" />
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,7 +31,7 @@
             android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/itemName"
+                android:id="@+id/itemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chaofan Special"
@@ -41,7 +40,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/itemQty"
+                android:id="@+id/itemQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Qty: 2"

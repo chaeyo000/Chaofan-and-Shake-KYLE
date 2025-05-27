@@ -15,6 +15,7 @@
         android:paddingBottom="8dp">
 
         <ImageView
+            android:id="@+id/itemImage"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginLeft="10dp"

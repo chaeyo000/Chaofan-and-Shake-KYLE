@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.chaofanandshake.Domain.Order;
+import com.example.chaofanandshake.Domain.ProductDomain;
 import com.example.chaofanandshake.Domain.User;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ChaofanUserDb";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
@@ -30,6 +31,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ROLE = "role";
 
     private static final String TABLE_ORDERS = "orders";
+
+    private static final String TABLE_PRODUCTS = "products";
+
+    private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE " + TABLE_PRODUCTS + " (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "imageName TEXT, " +
+            "title TEXT, " +
+            "description TEXT, " +
+            "price REAL);";
+
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -55,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_ORDERS);
+        db.execSQL("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, imageName TEXT, title TEXT, description TEXT, price REAL)");
 
         ContentValues admin = new ContentValues();
         admin.put(COLUMN_NAME, "Administrator");
@@ -67,8 +79,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 6) {
+            db.execSQL(CREATE_TABLE_PRODUCTS);
+        }
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+
         onCreate(db);
     }
     public boolean checkUsernameExists(String username) {
@@ -270,4 +287,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return orderList;
     }
+
+    public void insertProduct(String imageName, String title, String description, double price) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("imageName", imageName);
+        values.put("title", title);
+        values.put("description", description);
+        values.put("price", price);
+        db.insert(TABLE_PRODUCTS, null, values);
+        db.close();
+    }
+
+    public List<ProductDomain> getAllProducts() {
+        List<ProductDomain> products = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCTS, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ProductDomain product = new ProductDomain(
+                        cursor.getString(cursor.getColumnIndex("imageName")),
+                        cursor.getString(cursor.getColumnIndex("title")),
+                        cursor.getString(cursor.getColumnIndex("description")),
+                        cursor.getDouble(cursor.getColumnIndex("price"))
+                );
+                products.add(product);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return products;
+    }
+
 }
