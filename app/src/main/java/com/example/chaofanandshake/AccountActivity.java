@@ -25,6 +25,7 @@ public class AccountActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     private String currentUsername;
+    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class AccountActivity extends AppCompatActivity {
         ivEditUsername = findViewById(R.id.ivEditUsername);
         ivEditPhone = findViewById(R.id.ivEditPhone);
         ivEditPassword = findViewById(R.id.ivEditPassword);
+
 
 
         etName = findViewById(R.id.etName);
@@ -84,7 +86,7 @@ public class AccountActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnDelete.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUser(currentUsername);
+            boolean deleted = dbHelper.deleteUser(currentUserId);  // delete by id now
             if (deleted) {
                 Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
@@ -93,7 +95,6 @@ public class AccountActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show();
             }
-            dialog.dismiss();
         });
 
         dialog.show();
@@ -158,6 +159,7 @@ public class AccountActivity extends AppCompatActivity {
         String[] userData = dbHelper.getUserDataByUsername(currentUsername);
         if (userData != null && userData.length >= 3) {
             Log.d("AccountActivity", "User Data: Name=" + userData[0] + ", Username=" + userData[1] + ", Phone=" + userData[2] + ", Password=" + userData[3]);
+
 
             etName.setText(userData[0]);
             etUsername.setText(userData[1]);

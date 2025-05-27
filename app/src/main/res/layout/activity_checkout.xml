@@ -76,20 +76,53 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/input_bg"
+            android:text="Name"
+            android:padding="12dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/input_bg"
             android:text="Username"
             android:padding="12dp" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
             android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/input_bg"
             android:text="Phone"

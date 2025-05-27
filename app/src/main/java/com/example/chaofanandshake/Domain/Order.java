@@ -5,14 +5,17 @@ public class Order {
     private String orderSummary;
     private String phone;
     private String paymentMethod;
+
+    private String name;
     private double total;
 
     private String username;
 
 
 
-    public Order(int id, String orderSummary, String phone, String username, String paymentMethod, double total) {
+    public Order(int id, String name, String orderSummary, String phone, String username, String paymentMethod, double total) {
         this.id = id;
+        this.name = name;
         this.orderSummary = orderSummary;
         this.phone = phone;
         this.username = username;
@@ -25,6 +28,9 @@ public class Order {
 
     public String getUsername() {
         return username;
+    }
+    public String getName() {
+        return name;
     }
 
     public void setUsername(String username) {

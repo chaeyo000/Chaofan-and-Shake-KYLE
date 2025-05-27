@@ -192,6 +192,7 @@ public class SignupActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = userPrefs.edit();
                     editor.putString("username", username);
                     editor.putString("phone", phone);
+                    editor.putString("name", name);
                     editor.apply();
 
                     Intent intent = new Intent(SignupActivity.this, MainActivity.class);

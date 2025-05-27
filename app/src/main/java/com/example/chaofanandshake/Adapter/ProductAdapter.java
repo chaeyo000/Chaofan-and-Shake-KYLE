@@ -134,8 +134,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 fee = itemView.findViewById(R.id.fee);
                 description = itemView.findViewById(R.id.description); // Make sure this exists in XML
                 imageView = itemView.findViewById(R.id.imageView);
-                addButton = itemView.findViewById(R.id.addbtn);
-
 
 
 

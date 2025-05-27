@@ -75,19 +75,24 @@ public class ActivityCheckout extends AppCompatActivity {
 
         TextView usernameTextView = findViewById(R.id.username);
         TextView phoneTextView = findViewById(R.id.phone);
+        TextView nameTextView = findViewById(R.id.name);
 
         // Get user info from SharedPreferences
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String username = userPrefs.getString("username", "");
         String phone = userPrefs.getString("phone", "");
+        String name = userPrefs.getString("name", "");
+
 
         usernameTextView.setText(username);
         phoneTextView.setText(phone);
+        nameTextView.setText(name);
 
         RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
         Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
 
         btnPlaceOrder.setOnClickListener(v -> {
+            String customerName = nameTextView.getText().toString().trim();
             String phoneInput = phoneTextView.getText().toString().trim();
             String usernameInput = usernameTextView.getText().toString().trim();
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
@@ -100,16 +105,14 @@ public class ActivityCheckout extends AppCompatActivity {
             RadioButton selectedPayment = findViewById(selectedPaymentId);
             String paymentMethod = selectedPayment.getText().toString();
 
-            boolean inserted = dbHelper.insertOrder(orderSummary, phoneInput, usernameInput, paymentMethod, totalPriceHolder[0]);
+            boolean inserted = dbHelper.insertOrder(orderSummary, customerName, phoneInput, usernameInput, paymentMethod, totalPriceHolder[0]);
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
 
-                // Clear cart after placing order
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove("cart_list");
                 editor.apply();
 
-                // Pass username back to AccountActivity so it can reload data
                 Intent intent = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
                 intent.putExtra("username", usernameInput);
                 startActivity(intent);
@@ -118,6 +121,7 @@ public class ActivityCheckout extends AppCompatActivity {
                 Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
     @Override

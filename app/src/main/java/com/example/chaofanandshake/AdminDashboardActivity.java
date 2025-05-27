@@ -108,6 +108,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         List<Order> orderList = dbHelper.getAllOrders();
         orderAdapter = new OrderAdapter(this, orderList);
         ordersRecyclerView.setAdapter(orderAdapter);
+
+
     }
 
     private boolean checkStoragePermission() {
@@ -310,7 +312,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);
