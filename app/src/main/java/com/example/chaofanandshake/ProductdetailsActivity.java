@@ -27,7 +27,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
     private ImageView backBtn, productImage;
     private TextView titleText, priceText;
-    private Button cartBtn, addtocart;
+    private Button cartBtn, addtocart, buynow;
 
     private SharedPreferences sharedPreferences;
     private ProductDomain product;
@@ -45,6 +45,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         productImage = findViewById(R.id.ImageView);
         addtocart = findViewById(R.id.addtocart);
         cartBtn = findViewById(R.id.cartbtn);
+        buynow = findViewById(R.id.buynow);  // <-- new Buy Now button
 
         sharedPreferences = getSharedPreferences("MyCart", Context.MODE_PRIVATE);
 
@@ -52,7 +53,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
         // Get product from intent
         String json = getIntent().getStringExtra("product");
-        ProductDomain product = new Gson().fromJson(json, ProductDomain.class);
+        product = new Gson().fromJson(json, ProductDomain.class);
 
         if (product != null) {
             titleText.setText(product.getTitle());
@@ -77,7 +78,6 @@ public class ProductdetailsActivity extends AppCompatActivity {
             }
         }
 
-
         // Add to cart button logic
         addtocart.setOnClickListener(v -> {
             addProductToCart(product);
@@ -90,6 +90,14 @@ public class ProductdetailsActivity extends AppCompatActivity {
             addProductToCart(product);
             Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, CartbtnActivity.class));
+        });
+
+        // Buy Now button logic - NEW
+        buynow.setOnClickListener(v -> {
+            String productJson = new Gson().toJson(product);
+            Intent intent = new Intent(ProductdetailsActivity.this, ActivityCheckout.class);
+            intent.putExtra("buy_now_product", productJson);
+            startActivity(intent);
         });
     }
 

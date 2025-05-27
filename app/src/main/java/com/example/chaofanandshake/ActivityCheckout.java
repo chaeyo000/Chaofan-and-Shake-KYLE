@@ -36,15 +36,27 @@ public class ActivityCheckout extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
-        String jsonCart = sharedPreferences.getString("cart_list", null);
+        Intent intent = getIntent();
+        String buyNowProductJson = intent.getStringExtra("buy_now_product");
 
         ArrayList<ProductDomain> cartList;
-        if (jsonCart != null) {
-            Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
-            cartList = new Gson().fromJson(jsonCart, type);
-        } else {
+
+        if (buyNowProductJson != null) {
+            // Buy Now single product
+            ProductDomain buyNowProduct = new Gson().fromJson(buyNowProductJson, ProductDomain.class);
             cartList = new ArrayList<>();
+            cartList.add(buyNowProduct);
+        } else {
+            // Load cart from SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
+            String jsonCart = sharedPreferences.getString("cart_list", null);
+
+            if (jsonCart != null) {
+                Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
+                cartList = new Gson().fromJson(jsonCart, type);
+            } else {
+                cartList = new ArrayList<>();
+            }
         }
 
         recyclerCart = findViewById(R.id.recyclerCart);
@@ -52,7 +64,7 @@ public class ActivityCheckout extends AppCompatActivity {
         com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
         recyclerCart.setAdapter(adapter);
 
-        // Calculate total price
+        // Calculate total price and order summary
         final double[] totalPriceHolder = {0.0};
         StringBuilder orderSummaryBuilder = new StringBuilder();
 
@@ -77,12 +89,11 @@ public class ActivityCheckout extends AppCompatActivity {
         TextView phoneTextView = findViewById(R.id.phone);
         TextView nameTextView = findViewById(R.id.name);
 
-        // Get user info from SharedPreferences
+        // Load user info from SharedPreferences
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String username = userPrefs.getString("username", "");
         String phone = userPrefs.getString("phone", "");
         String name = userPrefs.getString("name", "");
-
 
         usernameTextView.setText(username);
         phoneTextView.setText(phone);
@@ -109,13 +120,17 @@ public class ActivityCheckout extends AppCompatActivity {
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("cart_list");
-                editor.apply();
+                if (buyNowProductJson == null) {
+                    // Clear cart only if order placed from cart, not Buy Now
+                    SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("cart_list");
+                    editor.apply();
+                }
 
-                Intent intent = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
-                intent.putExtra("username", usernameInput);
-                startActivity(intent);
+                Intent intentToDashboard = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
+                intentToDashboard.putExtra("username", usernameInput);
+                startActivity(intentToDashboard);
                 finish();
             } else {
                 Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();

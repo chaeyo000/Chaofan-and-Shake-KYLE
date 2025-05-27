@@ -74,6 +74,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         setContentView(R.layout.activity_admin_dashboard);
 
 
+
+
         // Initialize views
         Button addProductBtn = findViewById(R.id.addProductButton);
         addProductBtn.setOnClickListener(v -> showAddProductDialog());
