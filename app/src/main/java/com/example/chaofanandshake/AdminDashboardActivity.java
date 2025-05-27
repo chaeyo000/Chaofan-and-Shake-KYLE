@@ -312,15 +312,10 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.dashboard) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        } else if (id == R.id.users) {
-            startActivity(new Intent(this, TermsandcondiActivity.class));
-        } else if (id == R.id.product) {
             startActivity(new Intent(this, ContactActivity.class));
-        } else if (id == R.id.analytics) {
+        if (id == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
