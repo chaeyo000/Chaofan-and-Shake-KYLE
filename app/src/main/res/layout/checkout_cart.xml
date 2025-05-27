@@ -36,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chaofan Special"
+                android:layout_marginTop="8dp"
                 android:textColor="@color/meduimblack"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -43,6 +44,7 @@
             <TextView
                 android:id="@+id/itemQty"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
                 android:layout_height="wrap_content"
                 android:text="Qty: 2"
                 android:textColor="#666666"
@@ -52,6 +54,9 @@
                 android:id="@+id/itemPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="-30dp"
                 android:text="₱120.00"
                 android:textColor="#FF5722"
                 android:textSize="14sp"

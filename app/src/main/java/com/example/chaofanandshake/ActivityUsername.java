@@ -3,6 +3,7 @@ package com.example.chaofanandshake;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -65,9 +66,15 @@ public class ActivityUsername extends AppCompatActivity {
             }
         });
 
+
+        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor edit = userPrefs.edit();
         btnSaveName.setOnClickListener(v -> {
             String input = etNewUsername.getText().toString().trim();
             if (validateAndShowErrors(input)) {
+                String getUsername = etNewUsername.getText().toString().trim();
+                edit.putString("username", getUsername);
+                edit.apply();
                 showSaveConfirmationDialog(input);
             }
         });
