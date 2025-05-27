@@ -123,7 +123,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 fee = itemView.findViewById(R.id.fee);
                 description = itemView.findViewById(R.id.description);
                 imageView = itemView.findViewById(R.id.imageView);
-                addButton = itemView.findViewById(R.id.addbtn);
 
                 if (title == null) Log.e("ViewHolder", "title TextView not found");
                 if (fee == null) Log.e("ViewHolder", "fee TextView not found");

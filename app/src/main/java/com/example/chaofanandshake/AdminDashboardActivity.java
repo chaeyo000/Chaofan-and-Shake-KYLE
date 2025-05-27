@@ -28,6 +28,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chaofanandshake.Adapter.EditUserActivity;
 import com.example.chaofanandshake.Adapter.OrderAdapter;
 import com.example.chaofanandshake.Adapter.UserAdapter;
 import com.example.chaofanandshake.Domain.Order;
@@ -314,18 +315,33 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.logout) {
+
+        if (id == R.id.dashboard) {
+            Intent intent = new Intent(this, AdminDashboardActivity.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        } else if (id == R.id.user) {
+            Intent intent = new Intent(this, ActivityUsers.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        } else if (id == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);
+
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+
+            return true;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     @Override
     public void onBackPressed() {

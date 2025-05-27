@@ -94,6 +94,8 @@ public class EditUserActivity extends AppCompatActivity {
                 Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 }
 
