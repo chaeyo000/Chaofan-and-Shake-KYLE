@@ -16,11 +16,11 @@
 
         <!-- Food Image -->
         <ImageView
-            android:id="@+id/cartImage"
+            android:id="@+id/cartProductImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/swirls"
+            app:srcCompat="@drawable/placeholder_image"
             android:background="@drawable/rounded_border"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,8 +41,8 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/removeItem"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/cartImage"
-            app:layout_constraintTop_toTopOf="@id/cartImage" />
+            app:layout_constraintStart_toEndOf="@id/cartProductImage"
+            app:layout_constraintTop_toTopOf="@id/cartProductImage" />
 
         <TextView
             android:id="@+id/cartPrice"
@@ -51,8 +51,8 @@
             android:text="0.0"
             android:textSize="16sp"
             android:textColor="@color/darkGray"
-            app:layout_constraintStart_toEndOf="@id/cartImage"
-            app:layout_constraintBottom_toBottomOf="@id/cartImage"
+            app:layout_constraintStart_toEndOf="@id/cartProductImage"
+            app:layout_constraintBottom_toBottomOf="@id/cartProductImage"
             android:layout_marginStart="12dp"/>
 
         <!-- Quantity Section -->

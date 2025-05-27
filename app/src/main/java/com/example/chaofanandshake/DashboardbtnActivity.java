@@ -27,6 +27,7 @@ import com.example.chaofanandshake.Domain.ProductDomain;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardbtnActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -46,6 +47,12 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_dashboard);
 
         dbHelper = new DatabaseHelper(this);
+
+        welcomeTextView = findViewById(R.id.welcomeTextView);
+        if (welcomeTextView == null) {
+            Log.e("DashboardError", "Welcome TextView not found!");
+        }
+
 
         // Setup Navigation Drawer
         toolbar = findViewById(R.id.toolbar);
@@ -135,9 +142,11 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
+        initRecyclerView(); // Refresh the product list when returning to activity
+
+        // Keep your existing user name update logic
         if (currentUsername != null) {
             String updatedName = dbHelper.getUserName(currentUsername);
-
             if (updatedName != null && !updatedName.isEmpty()) {
                 navName.setText(updatedName);
                 String welcomeMessage = "Welcome " + updatedName + ", What would you like to <font color='#FFC107'>eat?</font>";
@@ -153,26 +162,52 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             welcomeTextView.setText(Html.fromHtml(htmlMessage));
         }
     }
+/**
+        private void initRecyclerView() {
+            recyclerView = findViewById(R.id.recyclerView);
+            if (recyclerView == null) {
+                Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
+                return;
+            }
 
-    private void initRecyclerView() {
-        recyclerView = findViewById(R.id.recyclerView);
-        if (recyclerView == null) {
-            Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
-            return;
-        }
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            ArrayList<ProductDomain> productList = new ArrayList<>();
+            productList.add(new ProductDomain("swirls", "ChaoRolls", "Tasty chao rolls", 45.0));
+            productList.add(new ProductDomain("rolls", "FanSizzle", "Spicy fan sizzle", 65.0));
+            productList.add(new ProductDomain("swirls", "ChaoSiRolls", "Delicious ChaoSi Rolls", 85.0));
+            productList.add(new ProductDomain("rolls", "Swirls", "Fresh swirls", 45.0));
+            productList.add(new ProductDomain("rolls", "Fruit Tea", "Refreshing fruit tea", 45.0));
 
-        ArrayList<ProductDomain> productList = new ArrayList<>();
-        productList.add(new ProductDomain("swirls", "ChaoRolls", 45.0));
-        productList.add(new ProductDomain("rolls", "FanSizzle", 65.0));
-        productList.add(new ProductDomain("swirls", "ChaoSiRolls", 85.0));
-        productList.add(new ProductDomain("rolls", "Swirls", 45.0));
-        productList.add(new ProductDomain("rolls", "Fruit Tea", 45.0));
 
-        ProductAdapter adapter = new ProductAdapter(productList, this);
-        recyclerView.setAdapter(adapter);
+
+            ProductAdapter adapter = new ProductAdapter(productList, this);
+            recyclerView.setAdapter(adapter);
+        }**/
+
+private void initRecyclerView() {
+    recyclerView = findViewById(R.id.recyclerView);
+    if (recyclerView == null) {
+        Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
+        return;
     }
+
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+    // 1. Get products from database instead of hardcoding
+    List<ProductDomain> productList = dbHelper.getAllProducts();
+
+    // 2. Handle case when no products are found
+    if (productList == null || productList.isEmpty()) {
+        Log.w("DB_Products", "No products found in database");
+        productList = new ArrayList<>(); // Empty list as fallback
+        Toast.makeText(this, "No products available", Toast.LENGTH_SHORT).show();
+    }
+
+    // 3. Create adapter with database products
+    ProductAdapter adapter = new ProductAdapter(productList, this);
+    recyclerView.setAdapter(adapter);
+}
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -193,6 +228,8 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             startActivity(intent);
             finish();
         }
+
+
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

@@ -33,11 +33,9 @@ public class ActivityCheckout extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         dbHelper = new DatabaseHelper(this);
-
         backBtn = findViewById(R.id.backBtn);
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        // Load cart list from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
         String jsonCart = sharedPreferences.getString("cart_list", null);
 
@@ -54,7 +52,7 @@ public class ActivityCheckout extends AppCompatActivity {
         com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
         recyclerCart.setAdapter(adapter);
 
-        // Calculate total price and build order summary string
+        // Calculate total price
         final double[] totalPriceHolder = {0.0};
         StringBuilder orderSummaryBuilder = new StringBuilder();
 
@@ -72,13 +70,15 @@ public class ActivityCheckout extends AppCompatActivity {
 
         String orderSummary = orderSummaryBuilder.toString();
 
+        TextView tvOrderSummary = findViewById(R.id.tvOrderSummary);
         TextView tvTotalPrice = findViewById(R.id.totalPrice);
-        tvTotalPrice.setText("Total: ₱" + String.format("%.2f", totalPriceHolder[0]));
+        tvOrderSummary.setText(orderSummary);
+        tvTotalPrice.setText("₱" + String.format("%.2f", totalPriceHolder[0]));
 
-        // Load user info from SharedPreferences
         TextView usernameTextView = findViewById(R.id.username);
         TextView phoneTextView = findViewById(R.id.phone);
 
+        // Get user info from SharedPreferences
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String username = userPrefs.getString("username", "");
         String phone = userPrefs.getString("phone", "");
@@ -111,7 +111,7 @@ public class ActivityCheckout extends AppCompatActivity {
                 editor.remove("cart_list");
                 editor.apply();
 
-                // Navigate to Dashboard with username
+                // Pass username back to AccountActivity so it can reload data
                 Intent intent = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
                 intent.putExtra("username", usernameInput);
                 startActivity(intent);

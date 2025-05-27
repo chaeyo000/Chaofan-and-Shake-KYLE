@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class ProductDomain implements Serializable {
     private String imageName;
     private String title;
+    private String description;
     private double price;
     private int quantity = 1;  // default 1
     private double totalPrice;  // dagdag para sa total price ng product sa cart
@@ -14,24 +15,31 @@ public class ProductDomain implements Serializable {
     }
 
     // Parameterized constructor without quantity (default quantity = 1)
-    public ProductDomain(String imageName, String title, double price) {
+    public ProductDomain(String imageName, String title, String description, double price) {
         this.imageName = imageName;
         this.title = title;
+        this.description = description;
         this.price = price;
         this.quantity = 1;
         this.totalPrice = price * quantity;
     }
 
-    // Parameterized constructor with quantity
-    public ProductDomain(String imageName, String title, double price, int quantity) {
+    public ProductDomain(String imageName, String title, String description, double price, int someInt) {
         this.imageName = imageName;
         this.title = title;
+        this.description = description;
         this.price = price;
-        this.quantity = quantity;
+        this.quantity = someInt;
         this.totalPrice = price * quantity;
     }
-
     // Getters
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public String getImageName() {
         return imageName;
     }

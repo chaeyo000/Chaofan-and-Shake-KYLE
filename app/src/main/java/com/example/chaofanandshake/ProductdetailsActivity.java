@@ -3,7 +3,10 @@ package com.example.chaofanandshake;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import com.example.chaofanandshake.Domain.ProductDomain;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.FileInputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -38,7 +42,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
         titleText = findViewById(R.id.title);
         priceText = findViewById(R.id.price);
-        productImage = findViewById(R.id.image);
+        productImage = findViewById(R.id.ImageView);
         addtocart = findViewById(R.id.addtocart);
         cartBtn = findViewById(R.id.cartbtn);
 
@@ -47,15 +51,32 @@ public class ProductdetailsActivity extends AppCompatActivity {
         backBtn.setOnClickListener(view -> onBackPressed());
 
         // Get product from intent
-        product = (ProductDomain) getIntent().getSerializableExtra("product");
+        String json = getIntent().getStringExtra("product");
+        ProductDomain product = new Gson().fromJson(json, ProductDomain.class);
 
         if (product != null) {
             titleText.setText(product.getTitle());
             priceText.setText("₱" + product.getPrice());
 
-            int imageResId = getResources().getIdentifier(product.getImageName(), "drawable", getPackageName());
-            productImage.setImageResource(imageResId != 0 ? imageResId : R.drawable.swirls);
+            String imageNameWithoutExt = product.getImageName().toLowerCase().split("\\.")[0];
+            int imageResId = getResources().getIdentifier(imageNameWithoutExt, "drawable", getPackageName());
+
+            if (imageResId != 0) {
+                productImage.setImageResource(imageResId);
+            } else {
+                // try loading from internal storage
+                try {
+                    FileInputStream fis = openFileInput(product.getImageName());
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    productImage.setImageBitmap(bitmap);
+                    fis.close();
+                } catch (Exception e) {
+                    productImage.setImageResource(R.drawable.swirls);
+                    Log.e("ProductDetails", "Failed to load image from storage: " + e.getMessage());
+                }
+            }
         }
+
 
         // Add to cart button logic
         addtocart.setOnClickListener(v -> {
