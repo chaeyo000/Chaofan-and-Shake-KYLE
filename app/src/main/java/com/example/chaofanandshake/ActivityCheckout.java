@@ -70,10 +70,7 @@ public class ActivityCheckout extends AppCompatActivity {
 
         String orderSummary = orderSummaryBuilder.toString();
 
-        TextView tvOrderSummaryItems = findViewById(R.id.tvOrderSummaryItems);
-        tvOrderSummaryItems.setText(orderSummary);
         TextView tvTotalPrice = findViewById(R.id.totalPrice);
-
         tvTotalPrice.setText("₱" + String.format("%.2f", totalPriceHolder[0]));
 
         TextView usernameTextView = findViewById(R.id.username);

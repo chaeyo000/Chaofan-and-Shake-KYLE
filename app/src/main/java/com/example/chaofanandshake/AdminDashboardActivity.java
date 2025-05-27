@@ -68,7 +68,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     private static final int IMAGE_PICK_CODE = 100;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -312,7 +311,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-            startActivity(new Intent(this, ContactActivity.class));
         if (id == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -334,4 +332,5 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
             super.onBackPressed();
         }
     }
+
 }
