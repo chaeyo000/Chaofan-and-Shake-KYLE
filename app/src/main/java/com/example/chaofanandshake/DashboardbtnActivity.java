@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,16 +19,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.chaofanandshake.Adapter.BannerAdapter;
 import com.example.chaofanandshake.Adapter.ProductAdapter;
 import com.example.chaofanandshake.Domain.ProductDomain;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DashboardbtnActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,7 +88,24 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         button.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardbtnActivity.this, CartbtnActivity.class);
             startActivity(intent);
+
         });
+
+        ViewPager2 bannerViewPager = findViewById(R.id.bannerViewPager);
+        List<Integer> bannerImages = Arrays.asList(R.drawable.banner1, R.drawable.banner2);
+        BannerAdapter adapter = new BannerAdapter(bannerImages);
+        bannerViewPager.setAdapter(adapter);
+
+        LinearLayout layoutDots = findViewById(R.id.layoutDots);
+        setupDotIndicators(bannerImages.size(), layoutDots);
+
+        bannerViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                updateDotIndicators(position, layoutDots);
+            }
+        });
+
 
         // Get passed username (email or id) from intent
         currentUsername = getIntent().getStringExtra("username");
@@ -137,6 +160,39 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             intent.putExtra("username", navUsername.getText().toString());
             launcher.launch(intent);
         });
+    }
+
+    private void setupDotIndicators(int count, LinearLayout layoutDots) {
+        ImageView[] dots = new ImageView[count];
+        layoutDots.removeAllViews();
+
+        for (int i = 0; i < count; i++) {
+            dots[i] = new ImageView(this);
+            dots[i].setImageDrawable(ContextCompat.getDrawable(this,
+                    R.drawable.dot_unselected));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 0, 8, 0);
+            layoutDots.addView(dots[i], params);
+        }
+
+        updateDotIndicators(0, layoutDots);
+    }
+
+    private void updateDotIndicators(int position, LinearLayout layoutDots) {
+        int childCount = layoutDots.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView imageView = (ImageView) layoutDots.getChildAt(i);
+            if (i == position) {
+                imageView.setImageDrawable(ContextCompat.getDrawable(this,
+                        R.drawable.dot_selected));
+            } else {
+                imageView.setImageDrawable(ContextCompat.getDrawable(this,
+                        R.drawable.dot_unselected));
+            }
+        }
     }
 
     @Override
@@ -220,6 +276,8 @@ private void initRecyclerView() {
             startActivity(new Intent(this, TermsandcondiActivity.class));
         } else if (itemId == R.id.contact) {
             startActivity(new Intent(this, ContactActivity.class));
+        } else if (itemId == R.id.Orderhistory) {
+            startActivity(new Intent(this, OrderhistoryActivity.class));
         } else if (itemId == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
 
