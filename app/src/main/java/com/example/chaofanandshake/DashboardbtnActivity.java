@@ -1,11 +1,14 @@
 package com.example.chaofanandshake;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,6 +27,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.chaofanandshake.Adapter.BannerAdapter;
@@ -47,6 +52,13 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
     private TextView navUsername;
     private String currentUsername;
 
+    private ViewPager2 bannerViewPager;
+    private Handler sliderHandler = new Handler();
+    private Runnable sliderRunnable;
+    private int currentPage = 0;
+    private static final long AUTO_SLIDE_DELAY = 3000;
+    private List<Integer> bannerImages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +66,11 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
 
         dbHelper = new DatabaseHelper(this);
 
+        // Initialize views
         welcomeTextView = findViewById(R.id.welcomeTextView);
         if (welcomeTextView == null) {
             Log.e("DashboardError", "Welcome TextView not found!");
         }
-
 
         // Setup Navigation Drawer
         toolbar = findViewById(R.id.toolbar);
@@ -66,7 +78,9 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.open, R.string.close);
         toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.meduimblack));
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -80,56 +94,70 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         navName = headerView.findViewById(R.id.nav_name);
         navUsername = headerView.findViewById(R.id.nav_username);
 
-        // Welcome TextView
-        welcomeTextView = findViewById(R.id.welcomeTextView);
-
         // Cart Button
         Button button = findViewById(R.id.cartbtn);
         button.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardbtnActivity.this, CartbtnActivity.class);
             startActivity(intent);
-
         });
 
-        ViewPager2 bannerViewPager = findViewById(R.id.bannerViewPager);
-        List<Integer> bannerImages = Arrays.asList(R.drawable.banner1, R.drawable.banner2);
-        BannerAdapter adapter = new BannerAdapter(bannerImages);
-        bannerViewPager.setAdapter(adapter);
+        // Banner ViewPager setup
+        bannerViewPager = findViewById(R.id.bannerViewPager);
+        bannerImages = Arrays.asList(R.drawable.banner1, R.drawable.banner2);
 
+        BannerAdapter adapter = new BannerAdapter(bannerImages, bannerViewPager);
+        bannerViewPager.setAdapter(adapter);
+        adapter.setInitialPosition();
+
+        // Dot indicators
         LinearLayout layoutDots = findViewById(R.id.layoutDots);
         setupDotIndicators(bannerImages.size(), layoutDots);
 
+        // Smooth page transitions
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(0.85f + r * 0.15f);
+        });
+        bannerViewPager.setPageTransformer(compositePageTransformer);
+
+        // Auto-slide runnable
+        sliderRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (bannerImages.size() == 0) return;
+                currentPage++;
+                bannerViewPager.setCurrentItem(currentPage, true);
+                sliderHandler.postDelayed(this, AUTO_SLIDE_DELAY);
+            }
+        };
+
+        // ViewPager page change callback
         bannerViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                updateDotIndicators(position, layoutDots);
+                super.onPageSelected(position);
+                currentPage = position;
+                updateDotIndicators(position % bannerImages.size(), layoutDots);
+                sliderHandler.removeCallbacks(sliderRunnable);
+                sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DELAY);
             }
         });
 
+        // Pause auto-slide on touch
+        bannerViewPager.setOnTouchListener((v, event) -> {
+            sliderHandler.removeCallbacks(sliderRunnable);
+            if (event.getAction() == MotionEvent.ACTION_UP ||
+                    event.getAction() == MotionEvent.ACTION_CANCEL) {
+                sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DELAY);
+            }
+            return false;
+        });
 
         // Get passed username (email or id) from intent
         currentUsername = getIntent().getStringExtra("username");
-
-        if (currentUsername != null) {
-            String userName = dbHelper.getUserName(currentUsername);
-            if (userName != null && !userName.isEmpty()) {
-                String welcomeMessage = "Welcome " + userName + ", What would you like to <font color='#FFC107'>eat?</font>";
-                setWelcomeMessage(welcomeMessage);
-
-                navName.setText(userName);
-                navUsername.setText(currentUsername);
-            } else {
-                // If username not found in DB
-                navName.setText("User");
-                navUsername.setText(currentUsername);
-                setWelcomeMessage("Welcome User, What would you like to eat?");
-            }
-        } else {
-            // No username passed
-            setWelcomeMessage("Welcome, What would you like to eat?");
-            navName.setText("User");
-            navUsername.setText("");
-        }
+        updateUserInfo();
 
         // Recycler View for products
         initRecyclerView();
@@ -140,15 +168,8 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null && data.hasExtra("newUsername")) {
-                            String updatedUsername = data.getStringExtra("newUsername");
-                            navUsername.setText(updatedUsername);
-
-                            String updatedName = dbHelper.getUserName(updatedUsername);
-                            if (updatedName != null && !updatedName.isEmpty()) {
-                                navName.setText(updatedName);
-                                String welcomeMessage = "Welcome " + updatedName + ", What would you like to <font color='#FFC107'>eat?</font>";
-                                setWelcomeMessage(welcomeMessage);
-                            }
+                            currentUsername = data.getStringExtra("newUsername");
+                            updateUserInfo();
                         }
                     }
                 }
@@ -157,9 +178,29 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         // Click listener for navName to go to AccountActivity
         navName.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardbtnActivity.this, AccountActivity.class);
-            intent.putExtra("username", navUsername.getText().toString());
+            intent.putExtra("username", currentUsername);
             launcher.launch(intent);
         });
+    }
+
+    private void updateUserInfo() {
+        if (currentUsername != null) {
+            String userName = dbHelper.getUserName(currentUsername);
+            if (userName != null && !userName.isEmpty()) {
+                String welcomeMessage = "Welcome " + userName + ", What would you like to <font color='#FFC107'>eat?</font>";
+                setWelcomeMessage(welcomeMessage);
+                navName.setText(userName);
+                navUsername.setText(currentUsername);
+            } else {
+                navName.setText("User");
+                navUsername.setText(currentUsername);
+                setWelcomeMessage("Welcome User, What would you like to eat?");
+            }
+        } else {
+            setWelcomeMessage("Welcome, What would you like to eat?");
+            navName.setText("User");
+            navUsername.setText("");
+        }
     }
 
     private void setupDotIndicators(int count, LinearLayout layoutDots) {
@@ -198,17 +239,21 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
-        initRecyclerView(); // Refresh the product list when returning to activity
+        sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DELAY);
+        initRecyclerView();
+        updateUserInfo();
+    }
 
-        // Keep your existing user name update logic
-        if (currentUsername != null) {
-            String updatedName = dbHelper.getUserName(currentUsername);
-            if (updatedName != null && !updatedName.isEmpty()) {
-                navName.setText(updatedName);
-                String welcomeMessage = "Welcome " + updatedName + ", What would you like to <font color='#FFC107'>eat?</font>";
-                setWelcomeMessage(welcomeMessage);
-            }
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sliderHandler.removeCallbacks(sliderRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sliderHandler.removeCallbacksAndMessages(null);
     }
 
     private void setWelcomeMessage(String htmlMessage) {
@@ -218,52 +263,26 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
             welcomeTextView.setText(Html.fromHtml(htmlMessage));
         }
     }
-/**
-        private void initRecyclerView() {
-            recyclerView = findViewById(R.id.recyclerView);
-            if (recyclerView == null) {
-                Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
-                return;
-            }
 
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    private void initRecyclerView() {
+        recyclerView = findViewById(R.id.recyclerView);
+        if (recyclerView == null) {
+            Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
+            return;
+        }
 
-            ArrayList<ProductDomain> productList = new ArrayList<>();
-            productList.add(new ProductDomain("swirls", "ChaoRolls", "Tasty chao rolls", 45.0));
-            productList.add(new ProductDomain("rolls", "FanSizzle", "Spicy fan sizzle", 65.0));
-            productList.add(new ProductDomain("swirls", "ChaoSiRolls", "Delicious ChaoSi Rolls", 85.0));
-            productList.add(new ProductDomain("rolls", "Swirls", "Fresh swirls", 45.0));
-            productList.add(new ProductDomain("rolls", "Fruit Tea", "Refreshing fruit tea", 45.0));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        List<ProductDomain> productList = dbHelper.getAllProducts();
 
+        if (productList == null || productList.isEmpty()) {
+            Log.w("DB_Products", "No products found in database");
+            productList = new ArrayList<>();
+            Toast.makeText(this, "No products available", Toast.LENGTH_SHORT).show();
+        }
 
-
-            ProductAdapter adapter = new ProductAdapter(productList, this);
-            recyclerView.setAdapter(adapter);
-        }**/
-
-private void initRecyclerView() {
-    recyclerView = findViewById(R.id.recyclerView);
-    if (recyclerView == null) {
-        Log.e("RecyclerViewError", "RecyclerView is NULL in DashboardActivity!");
-        return;
+        ProductAdapter adapter = new ProductAdapter(productList, this);
+        recyclerView.setAdapter(adapter);
     }
-
-    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-    // 1. Get products from database instead of hardcoding
-    List<ProductDomain> productList = dbHelper.getAllProducts();
-
-    // 2. Handle case when no products are found
-    if (productList == null || productList.isEmpty()) {
-        Log.w("DB_Products", "No products found in database");
-        productList = new ArrayList<>(); // Empty list as fallback
-        Toast.makeText(this, "No products available", Toast.LENGTH_SHORT).show();
-    }
-
-    // 3. Create adapter with database products
-    ProductAdapter adapter = new ProductAdapter(productList, this);
-    recyclerView.setAdapter(adapter);
-}
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -279,15 +298,16 @@ private void initRecyclerView() {
         } else if (itemId == R.id.Orderhistory) {
             startActivity(new Intent(this, OrderhistoryActivity.class));
         } else if (itemId == R.id.logout) {
-            Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
+                // Clear saved login preferences
+                SharedPreferences sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+                sharedPreferences.edit().clear().apply();
 
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-
-
+                Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

@@ -7,6 +7,19 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/user"
+            android:icon="@drawable/users"
+            android:title="User"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/orders"
+            android:icon="@drawable/order"
+            android:title="Orders"
+            android:checked="true"/>
+
+
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/logout"
             android:title="Logout"

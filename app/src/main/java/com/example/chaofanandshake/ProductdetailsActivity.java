@@ -16,6 +16,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chaofanandshake.Domain.ProductDomain;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,7 +28,8 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
     private ImageView backBtn, productImage;
     private TextView titleText, priceText;
-    private Button cartBtn, addtocart;
+    private MaterialButton cartBtn, addtocart;
+    private TextView descriptionText;
 
     private SharedPreferences sharedPreferences;
     private ProductDomain product;
@@ -42,6 +44,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
         titleText = findViewById(R.id.title);
         priceText = findViewById(R.id.price);
+        descriptionText = findViewById(R.id.description);
         productImage = findViewById(R.id.ImageView);
         addtocart = findViewById(R.id.addtocart);
         cartBtn = findViewById(R.id.cartbtn);
@@ -57,6 +60,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         if (product != null) {
             titleText.setText(product.getTitle());
             priceText.setText("₱" + product.getPrice());
+            descriptionText.setText(product.getDescription());
 
             String imageNameWithoutExt = product.getImageName().toLowerCase().split("\\.")[0];
             int imageResId = getResources().getIdentifier(imageNameWithoutExt, "drawable", getPackageName());
