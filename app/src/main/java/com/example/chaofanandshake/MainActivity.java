@@ -1,12 +1,14 @@
 package com.example.chaofanandshake;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private Typeface originalTypeface;
     private CheckBox checkBox;
     private DatabaseHelper dbHelper;
+    private CheckBox rememberMeCheckbox;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +33,14 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         checkBox = findViewById(R.id.checkBox);
         dbHelper = new DatabaseHelper(this);
+        rememberMeCheckbox = findViewById(R.id.checkBox);
+        Button loginButton = findViewById(R.id.dashboardbtn);
         originalTypeface = passwordEditText.getTypeface();
+
+        sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+        // Check if user should be remembered
+        checkRememberedUser();
 
         // Toggle password visibility
         passwordEditText.setOnTouchListener((v, event) -> {
@@ -53,40 +64,66 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        // Login button
-        findViewById(R.id.dashboardbtn).setOnClickListener(v -> {
-            String username = usernameEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
+        loginButton.setOnClickListener(v -> attemptLogin());
+    }
 
-            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-                Toast.makeText(MainActivity.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
-                return;
+    private void checkRememberedUser() {
+        boolean isRemembered = sharedPreferences.getBoolean("isRemembered", false);
+        if (isRemembered) {
+            String savedUsername = sharedPreferences.getString("username", "");
+            String savedPassword = sharedPreferences.getString("password", "");
+
+            usernameEditText.setText(savedUsername);
+            passwordEditText.setText(savedPassword);
+            rememberMeCheckbox.setChecked(true);
+
+            // Auto-login if credentials exist
+            if (!savedUsername.isEmpty() && !savedPassword.isEmpty()) {
+                attemptLogin();
             }
+        }
+    }
 
-            boolean isValid = dbHelper.checkUser(username, password);
-            if (isValid) {
-                Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+    private void attemptLogin() {
+        String username = usernameEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
 
-                if (dbHelper.isAdmin(username)) {
-                    Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(MainActivity.this, DashboardbtnActivity.class);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
-                }
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        if (dbHelper.checkUser(username, password)) {
+            // Save login state if "Remember Me" is checked
+            if (rememberMeCheckbox.isChecked()) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isRemembered", true);
+                editor.putString("username", username);
+                editor.putString("password", password);
+                editor.apply();
             } else {
-                Toast.makeText(MainActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
+                // Clear saved credentials if not remembering
+                sharedPreferences.edit().clear().apply();
             }
-        });
+
+            // Proceed to dashboard
+            if (dbHelper.isAdmin(username)) {
+                startActivity(new Intent(this, AdminDashboardActivity.class)
+                        .putExtra("username", username));
+            } else {
+                startActivity(new Intent(this, DashboardbtnActivity.class)
+                        .putExtra("username", username));
+            }
+            finish();
+        } else {
+            Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Signup, Login, Forgot Password
     public void onClick(View view) {
         Intent intent;
-        if (view.getId() == R.id .signupbtn) {
+        if (view.getId() == R.id.signupbtn) {
             intent = new Intent(this, SignupActivity.class);
         } else if (view.getId() == R.id.loginbtn) {
             intent = new Intent(this, MainActivity.class);

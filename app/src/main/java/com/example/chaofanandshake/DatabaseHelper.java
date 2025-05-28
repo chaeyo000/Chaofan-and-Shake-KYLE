@@ -6,6 +6,7 @@
     import android.database.Cursor;
     import android.database.sqlite.SQLiteDatabase;
     import android.database.sqlite.SQLiteOpenHelper;
+    import android.util.Base64;
     import android.util.Log;
 
     import androidx.annotation.Nullable;
@@ -14,6 +15,9 @@
     import com.example.chaofanandshake.Domain.ProductDomain;
     import com.example.chaofanandshake.Domain.User;
 
+    import java.nio.charset.StandardCharsets;
+    import java.security.MessageDigest;
+    import java.security.NoSuchAlgorithmException;
     import java.util.ArrayList;
     import java.util.List;
     import java.util.jar.Attributes;
@@ -135,12 +139,29 @@
             return false;
         }
 
+        // In DatabaseHelper.java
         public boolean checkUser(String username, String password) {
             SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?", new String[]{username, password});
+            Cursor cursor = db.rawQuery(
+                    "SELECT * FROM " + TABLE_USERS +
+                            " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?",
+                    new String[]{username, password}
+            );
             boolean exists = cursor.getCount() > 0;
             cursor.close();
+            db.close();
             return exists;
+        }
+
+        private String hashPassword(String password) {
+            try {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+                return Base64.encodeToString(hash, Base64.DEFAULT);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+                return password; // fallback (not secure)
+            }
         }
 
         public String getUserName(String username) {

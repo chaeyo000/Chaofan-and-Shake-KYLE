@@ -63,6 +63,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             intent.putExtra("product", new Gson().toJson(product)); // Pass product as JSON string
             context.startActivity(intent);
         });
+        if (holder.description != null) {
+            holder.description.setText(product.getDescription());
+        } else {
+            Log.e("ProductAdapter", "Description TextView is null");
+        }
 
         // Handle image loading
         try {
@@ -129,25 +134,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            try {
-                title = itemView.findViewById(R.id.title);
-                fee = itemView.findViewById(R.id.fee);
-                description = itemView.findViewById(R.id.description); // Make sure this exists in XML
-                imageView = itemView.findViewById(R.id.imageView);
-
-
-
-
-                // Log any missing views
-                if (title == null) Log.e("ViewHolder", "title TextView not found");
-                if (fee == null) Log.e("ViewHolder", "fee TextView not found");
-                if (description == null) Log.e("ViewHolder", "description TextView not found");
-                if (imageView == null) Log.e("ViewHolder", "imageView not found");
-                if (addButton == null) Log.e("ViewHolder", "addButton not found");
-            } catch (Exception e) {
-                Log.e("ViewHolder", "Error initializing views", e);
-
-
+            title = itemView.findViewById(R.id.title);
+            fee = itemView.findViewById(R.id.fee);
+            description = itemView.findViewById(R.id.description);
+            imageView = itemView.findViewById(R.id.imageView);
+            if (description == null) {
+                Log.e("ViewHolder", "Description TextView not found - check your layout file");
             }
         }
     }
