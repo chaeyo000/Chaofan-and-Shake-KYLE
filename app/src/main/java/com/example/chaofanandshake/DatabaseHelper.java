@@ -58,7 +58,8 @@
                 "phone TEXT, " +
                 "username TEXT, " +
                 "payment_method TEXT, " +
-                "total_price REAL);";
+                "total_price REAL," +
+                "date DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
         public DatabaseHelper(@Nullable Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -290,8 +291,10 @@
                     String username = cursor.getString(cursor.getColumnIndex("username"));
                     String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
                     double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
+                    String date = cursor.getString(cursor.getColumnIndex("date"));
 
-                    orderList.add(new Order(id,name, summary, phone, username, paymentMethod, totalPrice));
+
+                    orderList.add(new Order(id,name, summary, phone, username, paymentMethod, totalPrice, date));
                 } while (cursor.moveToNext());
             }
 
@@ -319,10 +322,10 @@
             if (cursor.moveToFirst()) {
                 do {
                     ProductDomain product = new ProductDomain(
-                            cursor.getString(cursor.getColumnIndex("imageName")),
-                            cursor.getString(cursor.getColumnIndex("title")),
-                            cursor.getString(cursor.getColumnIndex("description")),
-                            cursor.getDouble(cursor.getColumnIndex("price"))
+                            cursor.getString(cursor.getColumnIndexOrThrow("imageName")),
+                            cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                            cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                            cursor.getDouble(cursor.getColumnIndexOrThrow("price"))
                     );
                     products.add(product);
                 } while (cursor.moveToNext());

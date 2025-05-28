@@ -67,14 +67,10 @@ public class ActivityUsername extends AppCompatActivity {
         });
 
 
-        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        SharedPreferences.Editor edit = userPrefs.edit();
+
         btnSaveName.setOnClickListener(v -> {
             String input = etNewUsername.getText().toString().trim();
             if (validateAndShowErrors(input)) {
-                String getUsername = etNewUsername.getText().toString().trim();
-                edit.putString("username", getUsername);
-                edit.apply();
                 showSaveConfirmationDialog(input);
             }
         });
@@ -99,8 +95,13 @@ public class ActivityUsername extends AppCompatActivity {
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
+        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor edit = userPrefs.edit();
         btnSave.setOnClickListener(v -> {
             updateUsernameInDatabase(newUsername);
+            String getUsername = etNewUsername.getText().toString().trim();
+            edit.putString("username", getUsername);
+            edit.apply();
             dialog.dismiss();
         });
 

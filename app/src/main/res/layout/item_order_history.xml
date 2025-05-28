@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="6dp"
+    android:layout_marginBottom="12dp"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvOrderDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order Date: May 28, 2025"
+            android:textStyle="bold"
+            android:textColor="#333333" />
+
+        <TextView
+            android:id="@+id/tvOrderItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items: 2x Burger, 1x Fries"
+            android:layout_marginTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvTotalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: ₱250"
+            android:layout_marginTop="4dp"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPaymentMethod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment: GCash"
+            android:layout_marginTop="4dp"
+            android:textColor="#777777" />
+
+        <!-- ✅ New Info -->
+        <TextView
+            android:id="@+id/tvCustomerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name: Juan Dela Cruz"
+            android:layout_marginTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone: 09123456789"
+            android:layout_marginTop="2dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username: juandelacruz"
+            android:layout_marginTop="2dp"
+            android:textColor="#555555" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

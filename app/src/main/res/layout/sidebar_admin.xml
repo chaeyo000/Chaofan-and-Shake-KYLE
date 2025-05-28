@@ -28,7 +28,7 @@
         android:focusable="true"
         android:text="@string/helloadmin"
         android:textColor="@color/black"
-        android:textSize="35dp"
+        android:textSize="26dp"
         android:textStyle="bold" />
 
 </LinearLayout>

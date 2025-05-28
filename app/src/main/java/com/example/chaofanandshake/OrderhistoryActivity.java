@@ -1,24 +1,42 @@
 package com.example.chaofanandshake;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.chaofanandshake.Domain.Order;
+
+import java.util.List;
 
 public class OrderhistoryActivity extends AppCompatActivity {
+
+    private RecyclerView orderHistoryRecyclerView;
+    private OrderHistoryAdapter adapter;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_orderhistory);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        orderHistoryRecyclerView = findViewById(R.id.orderHistoryRecyclerView);
+        dbHelper = new DatabaseHelper(this);
+
+        // Set layout manager
+        orderHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Get all orders
+        List<Order> orderList = dbHelper.getAllOrders();
+
+        if (orderList.isEmpty()) {
+            Toast.makeText(this, "No order history found.", Toast.LENGTH_SHORT).show();
+        }
+
+        // Set adapter
+        adapter = new OrderHistoryAdapter(orderList); // <- Pass context if needed in adapter
+        orderHistoryRecyclerView.setAdapter(adapter);
     }
 }

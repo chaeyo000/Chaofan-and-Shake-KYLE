@@ -5,15 +5,12 @@ public class Order {
     private String orderSummary;
     private String phone;
     private String paymentMethod;
-
     private String name;
     private double total;
-
     private String username;
+    private String date; // ✅ Added date
 
-
-
-    public Order(int id, String name, String orderSummary, String phone, String username, String paymentMethod, double total) {
+    public Order(int id, String name, String orderSummary, String phone, String username, String paymentMethod, double total, String date) {
         this.id = id;
         this.name = name;
         this.orderSummary = orderSummary;
@@ -21,25 +18,40 @@ public class Order {
         this.username = username;
         this.paymentMethod = paymentMethod;
         this.total = total;
+        this.date = date; // ✅ Assign date
     }
 
-    // getters here...
+    public int getId() {
+        return id;
+    }
 
+    public String getOrderSummary() {
+        return orderSummary;
+    }
+
+    public String getPhoneNumber() {
+        return phone;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public double getTotalPrice() {
+        return total;
+    }
+
+    public String getCustomerName() {
+        return name;
+    }
 
     public String getUsername() {
         return username;
     }
-    public String getName() {
-        return name;
+
+    public String getDate() { // ✅ Added getter
+        return date;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getId() { return id; }
-    public String getOrderSummary() { return orderSummary; }
-    public String getPhone() { return phone; }
-    public String getPaymentMethod() { return paymentMethod; }
-    public double getTotal() { return total; }
+    // Optional setters if needed
 }
