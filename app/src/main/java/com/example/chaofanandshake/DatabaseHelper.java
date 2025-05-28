@@ -63,6 +63,7 @@
                 "username TEXT, " +
                 "payment_method TEXT, " +
                 "total_price REAL," +
+                "status TEXT DEFAULT 'Pending', " +
                 "date DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
         public DatabaseHelper(@Nullable Context context) {
@@ -224,9 +225,9 @@
             return rowsUpdated > 0;
         }
 
-        public boolean deleteUser(int id) {
+        public boolean deleteUserByUsername(String username) {
             SQLiteDatabase db = this.getWritableDatabase();
-            int rowsDeleted = db.delete("users", "id = ?", new String[]{String.valueOf(id)});
+            int rowsDeleted = db.delete(TABLE_USERS, COLUMN_USERNAME + " = ?", new String[]{username});
             return rowsDeleted > 0;
         }
 
@@ -313,9 +314,10 @@
                     String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
                     double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
                     String date = cursor.getString(cursor.getColumnIndex("date"));
+                    String status = cursor.getString(cursor.getColumnIndex("status"));
 
 
-                    orderList.add(new Order(id,name, summary, phone, username, paymentMethod, totalPrice, date));
+                    orderList.add(new Order(id,name, summary, phone, username, paymentMethod, totalPrice, date, status));
                 } while (cursor.moveToNext());
             }
 
@@ -354,5 +356,15 @@
             cursor.close();
             return products;
         }
+
+        public boolean updateOrderStatus(int orderId, String newStatus) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("status", newStatus);
+            int rows = db.update("orders", values, "id = ?", new String[]{String.valueOf(orderId)});
+            return rows > 0;
+        }
+
+
 
     }

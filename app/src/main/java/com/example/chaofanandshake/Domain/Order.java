@@ -8,9 +8,11 @@ public class Order {
     private String name;
     private double total;
     private String username;
-    private String date; // ✅ Added date
+    private String date;
+    private String status;
 
-    public Order(int id, String name, String orderSummary, String phone, String username, String paymentMethod, double total, String date) {
+    public Order(int id, String name, String orderSummary, String phone, String username,
+                 String paymentMethod, double total, String date, String status) {
         this.id = id;
         this.name = name;
         this.orderSummary = orderSummary;
@@ -18,9 +20,11 @@ public class Order {
         this.username = username;
         this.paymentMethod = paymentMethod;
         this.total = total;
-        this.date = date; // ✅ Assign date
+        this.date = date;
+        this.status = status;
     }
 
+    // Getters
     public int getId() {
         return id;
     }
@@ -49,9 +53,44 @@ public class Order {
         return username;
     }
 
-    public String getDate() { // ✅ Added getter
+    public String getDate() {
         return date;
     }
 
-    // Optional setters if needed
+    public String getStatus() {
+        return status;
+    }
+
+    // Setters (optional, but required for updating fields like status)
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setOrderSummary(String orderSummary) {
+        this.orderSummary = orderSummary;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public void setCustomerName(String name) {
+        this.name = name;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

@@ -28,12 +28,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chaofanandshake.Adapter.EditUserActivity;
 import com.example.chaofanandshake.Adapter.OrderAdapter;
-import com.example.chaofanandshake.Adapter.UserAdapter;
 import com.example.chaofanandshake.Domain.Order;
 import com.example.chaofanandshake.Domain.ProductDomain;
-import com.example.chaofanandshake.Domain.User;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.FileOutputStream;
@@ -43,45 +40,29 @@ import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    // UI Components
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private RecyclerView usersRecyclerView;  // Renamed from productRecyclerView
     private RecyclerView ordersRecyclerView;
-
-    // Adapters
-    private UserAdapter userAdapter;
     private OrderAdapter orderAdapter;
-
-    // Database
     private DatabaseHelper dbHelper;
 
-    // Image Handling
     private Uri selectedImageUri;
     private ImageView productImageView;
 
-    // Dialogs
     private AlertDialog addProductDialog;
 
-    // Request Codes
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_CODE = 100;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-
-
-
-        // Initialize views
         Button addProductBtn = findViewById(R.id.addProductButton);
         addProductBtn.setOnClickListener(v -> showAddProductDialog());
 
-        // Setup Toolbar and Drawer
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -94,25 +75,14 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Initialize RecyclerViews
-        usersRecyclerView = findViewById(R.id.productRecyclerView);
-        usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         ordersRecyclerView = findViewById(R.id.Orders);
         ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // DatabaseHelper and adapters
         dbHelper = new DatabaseHelper(this);
-
-        List<User> userList = dbHelper.getAllUsers();
-        userAdapter = new UserAdapter(this, userList, dbHelper);
-        usersRecyclerView.setAdapter(userAdapter);
 
         List<Order> orderList = dbHelper.getAllOrders();
         orderAdapter = new OrderAdapter(this, orderList);
         ordersRecyclerView.setAdapter(orderAdapter);
-
-
     }
 
     private boolean checkStoragePermission() {
@@ -132,15 +102,13 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user
+
                 new AlertDialog.Builder(this)
                         .setTitle("Permission Needed")
                         .setMessage("This permission is needed to select images")
                         .setPositiveButton("OK", (dialog, which) -> {
-                            // Request the permission
                             ActivityCompat.requestPermissions(this,
                                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                     PERMISSION_REQUEST_CODE);
@@ -148,13 +116,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
                         .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                         .create().show();
             } else {
-                // No explanation needed, request the permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         PERMISSION_REQUEST_CODE);
             }
         } else {
-            // Permission already granted
             launchImagePicker();
         }
     }
@@ -170,10 +136,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted
                 launchImagePicker();
             } else {
-                // Permission denied
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
@@ -182,20 +146,12 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.getData();
             if (productImageView != null) {
                 productImageView.setImageURI(selectedImageUri);
             }
-        }
-    }
-
-    private void refreshUserList() {
-        List<User> users = dbHelper.getAllUsers();
-        if (users != null) {
-            userAdapter.updateList(users);
-        } else {
-            Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -211,13 +167,10 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         EditText priceEditText = dialogView.findViewById(R.id.productPrice);
         Button saveButton = dialogView.findViewById(R.id.saveProductButton);
 
-        // Set default image
         productImageView.setImageResource(R.drawable.placeholder_image);
 
-        // Open gallery when image is clicked
         View.OnClickListener imagePickerListener = v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // For Android 13+, we don't need storage permission for image picker
                 launchImagePicker();
             } else {
                 openImagePicker();
@@ -231,12 +184,10 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
             String description = descriptionEditText.getText().toString().trim();
             String priceStr = priceEditText.getText().toString().trim();
 
-            // Validate inputs
             if (title.isEmpty()) {
                 titleEditText.setError("Title is required");
                 return;
             }
-
             if (priceStr.isEmpty()) {
                 priceEditText.setError("Price is required");
                 return;
@@ -254,7 +205,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
                 return;
             }
 
-            // Handle image
             String imageName = "product_" + System.currentTimeMillis();
             if (selectedImageUri != null) {
                 imageName = saveImageToInternalStorage(selectedImageUri);
@@ -264,7 +214,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
                 }
             }
 
-            // Create and save new product
             ProductDomain newProduct = new ProductDomain(
                     imageName,
                     title,
@@ -281,7 +230,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
 
             Toast.makeText(this, "Product added successfully", Toast.LENGTH_SHORT).show();
             addProductDialog.dismiss();
-            refreshUserList();
+
+            // Refresh order list or any other UI you want here if needed
         });
 
         addProductDialog = builder.create();
@@ -290,10 +240,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
 
     private String saveImageToInternalStorage(Uri imageUri) {
         try {
-            // Get the file extension
             String fileExtension = getContentResolver().getType(imageUri).split("/")[1];
-
-            // Create unique filename with extension
             String fileName = "product_" + System.currentTimeMillis() + "." + fileExtension;
 
             try (InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -342,7 +289,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         return true;
     }
 
-
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -351,5 +297,4 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
             super.onBackPressed();
         }
     }
-
 }

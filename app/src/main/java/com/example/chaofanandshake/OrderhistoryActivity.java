@@ -1,6 +1,7 @@
 package com.example.chaofanandshake;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class OrderhistoryActivity extends AppCompatActivity {
 
+    private ImageView backBtn;
     private RecyclerView orderHistoryRecyclerView;
     private OrderHistoryAdapter adapter;
     private DatabaseHelper dbHelper;
@@ -21,6 +23,11 @@ public class OrderhistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderhistory);
+
+        backBtn = findViewById(R.id.backBtn);
+
+        // Back button
+        backBtn.setOnClickListener(v -> finish());
 
         orderHistoryRecyclerView = findViewById(R.id.orderHistoryRecyclerView);
         dbHelper = new DatabaseHelper(this);

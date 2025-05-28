@@ -98,7 +98,6 @@ public class ActivityCheckout extends AppCompatActivity {
         usernameTextView.setText(username);
         phoneTextView.setText(phone);
         nameTextView.setText(name);
-
         RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
         Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
 
@@ -120,12 +119,19 @@ public class ActivityCheckout extends AppCompatActivity {
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
 
+                // ✅ I-save sa SharedPreferences para di mawala
+                SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+                editor.putString("username", usernameInput);
+                editor.putString("name", customerName);
+                editor.putString("phone", phoneInput);
+                editor.apply();
+
+                // ✅ Clear cart if not Buy Now
                 if (buyNowProductJson == null) {
-                    // Clear cart only if order placed from cart, not Buy Now
                     SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.remove("cart_list");
-                    editor.apply();
+                    SharedPreferences.Editor cartEditor = sharedPreferences.edit();
+                    cartEditor.remove("cart_list");
+                    cartEditor.apply();
                 }
 
                 Intent intentToDashboard = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
