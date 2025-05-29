@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ChaofanAndShake"
         tools:targetApi="31">
         <activity
+            android:name=".ActivityProducts"
+            android:exported="false" />
+        <activity
             android:name=".ActivityOrder"
             android:exported="false" />
         <activity

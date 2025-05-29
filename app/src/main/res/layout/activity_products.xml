@@ -40,7 +40,7 @@
                 android:id="@+id/tvOrderHistoryTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Order List"
+                android:text="Product List"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
@@ -48,11 +48,12 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerOrders"
+            android:id="@+id/productsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:padding="8dp"/>
+
 
     </LinearLayout>
 

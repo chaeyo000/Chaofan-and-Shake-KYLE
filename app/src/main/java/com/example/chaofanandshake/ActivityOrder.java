@@ -1,33 +1,44 @@
 package com.example.chaofanandshake;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.chaofanandshake.Adapter.OrderAdapter;
+import com.example.chaofanandshake.Domain.Order;
+
+import java.util.List;
 
 public class ActivityOrder extends AppCompatActivity {
+
+    ImageView backBtn;
+    private RecyclerView recyclerView;
+    private OrderAdapter orderAdapter;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
+        setContentView(R.layout.activity_order); // Make sure you have this layout file
 
-        // Apply window insets padding to the main content view
-        View mainView = findViewById(R.id.main);
-        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
-            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(
-                    systemBarsInsets.left,
-                    systemBarsInsets.top,
-                    systemBarsInsets.right,
-                    systemBarsInsets.bottom
-            );
-            return insets;
-        });
+        backBtn = findViewById(R.id.backBtn);
 
-        // Request to apply insets right away
-        ViewCompat.requestApplyInsets(mainView);
+        recyclerView = findViewById(R.id.recyclerOrders);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        dbHelper = new DatabaseHelper(this);
+        loadOrders();
+
+        // Back button
+        backBtn.setOnClickListener(v -> finish());
+    }
+
+    private void loadOrders() {
+        List<Order> orderList = dbHelper.getAllOrders();
+        orderAdapter = new OrderAdapter(this, orderList);
+        recyclerView.setAdapter(orderAdapter);
     }
 }
