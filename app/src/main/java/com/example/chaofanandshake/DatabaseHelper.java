@@ -25,7 +25,7 @@
     public class DatabaseHelper extends SQLiteOpenHelper {
 
         private static final String DATABASE_NAME = "ChaofanUserDb";
-        private static final int DATABASE_VERSION = 6;
+        private static final int DATABASE_VERSION = 7;
 
         private static final String TABLE_USERS = "users";
         private static final String COLUMN_ID = "id";
@@ -62,9 +62,11 @@
                 "phone TEXT, " +
                 "username TEXT, " +
                 "payment_method TEXT, " +
-                "total_price REAL," +
+                "total_price REAL, " +
                 "status TEXT DEFAULT 'Pending', " +
-                "date DATETIME DEFAULT CURRENT_TIMESTAMP);";
+                "date DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "orderPlacedTimestamp INTEGER DEFAULT (strftime('%s','now')));";
+
 
         public DatabaseHelper(@Nullable Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -272,30 +274,36 @@
                     String name = cursor.getString(1);        // name
                     String username = cursor.getString(2);    // username
                     String phone = cursor.getString(3);       // phone
-                    users.add(new User(id, username, phone, name));
+
+                    User user = new User(id, name, username, phone);
+                    users.add(user);
                 } while (cursor.moveToNext());
             }
 
-
             cursor.close();
-            db.close();
             return users;
         }
 
-        public boolean insertOrder(String orderSummary, String name, String phone, String username, String paymentMethod, double totalPrice) {
+
+        public boolean insertOrder(String summary, String name, String phone, String username,
+                                   String paymentMethod, double totalPrice, long timestamp) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put("order_summary", orderSummary);
+            values.put("order_summary", summary);      // <-- corrected column name
             values.put("name", name);
             values.put("phone", phone);
             values.put("username", username);
-            values.put("payment_method", paymentMethod);
-            values.put("total_price", totalPrice);
+            values.put("payment_method", paymentMethod);  // <-- corrected column name
+            values.put("total_price", totalPrice);         // <-- corrected column name
+            values.put("orderPlacedTimestamp", timestamp);
 
             long result = db.insert("orders", null, values);
             db.close();
             return result != -1;
         }
+
+
+
 
 
         @SuppressLint("Range")
@@ -314,10 +322,11 @@
                     String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
                     double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
                     String date = cursor.getString(cursor.getColumnIndex("date"));
+                    long orderPlacedTimestamp = cursor.getLong(cursor.getColumnIndex("orderPlacedTimestamp"));  // <-- get timestamp
                     String status = cursor.getString(cursor.getColumnIndex("status"));
 
 
-                    orderList.add(new Order(id,name, summary, phone, username, paymentMethod, totalPrice, date, status));
+                    orderList.add(new Order(id, name, summary, phone, username, paymentMethod, totalPrice, date, status, orderPlacedTimestamp));
                 } while (cursor.moveToNext());
             }
 
@@ -357,12 +366,14 @@
             return products;
         }
 
-        public boolean updateOrderStatus(int orderId, String newStatus) {
+        public boolean updateOrderStatus(int orderId, String status) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put("status", newStatus);
-            int rows = db.update("orders", values, "id = ?", new String[]{String.valueOf(orderId)});
-            return rows > 0;
+            values.put("status", status);  // Make sure your table has a "status" column
+
+            int rowsUpdated = db.update("orders", values, "id = ?", new String[]{String.valueOf(orderId)});
+            db.close();
+            return rowsUpdated > 0;
         }
 
 

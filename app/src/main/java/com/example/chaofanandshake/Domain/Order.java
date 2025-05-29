@@ -10,9 +10,10 @@ public class Order {
     private String username;
     private String date;
     private String status;
+    private long orderPlacedTimestamp;
 
     public Order(int id, String name, String orderSummary, String phone, String username,
-                 String paymentMethod, double total, String date, String status) {
+                 String paymentMethod, double total, String date, String status, long orderPlacedTimestamp) {
         this.id = id;
         this.name = name;
         this.orderSummary = orderSummary;
@@ -22,6 +23,7 @@ public class Order {
         this.total = total;
         this.date = date;
         this.status = status;
+        this.orderPlacedTimestamp = orderPlacedTimestamp;
     }
 
     // Getters
@@ -40,6 +42,8 @@ public class Order {
     public String getPaymentMethod() {
         return paymentMethod;
     }
+
+
 
     public double getTotalPrice() {
         return total;
@@ -65,7 +69,6 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
-
     public void setOrderSummary(String orderSummary) {
         this.orderSummary = orderSummary;
     }
@@ -89,6 +92,14 @@ public class Order {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public long getOrderPlacedTimestamp() {
+        return orderPlacedTimestamp;  // <-- New getter
+    }
+
+
+
+
 
     public void setDate(String date) {
         this.date = date;

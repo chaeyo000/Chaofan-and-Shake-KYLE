@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chaofanandshake.Adapter.CheckoutCartAdapter;
 import com.example.chaofanandshake.Domain.ProductDomain;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -88,7 +89,7 @@ public class ActivityCheckout extends AppCompatActivity {
 
     private void setupRecyclerView() {
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
-        com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
+        CheckoutCartAdapter adapter = new CheckoutCartAdapter(cartList);
         recyclerCart.setAdapter(adapter);
     }
 
@@ -131,8 +132,8 @@ public class ActivityCheckout extends AppCompatActivity {
             }
 
             String paymentMethod = ((RadioButton) findViewById(selectedPaymentId)).getText().toString();
-
-            boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice);
+            long timestamp = System.currentTimeMillis();
+            boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice, timestamp);
             if (inserted) {
                 // Save user info again
                 SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();

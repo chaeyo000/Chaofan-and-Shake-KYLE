@@ -1,4 +1,4 @@
-package com.example.chaofanandshake;
+package com.example.chaofanandshake.Adapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chaofanandshake.Domain.ProductDomain;
+import com.example.chaofanandshake.R;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -43,14 +44,14 @@ public class CheckoutCartAdapter extends RecyclerView.Adapter<CheckoutCartAdapte
     }
 
     @Override
-    public CheckoutCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.checkout_cart, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(CheckoutCartAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         ProductDomain product = cartItems.get(position);
         holder.title.setText(product.getTitle());
         holder.quantity.setText("Qty: " + product.getQuantity());

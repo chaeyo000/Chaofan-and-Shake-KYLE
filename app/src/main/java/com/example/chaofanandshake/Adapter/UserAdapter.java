@@ -79,7 +79,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         });
 
         holder.editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, com.example.chaofanandshake.Adapter.EditUserActivity.class);
+            Intent intent = new Intent(context, EditUserActivity.class);
             intent.putExtra("userId", user.getId());
             intent.putExtra("name", user.getName());
             intent.putExtra("username", user.getUsername());

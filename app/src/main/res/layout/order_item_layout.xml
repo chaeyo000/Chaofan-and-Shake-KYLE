@@ -136,6 +136,30 @@
                 android:textColor="#212121"
                 android:fontFamily="@font/butler"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status: "
+                android:textSize="16sp"
+                android:textColor="#616161"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textSize="16sp"
+                android:textColor="@color/red"
+                android:fontFamily="@font/butler"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Total Price Section -->
@@ -165,30 +189,4 @@
             android:textColor="#946000"/>
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/acceptButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Accept"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        app:icon="@drawable/ic_check"
-    app:iconTint="@android:color/white"
-    app:iconGravity="textStart"
-    app:iconPadding="8dp"
-    android:layout_marginTop="8dp"
-    android:insetTop="0dp"
-    android:insetBottom="0dp"
-    app:backgroundTint="#388E3C"
-    android:textColor="@android:color/white"
-    app:cornerRadius="8dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/cancelButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:textColor="#757575"
-        android:layout_marginTop="8dp"/>
 </LinearLayout>

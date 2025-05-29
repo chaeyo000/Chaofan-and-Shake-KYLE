@@ -15,6 +15,8 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+
+
         <!-- 📅 Order Date -->
         <TextView
             android:id="@+id/tvOrderDate"
@@ -56,16 +58,29 @@
             android:textColor="#757575"
             android:textSize="14sp" />
 
+
+
         <!-- 📌 Order Status -->
         <TextView
             android:id="@+id/tvOrderStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status: Pending"
+            android:text="Status: Ready for pickup in 10mins"
             android:layout_marginTop="6dp"
             android:textColor="#FFA000"
             android:textStyle="bold"
             android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnCompleteOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete Order"
+            android:visibility="gone"
+            android:layout_marginTop="8dp" />
+
+
+
 
         <!-- Divider -->
         <View
@@ -101,5 +116,8 @@
             android:textColor="#444444"
             android:textSize="14sp" />
 
+
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
