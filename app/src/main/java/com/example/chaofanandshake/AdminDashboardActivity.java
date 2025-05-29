@@ -5,6 +5,7 @@
     import android.Manifest;
     import android.content.Context;
     import android.content.Intent;
+    import android.content.SharedPreferences;
     import android.content.pm.PackageManager;
     import android.database.Cursor;
     import android.graphics.Bitmap;
@@ -277,6 +278,7 @@
             editDialog.show();
         }
 
+
         private boolean checkStoragePermission() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -461,18 +463,38 @@
                 startActivity(new Intent(this, AdminDashboardActivity.class));
             } else if (id == R.id.user) {
                 startActivity(new Intent(this, ActivityUsers.class));
-            }  else if (id == R.id.order) {
+            } else if (id == R.id.order) {
                 startActivity(new Intent(this, ActivityOrder.class));
             } else if (id == R.id.logout) {
-                Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                performLogout();
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
+        }
+
+        private void performLogout() {
+            // 1. Clear ALL login preferences completely
+            SharedPreferences sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+
+            // 2. Add a flag to block auto-login in a separate preferences file
+            getSharedPreferences("tempPrefs", MODE_PRIVATE).edit()
+                    .putBoolean("blockAutoLogin", true)
+                    .apply();
+
+            // 3. Show logout confirmation
+            Toast.makeText(this, "You have been logged out", Toast.LENGTH_SHORT).show();
+
+            // 4. Redirect to login with complete task clearing
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
 
         @Override

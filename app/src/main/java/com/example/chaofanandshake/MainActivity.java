@@ -64,10 +64,24 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+
+
         loginButton.setOnClickListener(v -> attemptLogin());
     }
 
     private void checkRememberedUser() {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+        // Check if user explicitly logged out
+        boolean explicitLogout = sharedPreferences.getBoolean("explicitLogout", false);
+
+        if (explicitLogout) {
+            // Clear all preferences if user explicitly logged out
+            sharedPreferences.edit().clear().apply();
+            return;
+        }
+
+        // Proceed with auto-login only if not explicitly logged out
         boolean isRemembered = sharedPreferences.getBoolean("isRemembered", false);
         if (isRemembered) {
             String savedUsername = sharedPreferences.getString("username", "");
@@ -77,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             passwordEditText.setText(savedPassword);
             rememberMeCheckbox.setChecked(true);
 
-            // Auto-login if credentials exist
+            // Auto-login only if credentials exist
             if (!savedUsername.isEmpty() && !savedPassword.isEmpty()) {
                 attemptLogin();
             }
@@ -94,17 +108,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (dbHelper.checkUser(username, password)) {
+            // Clear any previous explicit logout flag
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("explicitLogout");
+
             // Save login state if "Remember Me" is checked
             if (rememberMeCheckbox.isChecked()) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("isRemembered", true);
                 editor.putString("username", username);
                 editor.putString("password", password);
-                editor.apply();
             } else {
-                // Clear saved credentials if not remembering
-                sharedPreferences.edit().clear().apply();
+                editor.putBoolean("isRemembered", false);
             }
+            editor.apply();
 
             // Proceed to dashboard
             if (dbHelper.isAdmin(username)) {
@@ -135,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
+
+
 
     @Override
     public void onBackPressed() {
