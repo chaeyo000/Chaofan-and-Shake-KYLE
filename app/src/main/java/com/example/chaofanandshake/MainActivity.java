@@ -137,20 +137,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Signup, Login, Forgot Password
-    public void onClick(View view) {
-        Intent intent;
-        if (view.getId() == R.id.signupbtn) {
-            intent = new Intent(this, SignupActivity.class);
-        } else if (view.getId() == R.id.loginbtn) {
-            intent = new Intent(this, MainActivity.class);
-        } else if (view.getId() == R.id.btnForgotPassword) {
-            intent = new Intent(this, ForgotPasswordActivity.class);
-        } else {
-            return;
+        public void onClick(View view) {
+            Intent intent;
+            if (view.getId() == R.id.signupbtn) {
+                intent = new Intent(this, SignupActivity.class);
+            } else if (view.getId() == R.id.loginbtn) {
+                intent = new Intent(this, MainActivity.class);
+            } else if (view.getId() == R.id.btnForgotPassword) {
+                intent = new Intent(this, ForgotPasswordActivity.class);
+            } else {
+                return;
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-    }
 
 
 

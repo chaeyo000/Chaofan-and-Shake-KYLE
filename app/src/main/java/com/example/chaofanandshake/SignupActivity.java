@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,6 +42,12 @@ public class SignupActivity extends AppCompatActivity {
 
         originalTypeface = passwordEditText.getTypeface();
 
+        TextView termsAndCondiTextView = findViewById(R.id.termsandcondi);
+        termsAndCondiTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(SignupActivity.this, TermsandcondiActivity.class);
+            startActivity(intent);
+        });
+
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
 
@@ -64,6 +71,9 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
             return false;
+
+
+
         });
 
         confirmPasswordEditText.setOnTouchListener((v, event) -> {
@@ -124,6 +134,8 @@ public class SignupActivity extends AppCompatActivity {
 
             }
 
+
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 15 ) {
@@ -138,6 +150,8 @@ public class SignupActivity extends AppCompatActivity {
 
             }
         });
+
+
 
 
         // Pag set ng OnClickListener para sa Sign Up button
@@ -206,5 +220,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
         });
+
+
     }
 }

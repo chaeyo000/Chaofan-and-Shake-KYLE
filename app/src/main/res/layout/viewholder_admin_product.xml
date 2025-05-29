@@ -54,21 +54,25 @@
                 android:textSize="14sp"/>
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textContainer"
             android:layout_alignParentEnd="true"
             android:backgroundTint="@color/red"
+            app:icon="@drawable/ic_delete"
+            app:iconTint="@color/white"
             android:textColor="@color/white"
             android:layout_marginTop="8dp"
             android:text="Delete"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
+            app:icon="@drawable/ic_edit"
+            app:iconTint="@color/white"
             android:layout_height="wrap_content"
             android:layout_below="@id/textContainer"
             android:layout_toStartOf="@id/deleteButton"

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chaofanandshake.Domain.ProductDomain;
 import com.example.chaofanandshake.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -101,11 +102,11 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        Button editButton;
+        MaterialButton editButton;
 
         TextView title, fee, description;
         ImageView imageView;
-        Button deleteButton;
+        MaterialButton deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
