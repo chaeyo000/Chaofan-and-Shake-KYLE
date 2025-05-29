@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,12 +33,14 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.chaofanandshake.Adapter.BannerAdapter;
+import com.example.chaofanandshake.Adapter.OrderAdapter;
 import com.example.chaofanandshake.Adapter.ProductAdapter;
 import com.example.chaofanandshake.Domain.Order;
 import com.example.chaofanandshake.Domain.ProductDomain;
@@ -200,21 +203,26 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
 
     private void showReadyOrdersDialog(List<Order> orders) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Orders Ready for Pickup");
+        builder.setTitle(Html.fromHtml("<font color='#FF5722'>Orders Ready for Pickup</font>"));
 
-        // Create a simple list of order summaries
+        // Create styled items
         String[] items = new String[orders.size()];
         for (int i = 0; i < orders.size(); i++) {
             Order order = orders.get(i);
-            items[i] = order.getCustomerName() + " - " + order.getOrderSummary();
+            items[i] = Html.fromHtml("<b>" + order.getCustomerName() + "</b><br>" +
+                    "<small>" + order.getOrderSummary() + "</small>").toString();
         }
 
-        builder.setItems(items, (dialog, which) -> {
-            // Optional: Handle when a specific order is clicked
-        });
+        builder.setItems(items, (dialog, which) -> {});
 
+        // Custom positive button
         builder.setPositiveButton("OK", null);
-        builder.show();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Customize after show to ensure buttons exist
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#FF5722"));
     }
 
     private void checkForNotifications() {

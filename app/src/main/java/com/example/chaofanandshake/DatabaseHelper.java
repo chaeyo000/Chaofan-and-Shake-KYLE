@@ -370,30 +370,51 @@
             public List<Order> getAllOrders() {
                 List<Order> orderList = new ArrayList<>();
                 SQLiteDatabase db = this.getReadableDatabase();
-                Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ORDERS, null);
+                Cursor cursor = null;
 
-                if (cursor != null) {
-                    try {
-                        while (cursor.moveToNext()) {
+                try {
+                    cursor = db.query(
+                            TABLE_ORDERS,
+                            new String[]{
+                                    "id",
+                                    "name",
+                                    "username",
+                                    "order_summary",
+                                    "phone_number",
+                                    "payment_method",
+                                    "total_price",
+                                    "status",
+                                    "date",
+                                    "orderPlacedTimestamp"
+                            },
+                            null, null, null, null, "date DESC"
+                    );
+
+                    if (cursor != null && cursor.moveToFirst()) {
+                        do {
                             Order order = new Order(
                                     cursor.getInt(cursor.getColumnIndexOrThrow("id")),
                                     cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                                    cursor.getString(cursor.getColumnIndexOrThrow("order_summary")),
-                                    cursor.getString(cursor.getColumnIndexOrThrow("phone_number")), // Note: using phone_number
                                     cursor.getString(cursor.getColumnIndexOrThrow("username")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("order_summary")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("phone_number")),
                                     cursor.getString(cursor.getColumnIndexOrThrow("payment_method")),
                                     cursor.getDouble(cursor.getColumnIndexOrThrow("total_price")),
-                                    cursor.getString(cursor.getColumnIndexOrThrow("date")),
                                     cursor.getString(cursor.getColumnIndexOrThrow("status")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("date")),
                                     cursor.getLong(cursor.getColumnIndexOrThrow("orderPlacedTimestamp"))
                             );
                             orderList.add(order);
-                        }
-                    } finally {
+                        } while (cursor.moveToNext());
+                    }
+                } catch (Exception e) {
+                    Log.e("DatabaseHelper", "Error getting orders", e);
+                } finally {
+                    if (cursor != null) {
                         cursor.close();
                     }
+                    db.close();
                 }
-                db.close();
                 return orderList;
             }
 

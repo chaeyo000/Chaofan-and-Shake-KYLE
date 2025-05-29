@@ -2,6 +2,7 @@ package com.example.chaofanandshake;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -20,16 +21,14 @@ public class OrderhistoryActivity extends AppCompatActivity {
     private OrderHistoryAdapter adapter;
     private DatabaseHelper dbHelper;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderhistory);
-        dbHelper = new DatabaseHelper(this);
-
-
 
         backBtn = findViewById(R.id.backBtn);
+        orderHistoryRecyclerView = findViewById(R.id.orderHistoryRecyclerView);
+        dbHelper = new DatabaseHelper(this);
 
         // Back button
         backBtn.setOnClickListener(v -> {
@@ -38,25 +37,24 @@ public class OrderhistoryActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        orderHistoryRecyclerView = findViewById(R.id.orderHistoryRecyclerView);
-        dbHelper = new DatabaseHelper(this);
-
         // Set layout manager
         orderHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Get all orders
-        List<Order> orderList = dbHelper.getAllOrders();
+        try {
+            // Get all orders
+            List<Order> orderList = dbHelper.getAllOrders();
 
-        if (orderList.isEmpty()) {
-            Toast.makeText(this, "No order history found.", Toast.LENGTH_SHORT).show();
+            if (orderList == null || orderList.isEmpty()) {
+                Toast.makeText(this, "No order history found.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Set adapter
+            adapter = new OrderHistoryAdapter(orderList, dbHelper);
+            orderHistoryRecyclerView.setAdapter(adapter);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error loading order history", Toast.LENGTH_SHORT).show();
+            Log.e("OrderHistory", "Error loading orders", e);
         }
-
-        // Set adapter
-        adapter = new OrderHistoryAdapter(orderList, dbHelper);
-        orderHistoryRecyclerView.setAdapter(adapter);
     }
-
-
-
 }
