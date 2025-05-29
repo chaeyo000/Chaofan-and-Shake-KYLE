@@ -57,8 +57,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.tvTotalAmount.setText("Total: ₱" + String.format("%.2f", order.getTotalPrice()));
         holder.tvPaymentMethod.setText("Payment: " + order.getPaymentMethod());
         holder.tvCustomerName.setText("Name: " + order.getCustomerName());
-        holder.tvPhone.setText("Phone: " + order.getPhoneNumber());
         holder.tvUsername.setText("Username: " + order.getUsername());
+        holder.tvPhone.setText("Phone: " + order.getPhoneNumber());
 
         String orderStatus = order.getStatus();
 

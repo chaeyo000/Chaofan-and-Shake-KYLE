@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,7 +37,6 @@ public class AccountActivity extends AppCompatActivity {
 
         Log.d("AccountActivity", "Username received: " + currentUsername);
 
-        // Initialize views
         backBtn = findViewById(R.id.backBtn);
         ivEditName = findViewById(R.id.ivEditName);
         ivEditUsername = findViewById(R.id.ivEditUsername);
@@ -75,13 +76,18 @@ public class AccountActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnDelete = dialogView.findViewById(R.id.btnDelete);
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnDelete.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUserByUsername(currentUsername);
+            boolean deleted = dbHelper.deleteUserAndOrders(currentUsername);
             if (deleted) {
                 Toast.makeText(AccountActivity.this, "Account deleted", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
@@ -114,12 +120,11 @@ public class AccountActivity extends AppCompatActivity {
             editText.setText(updatedValue);
             updateDatabase(dbField, updatedValue);
 
-            // Update SharedPreferences para ma-reflect sa ibang activities
             SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
 
             switch (dbField) {
                 case "username":
-                    currentUsername = updatedValue; // Update currentUsername sa activity
+                    currentUsername = updatedValue;
                     editor.putString("username", updatedValue);
                     break;
                 case "phone":
@@ -128,13 +133,9 @@ public class AccountActivity extends AppCompatActivity {
                 case "name":
                     editor.putString("name", updatedValue);
                     break;
-                case "password":
-                    // Optional: save password if needed (usually avoid)
-                    break;
             }
             editor.apply();
 
-            // Always return updated username sa result para updated username ma-propagate
             Intent resultIntent = new Intent();
             resultIntent.putExtra("newUsername", currentUsername);
             setResult(RESULT_OK, resultIntent);
@@ -170,13 +171,11 @@ public class AccountActivity extends AppCompatActivity {
             etPhone.setText(userData[2]);
             etPassword.setText(userData[3]);
 
-            // Disable editing by default
             etName.setEnabled(false);
             etUsername.setEnabled(false);
             etPhone.setEnabled(false);
             etPassword.setEnabled(false);
 
-            // Save loaded data to SharedPreferences para accessible sa ibang activities
             SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
             editor.putString("name", userData[0]);
             editor.putString("username", userData[1]);

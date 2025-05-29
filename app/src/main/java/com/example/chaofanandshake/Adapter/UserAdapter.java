@@ -26,6 +26,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public static final int EDIT_USER_REQUEST_CODE = 1001;
 
     public void update(List<User> users) {
+        this.userList = users;
+        notifyDataSetChanged();
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
@@ -66,18 +68,27 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.nameText.setText(user.getName());
         holder.phoneText.setText(user.getPhone());
 
+        // DELETE button logic (fixed)
         holder.deleteButton.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUserByUsername(user.getUsername());
-            if (deleted) {
-                userList.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, userList.size());
-                Toast.makeText(context, "User deleted", Toast.LENGTH_SHORT).show();
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                User currentUser = userList.get(currentPosition);
+                boolean deleted = dbHelper.deleteUserAndOrders(currentUser.getUsername());
+
+                if (deleted) {
+                    userList.remove(currentPosition);
+                    notifyItemRemoved(currentPosition);
+                    notifyItemRangeChanged(currentPosition, userList.size());
+                    Toast.makeText(context, "User deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(context, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Invalid position", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // EDIT button logic
         holder.editButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditUserActivity.class);
             intent.putExtra("userId", user.getId());
@@ -99,7 +110,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return userList != null ? userList.size() : 0;
     }
 
-    // ✅ Ito ang tatawagin sa ActivityUsers para ma-update ang list after edit
+    // Tawagin mo 'to sa ActivityUsers after editing a user
     public void setUserList(List<User> newUsers) {
         this.userList = newUsers;
         notifyDataSetChanged();

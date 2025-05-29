@@ -255,11 +255,30 @@
                 return rowsUpdated > 0;
             }
 
-            public boolean deleteUserByUsername(String username) {
+            public boolean deleteUserAndOrders(String username) {
                 SQLiteDatabase db = this.getWritableDatabase();
-                int rowsDeleted = db.delete(TABLE_USERS, COLUMN_USERNAME + " = ?", new String[]{username});
-                return rowsDeleted > 0;
+                db.beginTransaction();
+                try {
+                    // Delete orders linked to the user
+                    db.delete(TABLE_ORDERS, "username = ?", new String[]{username});
+
+                    // Delete the user
+                    int rowsDeleted = db.delete(TABLE_USERS, COLUMN_USERNAME + " = ?", new String[]{username});
+
+                    if (rowsDeleted > 0) {
+                        db.setTransactionSuccessful(); // commit transaction
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                } finally {
+                    db.endTransaction(); // end transaction
+                }
             }
+
 
             public boolean updateUser(int id, String name, String username, String phone, String role) {
                 SQLiteDatabase db = this.getWritableDatabase();
@@ -272,8 +291,6 @@
                 int rowsUpdated = db.update(TABLE_USERS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
                 return rowsUpdated > 0;
             }
-
-
 
             public boolean checkUserPhone(String username, String phone) {
                 SQLiteDatabase db = this.getReadableDatabase();
@@ -343,7 +360,6 @@
                 return users;
             }
 
-
             public boolean insertOrder(String summary, String name, String phone, String username,
                                        String paymentMethod, double totalPrice, long timestamp) {
                 SQLiteDatabase db = this.getWritableDatabase();
@@ -360,11 +376,6 @@
                 db.close();
                 return result != -1;
             }
-
-
-
-
-
 
             @SuppressLint("Range")
             public List<Order> getAllOrders() {
@@ -500,7 +511,4 @@
                 db.close();
                 return orderList;
             }
-
-
-
         }

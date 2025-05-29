@@ -84,6 +84,18 @@
             totalUsersCount.setText(String.valueOf(userCount));
             totalOrdersCount.setText(String.valueOf(orderCount));
 
+            totalUsersCount.setOnClickListener(v -> {
+                // Halimbawa: mag-open ng Activity para makita lahat ng orders
+                Intent intent = new Intent(AdminDashboardActivity.this, ActivityUsers.class);
+                startActivity(intent);
+            });
+
+            totalOrdersCount.setOnClickListener(v -> {
+                // Halimbawa: mag-open ng Activity para makita lahat ng orders
+                Intent intent = new Intent(AdminDashboardActivity.this, ActivityOrder.class);
+                startActivity(intent);
+            });
+
 
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);

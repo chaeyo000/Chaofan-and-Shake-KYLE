@@ -2,15 +2,15 @@ package com.example.chaofanandshake.Domain;
 
 public class User {
     private int id;
+    private String name;
     private String username;
     private String phone;
-    private String name;
 
-    public User(int id, String username, String phone, String name) {
+    public User(int id, String name, String username, String phone) {
         this.id = id;
+        this.name = name;
         this.username = username;
         this.phone = phone;
-        this.name = name;
     }
 
     public int getId() {

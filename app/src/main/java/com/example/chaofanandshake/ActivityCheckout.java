@@ -98,6 +98,7 @@ public class ActivityCheckout extends AppCompatActivity {
 
     private void calculateTotalAndSummary() {
         StringBuilder summaryBuilder = new StringBuilder();
+        totalPrice = 0;  // reset bago kalkulahin ulit
 
         for (ProductDomain product : cartList) {
             double subtotal = product.getPrice() * product.getQuantity();
@@ -127,17 +128,35 @@ public class ActivityCheckout extends AppCompatActivity {
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
 
             if (selectedPaymentId == -1) {
-                Toast.makeText(this, "Select a payment method", Toast.LENGTH_SHORT).show();
+                // SHOW CUSTOM SIMPLE DIALOG (payment error)
+                showPaymentErrorDialog();
                 return;
             }
 
-            // Show confirmation dialog
+            // SHOW confirmation dialog before placing order
             showConfirmationDialog();
         });
     }
 
+    private void showPaymentErrorDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_payment_error, null);
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        Button btnClose = dialogView.findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
     private void showConfirmationDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_checkout    , null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_checkout, null);
         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)

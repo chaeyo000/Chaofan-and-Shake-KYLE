@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent">
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:id="@+id/dialogRoot"
-        android:layout_width="300dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
@@ -14,13 +14,12 @@
         android:layout_gravity="center"
         android:gravity="center">
 
-
         <TextView
             android:id="@+id/dialogMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="You need to add at least one item to your cart before proceeding to checkout."
-            android:textColor="@color/gray2"
+            android:text="Please select a payment method before proceeding."
+            android:textColor="#666666"
             android:textSize="16sp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
@@ -30,8 +29,8 @@
             android:id="@+id/btnClose"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:text="Ok"
-            android:textColor="@color/meduimblack"
+            android:text="OK"
+            android:textColor="#000000"
             android:textAllCaps="false"
             android:background="@drawable/btn_light" />
     </LinearLayout>

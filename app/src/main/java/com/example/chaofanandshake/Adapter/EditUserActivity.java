@@ -1,12 +1,14 @@
 package com.example.chaofanandshake.Adapter;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
 
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import com.example.chaofanandshake.R;
 
 public class EditUserActivity extends AppCompatActivity {
 
+    ImageView backBtn;
     private EditText etEditName, etEditUsername, etEditPhone;
     private AutoCompleteTextView autoCompleteRole;
     private Button btnSaveEdit;
@@ -29,6 +32,9 @@ public class EditUserActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+
+
+        backBtn = findViewById(R.id.backBtn);
         etEditName = findViewById(R.id.etEditName);
         etEditUsername = findViewById(R.id.etEditUsername);
         etEditPhone = findViewById(R.id.etEditPhone);
@@ -37,6 +43,8 @@ public class EditUserActivity extends AppCompatActivity {
         String[] roles = {"user", "admin"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
         autoCompleteRole.setAdapter(adapter);
+
+        backBtn.setOnClickListener(view -> onBackPressed());
 
         // Show dropdown on click
         autoCompleteRole.setOnClickListener(v -> autoCompleteRole.showDropDown());
@@ -54,6 +62,7 @@ public class EditUserActivity extends AppCompatActivity {
         etEditName.setText(currentName);
         etEditUsername.setText(currentUsername);
         etEditPhone.setText(currentPhone);
+        autoCompleteRole.setText(currentRole, false);
 
         btnSaveEdit.setOnClickListener(v -> {
             String newName = etEditName.getText().toString().trim();
@@ -72,10 +81,10 @@ public class EditUserActivity extends AppCompatActivity {
 
                 // Prepare data to return to caller (AdminDashboard)
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("updatedRole", newRole);
                 resultIntent.putExtra("updatedName", newName);
                 resultIntent.putExtra("updatedUsername", newUsername);
                 resultIntent.putExtra("updatedPhone", newPhone);
+                resultIntent.putExtra("updatedRole", newRole);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
