@@ -44,6 +44,17 @@
                     app:titleTextColor="@color/transparent" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/notif"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/notify"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/cartbtn"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.589" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/cartbtn"
                     android:layout_width="51dp"
                     android:layout_height="50dp"

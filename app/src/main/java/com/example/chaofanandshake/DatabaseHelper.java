@@ -26,7 +26,7 @@
         public class DatabaseHelper extends SQLiteOpenHelper {
 
             private static final String DATABASE_NAME = "ChaofanUserDb";
-            private static final int DATABASE_VERSION = 7;
+            private static final int DATABASE_VERSION = 8;
 
             public static final String TABLE_USERS = "users";
             private static final String COLUMN_ID = "id";
@@ -348,18 +348,19 @@
                                        String paymentMethod, double totalPrice, long timestamp) {
                 SQLiteDatabase db = this.getWritableDatabase();
                 ContentValues values = new ContentValues();
-                values.put("order_summary", summary);      // <-- corrected column name
+                values.put("order_summary", summary);
                 values.put("name", name);
                 values.put("phone_number", phone);
                 values.put("username", username);
-                values.put("payment_method", paymentMethod);  // <-- corrected column name
-                values.put("total_price", totalPrice);         // <-- corrected column name
+                values.put("payment_method", paymentMethod);
+                values.put("total_price", totalPrice);
                 values.put("orderPlacedTimestamp", timestamp);
 
-                long result = db.insert("orders", null, values);
+                long result = db.insert(TABLE_ORDERS, null, values);
                 db.close();
                 return result != -1;
             }
+
 
 
 
@@ -371,25 +372,27 @@
                 SQLiteDatabase db = this.getReadableDatabase();
                 Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ORDERS, null);
 
-                if (cursor.moveToFirst()) {
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndex("id"));
-                        String name = cursor.getString(cursor.getColumnIndex("name"));
-                        String summary = cursor.getString(cursor.getColumnIndex("order_summary"));
-                        String phone = cursor.getString(cursor.getColumnIndex("phone"));
-                        String username = cursor.getString(cursor.getColumnIndex("username"));
-                        String paymentMethod = cursor.getString(cursor.getColumnIndex("payment_method"));
-                        double totalPrice = cursor.getDouble(cursor.getColumnIndex("total_price"));
-                        String date = cursor.getString(cursor.getColumnIndex("date"));
-                        long orderPlacedTimestamp = cursor.getLong(cursor.getColumnIndex("orderPlacedTimestamp"));  // <-- get timestamp
-                        String status = cursor.getString(cursor.getColumnIndex("status"));
-
-
-                        orderList.add(new Order(id, name, summary, phone, username, paymentMethod, totalPrice, date, status, orderPlacedTimestamp));
-                    } while (cursor.moveToNext());
+                if (cursor != null) {
+                    try {
+                        while (cursor.moveToNext()) {
+                            Order order = new Order(
+                                    cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("order_summary")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("phone_number")), // Note: using phone_number
+                                    cursor.getString(cursor.getColumnIndexOrThrow("username")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("payment_method")),
+                                    cursor.getDouble(cursor.getColumnIndexOrThrow("total_price")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("date")),
+                                    cursor.getString(cursor.getColumnIndexOrThrow("status")),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow("orderPlacedTimestamp"))
+                            );
+                            orderList.add(order);
+                        }
+                    } finally {
+                        cursor.close();
+                    }
                 }
-
-                cursor.close();
                 db.close();
                 return orderList;
             }
@@ -440,6 +443,41 @@
 
                 db.close();
                 return rowsAffected > 0;
+            }
+
+            public List<Order> getOrdersByStatus(String status) {
+                List<Order> orderList = new ArrayList<>();
+                SQLiteDatabase db = this.getReadableDatabase();
+
+                Cursor cursor = db.query(
+                        TABLE_ORDERS,
+                        null,
+                        "status = ?",
+                        new String[]{status},
+                        null, null, null
+                );
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        Order order = new Order(
+                                cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("order_summary")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("phone_number")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("username")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("payment_method")),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow("total_price")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("date")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("status")),
+                                cursor.getLong(cursor.getColumnIndexOrThrow("orderPlacedTimestamp"))
+                        );
+                        orderList.add(order);
+                    } while (cursor.moveToNext());
+                }
+
+                cursor.close();
+                db.close();
+                return orderList;
             }
 
 

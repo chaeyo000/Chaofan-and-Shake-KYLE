@@ -1,5 +1,6 @@
 package com.example.chaofanandshake;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.chaofanandshake.NotificationHelper;
+
+
 
 import com.example.chaofanandshake.Domain.Order;
 import com.google.android.material.button.MaterialButton;
@@ -16,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder> {
 
     private List<Order> orderList;
     private long latestOrderTimestamp;
     private DatabaseHelper dbHelper;
-
 
     public OrderHistoryAdapter(List<Order> orderList, DatabaseHelper dbHelper) {
         this.orderList = orderList;
@@ -45,6 +49,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
+        Context context = holder.itemView.getContext();
+        NotificationHelper notificationHelper = new NotificationHelper(context);
 
         holder.tvOrderDate.setText("Order Date: " + order.getDate());
         holder.tvOrderItems.setText("Items: " + order.getOrderSummary());
@@ -109,6 +115,17 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     public void onFinish() {
                         holder.tvOrderStatus.setText("Ready for pickup");
                         holder.btnCompleteOrder.setVisibility(View.VISIBLE);
+
+                        // Update status in database
+                        if (dbHelper != null) {
+                            dbHelper.updateOrderStatus(order.getId(), "Ready for pickup");
+                        }
+
+                        // Send notification
+                        notificationHelper.sendNotification(
+                                "Order Ready",
+                                "Your order is ready for pickup!"
+                        );
                     }
                 }.start();
 

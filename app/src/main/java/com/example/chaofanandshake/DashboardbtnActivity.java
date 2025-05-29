@@ -1,7 +1,11 @@
 package com.example.chaofanandshake;
 
+import androidx.core.content.res.ResourcesCompat;
+import android.content.res.Resources;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,9 +24,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,7 +39,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.chaofanandshake.Adapter.BannerAdapter;
 import com.example.chaofanandshake.Adapter.ProductAdapter;
+import com.example.chaofanandshake.Domain.Order;
 import com.example.chaofanandshake.Domain.ProductDomain;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -52,6 +60,8 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
     private TextView navUsername;
     private String currentUsername;
 
+    private MaterialButton notifButton;
+
     private ViewPager2 bannerViewPager;
     private Handler sliderHandler = new Handler();
     private Runnable sliderRunnable;
@@ -64,8 +74,21 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        notifButton = findViewById(R.id.notif);
         dbHelper = new DatabaseHelper(this);
         welcomeTextView = findViewById(R.id.welcomeTextView);
+
+        notifButton.setOnClickListener(v -> {
+            // Show orders that are ready for pickup
+            List<Order> readyOrders = dbHelper.getOrdersByStatus("Ready for pickup");
+
+            if (readyOrders.isEmpty()) {
+                Toast.makeText(this, "No orders ready for pickup", Toast.LENGTH_SHORT).show();
+            } else {
+                // Create and show a dialog with ready orders
+                showReadyOrdersDialog(readyOrders);
+            }
+        });
 
         // Setup Navigation Drawer
         toolbar = findViewById(R.id.toolbar);
@@ -175,6 +198,62 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         });
     }
 
+    private void showReadyOrdersDialog(List<Order> orders) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Orders Ready for Pickup");
+
+        // Create a simple list of order summaries
+        String[] items = new String[orders.size()];
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            items[i] = order.getCustomerName() + " - " + order.getOrderSummary();
+        }
+
+        builder.setItems(items, (dialog, which) -> {
+            // Optional: Handle when a specific order is clicked
+        });
+
+        builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+
+    private void checkForNotifications() {
+        List<Order> readyOrders = dbHelper.getOrdersByStatus("Ready for pickup");
+        if (!readyOrders.isEmpty()) {
+            try {
+                // Try to set the badge icon
+                notifButton.setIcon(ResourcesCompat.getDrawable(
+                        getResources(),
+                        R.drawable.notify,
+                        null
+                ));
+            } catch (Resources.NotFoundException e) {
+                // Fallback to regular icon if badge doesn't exist
+                notifButton.setIcon(ResourcesCompat.getDrawable(
+                        getResources(),
+                        R.drawable.notify,
+                        null
+                ));
+            }
+        } else {
+            // No notifications, use regular icon
+            notifButton.setIcon(ResourcesCompat.getDrawable(
+                    getResources(),
+                    R.drawable.notify,
+                    null
+            ));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DELAY);
+        updateUserInfo();
+        checkForNotifications();
+    }
+
+    // Rest of your methods remain the same...
     private void updateUserInfo() {
         SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String name = prefs.getString("name", "");
@@ -247,13 +326,6 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
 
         ProductAdapter adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DELAY);
-        updateUserInfo();
     }
 
     @Override
