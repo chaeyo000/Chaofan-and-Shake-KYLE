@@ -273,6 +273,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
             startActivity(intent);
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
+        } else if (id == R.id.order) {
+            Intent intent = new Intent(this, ActivityOrder.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         } else if (id == R.id.logout) {
             Toast.makeText(this, "You have been Logged Out", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);

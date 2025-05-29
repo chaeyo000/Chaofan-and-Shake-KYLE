@@ -19,6 +19,12 @@
             android:title="Users"
             android:checked="true"/>
 
+        <item
+            android:id="@+id/order"
+            android:icon="@drawable/order"
+            android:title="Orders"
+            android:checked="true"/>
+
 
         <item
             android:id="@+id/logout"

@@ -15,7 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChaofanAndShake"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ActivityOrderTracking"
+            android:exported="false" />
+        <activity
+            android:name=".activity_order_tracking"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityOrder"
+            android:exported="false" />
         <activity
             android:name=".ActivityUsers"
             android:exported="false" />
@@ -43,28 +51,40 @@
         <activity
             android:name=".ProductdetailsActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".SignupActivity" android:exported="false" />
+        <activity
+            android:name=".SignupActivity"
+            android:exported="false" />
         <activity
             android:name=".DashboardbtnActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".CartbtnActivity"
             android:exported="false" />
-        <activity android:name=".CartbtnActivity" android:exported="false" />
-        <activity android:name=".ContactActivity" android:exported="false" />
-        <activity android:name=".AccountActivity" android:exported="false" />
-        <activity android:name=".AdminDashboardActivity" android:exported="false" />
-        <activity android:name=".ActivityCheckout" android:exported="false" />
-        <activity android:name=".Adapter.EditUserActivity" android:exported="false" />
-
+        <activity
+            android:name=".ContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityCheckout"
+            android:exported="false" />
+        <activity
+            android:name=".Adapter.EditUserActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
