@@ -20,6 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/dashboard_primary"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="23dp"
             app:titleTextColor="@color/black">
 
             <com.google.android.material.button.MaterialButton

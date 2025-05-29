@@ -3,6 +3,8 @@ package com.example.chaofanandshake;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,13 @@ public class ContactActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        WebView webView = findViewById(R.id.webViewMap);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("https://maps.app.goo.gl/3fkyr8qch3GJka2h9");
+        webView.setWebViewClient(new WebViewClient());
+
+
     }
 
     @Override
