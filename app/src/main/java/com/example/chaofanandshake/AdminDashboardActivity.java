@@ -1,10 +1,14 @@
     package com.example.chaofanandshake;
 
+
+
     import android.Manifest;
     import android.content.Context;
     import android.content.Intent;
     import android.content.pm.PackageManager;
+    import android.database.Cursor;
     import android.graphics.Bitmap;
+    import com.example.chaofanandshake.DatabaseHelper;
     import android.graphics.BitmapFactory;
     import android.net.Uri;
     import android.os.Build;
@@ -16,6 +20,7 @@
     import android.widget.Button;
     import android.widget.EditText;
     import android.widget.ImageView;
+    import android.widget.TextView;
     import android.widget.Toast;
 
     import androidx.annotation.NonNull;
@@ -63,9 +68,21 @@
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_admin_dashboard);
+            dbHelper = new DatabaseHelper(this);
+
+
+
 
             Button addProductBtn = findViewById(R.id.addProductButton);
             addProductBtn.setOnClickListener(v -> showAddProductDialog());
+            TextView totalOrdersCount = findViewById(R.id.totalOrdersCount);
+            TextView totalUsersCount = findViewById(R.id.totalUsersCount);
+            int userCount = getCount(DatabaseHelper.TABLE_USERS);
+            int orderCount = getCount(DatabaseHelper.TABLE_ORDERS);
+
+            totalUsersCount.setText(String.valueOf(userCount));
+            totalOrdersCount.setText(String.valueOf(orderCount));
+
 
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -79,12 +96,45 @@
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
 
-            dbHelper = new DatabaseHelper(this);
+
+            int count = getCount("your_table_name");
+
 
             productsRecyclerView = findViewById(R.id.productsRecyclerView);
             productsRecyclerView.setLayoutManager(new GridLayoutManager(this, 1));
             loadProducts();
         }
+
+
+        private int getCount(String tableName) {
+            int count = 0;
+            Cursor cursor = null;
+            try {
+                // First check if table exists
+                boolean tableExists = dbHelper.doesTableExist(tableName);
+                Log.d("DatabaseCheck", "Table " + tableName + " exists: " + tableExists);
+
+                if (!tableExists) {
+                    Log.e("DatabaseError", "Table " + tableName + " does not exist!");
+                    return 0;
+                }
+
+                cursor = dbHelper.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM " + tableName, null);
+                if (cursor.moveToFirst()) {
+                    count = cursor.getInt(0);
+                    Log.d("DatabaseQuery", "Count for " + tableName + ": " + count);
+                }
+            } catch (Exception e) {
+                Log.e("DatabaseError", "Error counting rows in " + tableName, e);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return count;
+        }
+
+
 
         private void loadProducts() {
             productList = dbHelper.getAllProducts();
@@ -120,7 +170,7 @@
 
         private void showEditProductDialog(ProductDomain product, int position) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_product, null);
+            View dialogView = getLayoutInflater().inflate(R.layout. dialog_add_product, null);
             builder.setView(dialogView);
 
             productImageView = dialogView.findViewById(R.id.productImage);
