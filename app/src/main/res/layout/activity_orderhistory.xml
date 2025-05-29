@@ -1,11 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderhistoryActivity">
+    android:background="@color/dashboard_primary">
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  <!-- 🔙 Top Bar -->
+  <LinearLayout
+      android:id="@+id/topBar"
+      android:layout_width="match_parent"
+      android:layout_height="110dp"
+      android:elevation="4dp"
+      android:paddingTop="50dp"
+      android:orientation="horizontal"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/back_icon"
+        android:contentDescription="Back" />
+
+    <TextView
+        android:id="@+id/tvOrderHistoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order History"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:textColor="#000000" />
+  </LinearLayout>
+
+  <!-- 📜 Order List -->
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/orderHistoryRecyclerView"
+      android:layout_below="@id/topBar"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="16dp"
+      android:clipToPadding="false"
+      android:layout_marginBottom="8dp"
+/>
+</RelativeLayout>

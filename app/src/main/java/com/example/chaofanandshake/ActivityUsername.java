@@ -43,6 +43,27 @@ public class ActivityUsername extends AppCompatActivity {
         layoutUsername = findViewById(R.id.layoutUsername);
         btnSaveName = findViewById(R.id.btnSaveName);
 
+        etNewUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 15 ) {
+                    etNewUsername.setText(charSequence.subSequence(0, 15));
+                    etNewUsername.setSelection(15);
+                    Toast.makeText(ActivityUsername .this, "Username can be up to 15 characters only.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         // REMOVE ICON ERROR
         layoutUsername.setErrorIconDrawable(null);
 
@@ -67,14 +88,10 @@ public class ActivityUsername extends AppCompatActivity {
         });
 
 
-        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        SharedPreferences.Editor edit = userPrefs.edit();
+
         btnSaveName.setOnClickListener(v -> {
             String input = etNewUsername.getText().toString().trim();
             if (validateAndShowErrors(input)) {
-                String getUsername = etNewUsername.getText().toString().trim();
-                edit.putString("username", getUsername);
-                edit.apply();
                 showSaveConfirmationDialog(input);
             }
         });
@@ -99,8 +116,13 @@ public class ActivityUsername extends AppCompatActivity {
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
+        SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor edit = userPrefs.edit();
         btnSave.setOnClickListener(v -> {
             updateUsernameInDatabase(newUsername);
+            String getUsername = etNewUsername.getText().toString().trim();
+            edit.putString("username", getUsername);
+            edit.apply();
             dialog.dismiss();
         });
 
@@ -121,12 +143,6 @@ public class ActivityUsername extends AppCompatActivity {
     private String validateUsername(String username) {
         StringBuilder errors = new StringBuilder();
 
-        if (!username.matches(".*[A-Z].*")) {
-            errors.append("• At least one uppercase letter (A-Z)\n");
-        }
-        if (!username.matches(".*[a-z].*")) {
-            errors.append("• At least one lowercase letter (a-z)\n");
-        }
         if (username.contains(" ")) {
             errors.append("• Should not contain spaces\n");
         }

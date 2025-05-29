@@ -18,9 +18,7 @@ public class EditUserActivity extends AppCompatActivity {
 
     private EditText etEditName, etEditUsername, etEditPhone;
     private AutoCompleteTextView autoCompleteRole;
-
     private Button btnSaveEdit;
-
     private DatabaseHelper dbHelper;
     private int userId; // Use id for updating
 
@@ -40,12 +38,8 @@ public class EditUserActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
         autoCompleteRole.setAdapter(adapter);
 
-// Show dropdown on click
+        // Show dropdown on click
         autoCompleteRole.setOnClickListener(v -> autoCompleteRole.showDropDown());
-
-
-
-
 
         // Get user data from Intent
         userId = getIntent().getIntExtra("userId", -1);
@@ -57,7 +51,6 @@ public class EditUserActivity extends AppCompatActivity {
             autoCompleteRole.setText(currentRole, false);
         } // Set current role in dropdown
 
-
         etEditName.setText(currentName);
         etEditUsername.setText(currentUsername);
         etEditPhone.setText(currentPhone);
@@ -66,11 +59,6 @@ public class EditUserActivity extends AppCompatActivity {
             String newName = etEditName.getText().toString().trim();
             String newUsername = etEditUsername.getText().toString().trim();
             String newPhone = etEditPhone.getText().toString().trim();
-
-            if (newName.isEmpty() || newUsername.isEmpty() || newPhone.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                return;
-            }
             String newRole = autoCompleteRole.getText().toString().trim();
 
             if (newName.isEmpty() || newUsername.isEmpty() || newPhone.isEmpty() || newRole.isEmpty()) {
@@ -78,11 +66,11 @@ public class EditUserActivity extends AppCompatActivity {
                 return;
             }
 
-
             boolean updated = dbHelper.updateUser(userId, newName, newUsername, newPhone, newRole);
             if (updated) {
                 Toast.makeText(this, "User updated", Toast.LENGTH_SHORT).show();
-                // Return updated data to caller
+
+                // Prepare data to return to caller (AdminDashboard)
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("updatedRole", newRole);
                 resultIntent.putExtra("updatedName", newName);
@@ -96,4 +84,3 @@ public class EditUserActivity extends AppCompatActivity {
         });
     }
 }
-

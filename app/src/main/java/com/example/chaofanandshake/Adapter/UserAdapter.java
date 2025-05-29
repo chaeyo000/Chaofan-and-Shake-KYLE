@@ -23,12 +23,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private final Context context;
     private final DatabaseHelper dbHelper;
 
+    public static final int EDIT_USER_REQUEST_CODE = 1001;
+
+    public void update(List<User> users) {
+    }
+
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         final TextView usernameText;
         final TextView phoneText;
         final TextView nameText;
         final Button deleteButton;
-        final Button editButton;  // added edit button
+        final Button editButton;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -36,7 +41,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             nameText = itemView.findViewById(R.id.nameText);
             phoneText = itemView.findViewById(R.id.phoneText);
             deleteButton = itemView.findViewById(R.id.deleteButton);
-            editButton = itemView.findViewById(R.id.editButton);  // initialize edit button
+            editButton = itemView.findViewById(R.id.editButton);
         }
     }
 
@@ -62,7 +67,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.phoneText.setText(user.getPhone());
 
         holder.deleteButton.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUser(user.getId());
+            boolean deleted = dbHelper.deleteUserByUsername(user.getUsername());
             if (deleted) {
                 userList.remove(position);
                 notifyItemRemoved(position);
@@ -74,12 +79,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         });
 
         holder.editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EditUserActivity.class);
+            Intent intent = new Intent(context, com.example.chaofanandshake.Adapter.EditUserActivity.class);
             intent.putExtra("userId", user.getId());
             intent.putExtra("name", user.getName());
             intent.putExtra("username", user.getUsername());
             intent.putExtra("phone", user.getPhone());
-            context.startActivity(intent);
+
+            if (context instanceof android.app.Activity) {
+                ((android.app.Activity) context).startActivityForResult(intent, EDIT_USER_REQUEST_CODE);
+            } else {
+                context.startActivity(intent);
+                Toast.makeText(context, "Cannot get result because context is not an Activity", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -88,10 +99,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return userList != null ? userList.size() : 0;
     }
 
-    public void updateList(List<User> newUsers) {
-        if (newUsers != null) {
-            this.userList = newUsers;
-            notifyDataSetChanged();
-        }
+    // ✅ Ito ang tatawagin sa ActivityUsers para ma-update ang list after edit
+    public void setUserList(List<User> newUsers) {
+        this.userList = newUsers;
+        notifyDataSetChanged();
     }
 }

@@ -3,6 +3,8 @@ package com.example.chaofanandshake;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -26,6 +28,13 @@ public class ActivityCheckout extends AppCompatActivity {
     private ImageView backBtn;
     private DatabaseHelper dbHelper;
     private RecyclerView recyclerCart;
+    private TextView tvTotalPrice, usernameTextView, phoneTextView, nameTextView;
+    private RadioGroup rgPaymentMethod;
+    private Button btnPlaceOrder;
+
+    private ArrayList<ProductDomain> cartList;
+    private double totalPrice = 0.0;
+    private String orderSummary = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,95 +42,146 @@ public class ActivityCheckout extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         dbHelper = new DatabaseHelper(this);
+        initViews();
+        handleBackButton();
+        loadCartData();
+        setupRecyclerView();
+        calculateTotalAndSummary();
+        loadUserInfo();
+        handlePlaceOrder();
+    }
+
+    private void initViews() {
         backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(view -> onBackPressed());
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
-        String jsonCart = sharedPreferences.getString("cart_list", null);
-
-        ArrayList<ProductDomain> cartList;
-        if (jsonCart != null) {
-            Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
-            cartList = new Gson().fromJson(jsonCart, type);
-        } else {
-            cartList = new ArrayList<>();
-        }
-
         recyclerCart = findViewById(R.id.recyclerCart);
+        tvTotalPrice = findViewById(R.id.totalPrice);
+        usernameTextView = findViewById(R.id.username);
+        phoneTextView = findViewById(R.id.phone);
+        nameTextView = findViewById(R.id.name);
+        rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
+        btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
+    }
+
+    private void handleBackButton() {
+        backBtn.setOnClickListener(view -> onBackPressed());
+    }
+
+    private void loadCartData() {
+        Intent intent = getIntent();
+        String json = intent.getStringExtra("selected_product");
+
+        if (json != null) {
+            ProductDomain buyNowProduct = new Gson().fromJson(json, ProductDomain.class);
+            cartList = new ArrayList<>();
+            cartList.add(buyNowProduct);
+        } else {
+            SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
+            String jsonCart = sharedPreferences.getString("cart_list", null);
+            if (jsonCart != null) {
+                Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
+                cartList = new Gson().fromJson(jsonCart, type);
+            } else {
+                cartList = new ArrayList<>();
+            }
+        }
+    }
+
+    private void setupRecyclerView() {
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
         com.example.chaofanandshake.CheckoutCartAdapter adapter = new com.example.chaofanandshake.CheckoutCartAdapter(cartList);
         recyclerCart.setAdapter(adapter);
+    }
 
-        // Calculate total price
-        final double[] totalPriceHolder = {0.0};
-        StringBuilder orderSummaryBuilder = new StringBuilder();
+    private void calculateTotalAndSummary() {
+        StringBuilder summaryBuilder = new StringBuilder();
 
         for (ProductDomain product : cartList) {
-            double productTotal = product.getPrice() * product.getQuantity();
-            totalPriceHolder[0] += productTotal;
+            double subtotal = product.getPrice() * product.getQuantity();
+            totalPrice += subtotal;
 
-            orderSummaryBuilder.append(product.getTitle())
+            summaryBuilder.append(product.getTitle())
                     .append(" x")
                     .append(product.getQuantity())
                     .append(" - ₱")
-                    .append(String.format("%.2f", productTotal))
+                    .append(String.format("%.2f", subtotal))
                     .append("\n");
         }
 
-        String orderSummary = orderSummaryBuilder.toString();
+        orderSummary = summaryBuilder.toString();
+        tvTotalPrice.setText("₱" + String.format("%.2f", totalPrice));
+    }
 
-        TextView tvTotalPrice = findViewById(R.id.totalPrice);
-        tvTotalPrice.setText("₱" + String.format("%.2f", totalPriceHolder[0]));
-
-        TextView usernameTextView = findViewById(R.id.username);
-        TextView phoneTextView = findViewById(R.id.phone);
-        TextView nameTextView = findViewById(R.id.name);
-
-        // Get user info from SharedPreferences
+    private void loadUserInfo() {
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        String username = userPrefs.getString("username", "");
-        String phone = userPrefs.getString("phone", "");
-        String name = userPrefs.getString("name", "");
+        usernameTextView.setText(userPrefs.getString("username", ""));
+        phoneTextView.setText(userPrefs.getString("phone", ""));
+        nameTextView.setText(userPrefs.getString("name", ""));
+    }
 
-
-        usernameTextView.setText(username);
-        phoneTextView.setText(phone);
-        nameTextView.setText(name);
-
-        RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
-        Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
-
+    private void handlePlaceOrder() {
         btnPlaceOrder.setOnClickListener(v -> {
-            String customerName = nameTextView.getText().toString().trim();
-            String phoneInput = phoneTextView.getText().toString().trim();
-            String usernameInput = usernameTextView.getText().toString().trim();
+            String name = nameTextView.getText().toString().trim();
+            String phone = phoneTextView.getText().toString().trim();
+            String username = usernameTextView.getText().toString().trim();
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
 
             if (selectedPaymentId == -1) {
-                Toast.makeText(ActivityCheckout.this, "Select a payment method", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Select a payment method", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            RadioButton selectedPayment = findViewById(selectedPaymentId);
-            String paymentMethod = selectedPayment.getText().toString();
+            String paymentMethod = ((RadioButton) findViewById(selectedPaymentId)).getText().toString();
 
-            boolean inserted = dbHelper.insertOrder(orderSummary, customerName, phoneInput, usernameInput, paymentMethod, totalPriceHolder[0]);
+            boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice);
             if (inserted) {
-                Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("cart_list");
+                // Save user info again
+                SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+                editor.putString("username", username);
+                editor.putString("name", name);
+                editor.putString("phone", phone);
                 editor.apply();
 
-                Intent intent = new Intent(ActivityCheckout.this, DashboardbtnActivity.class);
-                intent.putExtra("username", usernameInput);
-                startActivity(intent);
-                finish();
+                // Clear cart if not Buy Now
+                if (getIntent().getStringExtra("selected_product") == null) {
+                    SharedPreferences.Editor cartEditor = getSharedPreferences("MyCart", MODE_PRIVATE).edit();
+                    cartEditor.remove("cart_list");
+                    cartEditor.apply();
+                }
+
+                showOrderSuccessDialog(username);
             } else {
-                Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
             }
         });
+    }
 
+    private void showOrderSuccessDialog(String username) {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.order_success_dialog, null);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnTrackOrder = dialogView.findViewById(R.id.btnTrackOrder);
+        Button btnBackHome = dialogView.findViewById(R.id.btnBackHome);
+
+        btnTrackOrder.setOnClickListener(v -> {
+            Intent i = new Intent(this, OrderhistoryActivity.class);
+            i.putExtra("username", username);
+            startActivity(i);
+            dialog.dismiss();
+            finish();
+        });
+
+        btnBackHome.setOnClickListener(v -> {
+            Intent i = new Intent(this, DashboardbtnActivity.class);
+            i.putExtra("username", username);
+            startActivity(i);
+            dialog.dismiss();
+            finish();
+        });
+
+        dialog.show();
     }
 
     @Override

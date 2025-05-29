@@ -25,12 +25,14 @@
         android:id="@+id/productTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:hint="Product Title"/>
 
     <EditText
         android:id="@+id/productDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:hint="Description"/>
 
     <EditText

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChaofanAndShake"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".ActivityOrderTracking"
+            android:exported="false" />
+        <activity
+            android:name=".activity_order_tracking"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityOrder"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityUsers"
+            android:exported="false" />
         <activity
             android:name=".OrderhistoryActivity"
             android:exported="false" />
@@ -41,23 +53,38 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity" />
+        <activity
+            android:name=".SignupActivity"
+            android:exported="false" />
         <activity
             android:name=".DashboardbtnActivity"
+            android:exported="false"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".CartbtnActivity" />
-        <activity android:name=".ContactActivity" />
-        <activity android:name=".AccountActivity" />
-        <activity android:name=".AdminDashboardActivity" />
-        <activity android:name=".ActivityCheckout" />
-        <activity android:name=".Adapter.EditUserActivity" />
+        <activity
+            android:name=".CartbtnActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityCheckout"
+            android:exported="false" />
+        <activity
+            android:name=".Adapter.EditUserActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

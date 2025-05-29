@@ -2,8 +2,8 @@ package com.example.chaofanandshake;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +24,6 @@ public class AccountActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     private String currentUsername;
-    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +33,7 @@ public class AccountActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         currentUsername = getIntent().getStringExtra("username");
 
-        Log.d("AccountActivity", "Username received: " + currentUsername); // Debugging
+        Log.d("AccountActivity", "Username received: " + currentUsername);
 
         // Initialize views
         backBtn = findViewById(R.id.backBtn);
@@ -44,24 +42,21 @@ public class AccountActivity extends AppCompatActivity {
         ivEditPhone = findViewById(R.id.ivEditPhone);
         ivEditPassword = findViewById(R.id.ivEditPassword);
 
-
-
         etName = findViewById(R.id.etName);
         etUsername = findViewById(R.id.etUsername);
         etPhone = findViewById(R.id.etPhone);
         etPassword = findViewById(R.id.etPassword);
         btnDelete = findViewById(R.id.btnDelete);
 
-        loadUserData(); // Load user data
+        loadUserData();
 
         backBtn.setOnClickListener(view -> onBackPressed());
 
-        // Edit actions
         ivEditName.setOnClickListener(view -> openEditActivity(ActivityName.class, "currentName", etName.getText().toString()));
         ivEditUsername.setOnClickListener(view -> openEditActivity(ActivityUsername.class, "currentValue", etUsername.getText().toString()));
         ivEditPhone.setOnClickListener(view -> openEditActivity(ActivityPhone.class, "currentPhone", etPhone.getText().toString()));
         ivEditPassword.setOnClickListener(view -> openEditActivity(ActivityPassword.class, "currentPassword", etPassword.getText().toString()));
-        // Delete account
+
         btnDelete.setOnClickListener(v -> confirmDelete());
     }
 
@@ -86,21 +81,20 @@ public class AccountActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnDelete.setOnClickListener(v -> {
-            boolean deleted = dbHelper.deleteUser(currentUserId);  // delete by id now
+            boolean deleted = dbHelper.deleteUserByUsername(currentUsername);
             if (deleted) {
-                Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountActivity.this, "Account deleted", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                dialog.dismiss();
             } else {
-                Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountActivity.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
             }
         });
 
         dialog.show();
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -111,29 +105,39 @@ public class AccountActivity extends AppCompatActivity {
             updateIfChanged("updatedUsername", etUsername, "username", data);
             updateIfChanged("updatedPhone", etPhone, "phone", data);
             updateIfChanged("updatedPassword", etPassword, "password", data);
-
-            String updatedPassword = data.getStringExtra("updatedPassword");
-            if (updatedPassword != null) {
-                etPassword.setText(updatedPassword);
-            }
         }
     }
 
     private void updateIfChanged(String key, EditText editText, String dbField, Intent data) {
         String updatedValue = data.getStringExtra(key);
-        if (updatedValue != null) {
+        if (updatedValue != null && !updatedValue.isEmpty()) {
             editText.setText(updatedValue);
             updateDatabase(dbField, updatedValue);
 
-            if (dbField.equals("username")) {
-                currentUsername = updatedValue; //
+            // Update SharedPreferences para ma-reflect sa ibang activities
+            SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+
+            switch (dbField) {
+                case "username":
+                    currentUsername = updatedValue; // Update currentUsername sa activity
+                    editor.putString("username", updatedValue);
+                    break;
+                case "phone":
+                    editor.putString("phone", updatedValue);
+                    break;
+                case "name":
+                    editor.putString("name", updatedValue);
+                    break;
+                case "password":
+                    // Optional: save password if needed (usually avoid)
+                    break;
             }
+            editor.apply();
 
-            // Always return updated username sa result, kahit anong field ang binago
+            // Always return updated username sa result para updated username ma-propagate
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("newUsername", currentUsername); // ← ITO ANG IBABALIK SA DASHBOARD
+            resultIntent.putExtra("newUsername", currentUsername);
             setResult(RESULT_OK, resultIntent);
-
         }
     }
 
@@ -145,32 +149,39 @@ public class AccountActivity extends AppCompatActivity {
         int result = database.update("users", values, "username = ?", new String[]{currentUsername});
 
         if (result > 0) {
+            Log.d("AccountActivity", "Database updated: " + field + " = " + value);
         } else {
-            Toast.makeText(this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+            Log.d("AccountActivity", "Failed to update database for field: " + field);
         }
     }
 
     private void loadUserData() {
         if (currentUsername == null || currentUsername.isEmpty()) {
-            Toast.makeText(this, "No user email provided", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No username provided", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String[] userData = dbHelper.getUserDataByUsername(currentUsername);
-        if (userData != null && userData.length >= 3) {
-            Log.d("AccountActivity", "User Data: Name=" + userData[0] + ", Username=" + userData[1] + ", Phone=" + userData[2] + ", Password=" + userData[3]);
-
+        if (userData != null && userData.length >= 4) {
+            Log.d("AccountActivity", "User Data loaded: Name=" + userData[0] + ", Username=" + userData[1] + ", Phone=" + userData[2] + ", Password=" + userData[3]);
 
             etName.setText(userData[0]);
             etUsername.setText(userData[1]);
             etPhone.setText(userData[2]);
             etPassword.setText(userData[3]);
 
-            // Disable fields from editing
+            // Disable editing by default
             etName.setEnabled(false);
             etUsername.setEnabled(false);
             etPhone.setEnabled(false);
             etPassword.setEnabled(false);
+
+            // Save loaded data to SharedPreferences para accessible sa ibang activities
+            SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+            editor.putString("name", userData[0]);
+            editor.putString("username", userData[1]);
+            editor.putString("phone", userData[2]);
+            editor.apply();
         } else {
             Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show();
         }

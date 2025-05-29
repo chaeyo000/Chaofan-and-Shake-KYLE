@@ -84,7 +84,7 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@johndoe"
+                android:text="johndoe"
                 android:textSize="16sp"
                 android:textColor="#212121"
                 android:fontFamily="@font/butler"/>

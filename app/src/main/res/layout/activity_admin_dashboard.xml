@@ -101,32 +101,6 @@
                 android:text="Add Product"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-            <!-- Users Section -->
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="USERS"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/apple"/>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/productRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:padding="8dp"/>
-            </androidx.cardview.widget.CardView>
-
             <!-- Orders Section -->
             <TextView
                 android:id="@+id/textView"

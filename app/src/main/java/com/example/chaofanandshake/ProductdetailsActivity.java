@@ -28,7 +28,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
     private ImageView backBtn, productImage;
     private TextView titleText, priceText;
-    private MaterialButton cartBtn, addtocart;
+    private MaterialButton cartBtn, addtocart, buynow;
     private TextView descriptionText;
 
     private SharedPreferences sharedPreferences;
@@ -48,6 +48,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
         productImage = findViewById(R.id.ImageView);
         addtocart = findViewById(R.id.addtocart);
         cartBtn = findViewById(R.id.cartbtn);
+        buynow = findViewById(R.id.buynow);
 
         sharedPreferences = getSharedPreferences("MyCart", Context.MODE_PRIVATE);
 
@@ -88,6 +89,18 @@ public class ProductdetailsActivity extends AppCompatActivity {
             Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, CartbtnActivity.class));
         });
+
+        // Buy Now button logic
+        buynow.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ActivityCheckout.class);
+
+            // Pass the selected product as JSON
+            String selectedProductJson = new Gson().toJson(product);
+            intent.putExtra("selected_product", selectedProductJson);
+
+            startActivity(intent);
+        });
+
 
         // Cart icon button logic
         cartBtn.setOnClickListener(v -> {
