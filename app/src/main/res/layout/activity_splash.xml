@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/motionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    motion:layoutDescription="@xml/splash_scene"
+    android:background="@drawable/splashbg">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/logo"
+        android:contentDescription="App Logo"
+        motion:layout_constraintBottom_toBottomOf="parent"
+        motion:layout_constraintTop_toTopOf="parent"
+        motion:layout_constraintLeft_toLeftOf="parent"
+        motion:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
