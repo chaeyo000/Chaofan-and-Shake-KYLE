@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +55,7 @@ public class ProductdetailsActivity extends AppCompatActivity {
 
         // Get product from intent
         String json = getIntent().getStringExtra("product");
-        ProductDomain product = new Gson().fromJson(json, ProductDomain.class);
+        product = new Gson().fromJson(json, ProductDomain.class);
 
         if (product != null) {
             titleText.setText(product.getTitle());
@@ -82,7 +81,6 @@ public class ProductdetailsActivity extends AppCompatActivity {
             }
         }
 
-
         // Add to cart button logic
         addtocart.setOnClickListener(v -> {
             addProductToCart(product);
@@ -101,11 +99,8 @@ public class ProductdetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        // Cart icon button logic
+        // Cart icon button logic - NO addProductToCart call here now!
         cartBtn.setOnClickListener(v -> {
-            addProductToCart(product);
-            Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, CartbtnActivity.class));
         });
     }

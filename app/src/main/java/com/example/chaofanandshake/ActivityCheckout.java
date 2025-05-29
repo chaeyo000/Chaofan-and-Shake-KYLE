@@ -2,9 +2,12 @@ package com.example.chaofanandshake;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -121,9 +124,6 @@ public class ActivityCheckout extends AppCompatActivity {
 
     private void handlePlaceOrder() {
         btnPlaceOrder.setOnClickListener(v -> {
-            String name = nameTextView.getText().toString().trim();
-            String phone = phoneTextView.getText().toString().trim();
-            String username = usernameTextView.getText().toString().trim();
             int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
 
             if (selectedPaymentId == -1) {
@@ -131,29 +131,60 @@ public class ActivityCheckout extends AppCompatActivity {
                 return;
             }
 
-            String paymentMethod = ((RadioButton) findViewById(selectedPaymentId)).getText().toString();
-            long timestamp = System.currentTimeMillis();
-            boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice, timestamp);
-            if (inserted) {
-                // Save user info again
-                SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
-                editor.putString("username", username);
-                editor.putString("name", name);
-                editor.putString("phone", phone);
-                editor.apply();
-
-                // Clear cart if not Buy Now
-                if (getIntent().getStringExtra("selected_product") == null) {
-                    SharedPreferences.Editor cartEditor = getSharedPreferences("MyCart", MODE_PRIVATE).edit();
-                    cartEditor.remove("cart_list");
-                    cartEditor.apply();
-                }
-
-                showOrderSuccessDialog(username);
-            } else {
-                Toast.makeText(this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
-            }
+            // Show confirmation dialog
+            showConfirmationDialog();
         });
+    }
+
+    private void showConfirmationDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_checkout    , null);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+
+        btnCancel.setOnClickListener(view -> dialog.dismiss());
+
+        btnConfirm.setOnClickListener(view -> {
+            dialog.dismiss();
+            placeOrder();
+        });
+
+        dialog.show();
+    }
+
+    private void placeOrder() {
+        String name = nameTextView.getText().toString().trim();
+        String phone = phoneTextView.getText().toString().trim();
+        String username = usernameTextView.getText().toString().trim();
+        int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
+        String paymentMethod = ((RadioButton) findViewById(selectedPaymentId)).getText().toString();
+        long timestamp = System.currentTimeMillis();
+
+        boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice, timestamp);
+        if (inserted) {
+            SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+            editor.putString("username", username);
+            editor.putString("name", name);
+            editor.putString("phone", phone);
+            editor.apply();
+
+            if (getIntent().getStringExtra("selected_product") == null) {
+                SharedPreferences.Editor cartEditor = getSharedPreferences("MyCart", MODE_PRIVATE).edit();
+                cartEditor.remove("cart_list");
+                cartEditor.apply();
+            }
+
+            showOrderSuccessDialog(username);
+        } else {
+            Toast.makeText(this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showOrderSuccessDialog(String username) {
@@ -162,6 +193,9 @@ public class ActivityCheckout extends AppCompatActivity {
                 .setView(dialogView)
                 .setCancelable(false)
                 .create();
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         Button btnTrackOrder = dialogView.findViewById(R.id.btnTrackOrder);
         Button btnBackHome = dialogView.findViewById(R.id.btnBackHome);

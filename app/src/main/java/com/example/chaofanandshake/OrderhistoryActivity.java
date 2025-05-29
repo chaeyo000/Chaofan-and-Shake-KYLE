@@ -1,5 +1,6 @@
 package com.example.chaofanandshake;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -27,7 +28,12 @@ public class OrderhistoryActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
 
         // Back button
-        backBtn.setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DashboardbtnActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
 
         orderHistoryRecyclerView = findViewById(R.id.orderHistoryRecyclerView);
         dbHelper = new DatabaseHelper(this);
@@ -46,4 +52,7 @@ public class OrderhistoryActivity extends AppCompatActivity {
         adapter = new OrderHistoryAdapter(orderList); // <- Pass context if needed in adapter
         orderHistoryRecyclerView.setAdapter(adapter);
     }
+
+
+
 }
