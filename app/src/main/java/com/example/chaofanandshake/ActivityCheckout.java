@@ -37,20 +37,19 @@ public class ActivityCheckout extends AppCompatActivity {
         backBtn.setOnClickListener(view -> onBackPressed());
 
         Intent intent = getIntent();
-        String buyNowProductJson = intent.getStringExtra("buy_now_product");
+        String json = intent.getStringExtra("selected_product");
 
         ArrayList<ProductDomain> cartList;
 
-        if (buyNowProductJson != null) {
-            // Buy Now single product
-            ProductDomain buyNowProduct = new Gson().fromJson(buyNowProductJson, ProductDomain.class);
+        if (json != null) {
+            // Buy Now: only one product
+            ProductDomain buyNowProduct = new Gson().fromJson(json, ProductDomain.class);
             cartList = new ArrayList<>();
             cartList.add(buyNowProduct);
         } else {
-            // Load cart from SharedPreferences
+            // Regular cart
             SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
             String jsonCart = sharedPreferences.getString("cart_list", null);
-
             if (jsonCart != null) {
                 Type type = new TypeToken<ArrayList<ProductDomain>>() {}.getType();
                 cartList = new Gson().fromJson(jsonCart, type);
@@ -89,7 +88,7 @@ public class ActivityCheckout extends AppCompatActivity {
         TextView phoneTextView = findViewById(R.id.phone);
         TextView nameTextView = findViewById(R.id.name);
 
-        // Load user info from SharedPreferences
+        // Load user info
         SharedPreferences userPrefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String username = userPrefs.getString("username", "");
         String phone = userPrefs.getString("phone", "");
@@ -98,6 +97,7 @@ public class ActivityCheckout extends AppCompatActivity {
         usernameTextView.setText(username);
         phoneTextView.setText(phone);
         nameTextView.setText(name);
+
         RadioGroup rgPaymentMethod = findViewById(R.id.rgPaymentMethod);
         Button btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
 
@@ -119,15 +119,15 @@ public class ActivityCheckout extends AppCompatActivity {
             if (inserted) {
                 Toast.makeText(ActivityCheckout.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
 
-                // ✅ I-save sa SharedPreferences para di mawala
+                // Save user info again
                 SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
                 editor.putString("username", usernameInput);
                 editor.putString("name", customerName);
                 editor.putString("phone", phoneInput);
                 editor.apply();
 
-                // ✅ Clear cart if not Buy Now
-                if (buyNowProductJson == null) {
+                // Clear cart if this is NOT a Buy Now purchase
+                if (json == null) {
                     SharedPreferences sharedPreferences = getSharedPreferences("MyCart", MODE_PRIVATE);
                     SharedPreferences.Editor cartEditor = sharedPreferences.edit();
                     cartEditor.remove("cart_list");
@@ -142,7 +142,6 @@ public class ActivityCheckout extends AppCompatActivity {
                 Toast.makeText(ActivityCheckout.this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @Override
