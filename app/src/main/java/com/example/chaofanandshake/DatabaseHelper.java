@@ -263,6 +263,13 @@
             return rows > 0;
         }
 
+        public boolean deleteProduct(String productTitle) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            int result = db.delete(TABLE_PRODUCTS, "title = ?", new String[]{productTitle});
+            db.close();
+            return result > 0;
+        }
+
         public List<User> getAllUsers() {
             List<User> users = new ArrayList<>();
             SQLiteDatabase db = this.getReadableDatabase();
