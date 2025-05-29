@@ -209,8 +209,8 @@ public class DashboardbtnActivity extends AppCompatActivity implements Navigatio
         String[] items = new String[orders.size()];
         for (int i = 0; i < orders.size(); i++) {
             Order order = orders.get(i);
-            items[i] = Html.fromHtml("<b>" + order.getCustomerName() + "</b><br>" +
-                    "<small>" + order.getOrderSummary() + "</small>").toString();
+            items[i] = Html.fromHtml("<b>" + "Name: " + order.getCustomerName() + "</b><br>" +
+                    "<small>" + "Orders: " + order.getOrderSummary() + "</small>").toString();
         }
 
         builder.setItems(items, (dialog, which) -> {});
