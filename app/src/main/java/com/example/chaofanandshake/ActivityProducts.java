@@ -39,19 +39,34 @@ public class ActivityProducts extends AppCompatActivity {
 
     private void loadProducts() {
         List<ProductDomain> productList = dbHelper.getAllProducts();
-        adminProductAdapter = new AdminProductAdapter(productList, this, position -> {
-            ProductDomain productToDelete = productList.get(position);
-            boolean deleted = dbHelper.deleteProduct(productToDelete.getTitle());
+        adminProductAdapter = new AdminProductAdapter(productList, this, new AdminProductAdapter.OnProductActionListener() {
+            @Override
+            public void onProductDelete(int position) {
+                ProductDomain productToDelete = productList.get(position);
+                boolean deleted = dbHelper.deleteProduct(productToDelete.getTitle());
 
-            if (deleted) {
-                productList.remove(position);
-                adminProductAdapter.notifyItemRemoved(position);
-                Toast.makeText(this, "Product deleted", Toast.LENGTH_SHORT).show();
-                deleteFile(productToDelete.getImageName());
-            } else {
-                Toast.makeText(this, "Failed to delete product", Toast.LENGTH_SHORT).show();
+                if (deleted) {
+                    productList.remove(position);
+                    adminProductAdapter.notifyItemRemoved(position);
+                    Toast.makeText(ActivityProducts.this, "Product deleted", Toast.LENGTH_SHORT).show();
+                    deleteFile(productToDelete.getImageName());
+                } else {
+                    Toast.makeText(ActivityProducts.this, "Failed to delete product", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onProductClick(int position) {
+                // Optional
+            }
+
+            @Override
+            public void onEditClick(int position) {
+                // Handle edit logic here if needed, or leave empty for now
             }
         });
+
+
+
 
         recyclerView.setAdapter(adminProductAdapter);
     }

@@ -24,16 +24,24 @@ import java.util.List;
 public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapter.ViewHolder> {
     private List<ProductDomain> productList;
     private Context context;
+    private OnProductActionListener listener;
+
     private OnDeleteClickListener onDeleteClickListener;
 
     public interface OnDeleteClickListener {
         void onDeleteClick(int position);
     }
 
-    public AdminProductAdapter(List<ProductDomain> productList, Context context, OnDeleteClickListener listener) {
-        this.productList = productList != null ? productList : new ArrayList<>();
+    public AdminProductAdapter(List<ProductDomain> productList, Context context, OnProductActionListener listener) {
+        this.productList = productList;
         this.context = context;
-        this.onDeleteClickListener = listener;
+        this.listener = listener;
+    }
+
+
+    public interface OnProductActionListener {
+        void onProductDelete(int position);
+        void onEditClick(int position);
     }
 
     @NonNull
@@ -76,8 +84,13 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
         }
 
         holder.deleteButton.setOnClickListener(v -> {
-            if (onDeleteClickListener != null) {
-                onDeleteClickListener.onDeleteClick(position);
+            if (listener != null) {
+                listener.onProductDelete(position);
+            }
+        });
+        holder.editButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEditClick(position);
             }
         });
     }
@@ -88,6 +101,8 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        Button editButton;
+
         TextView title, fee, description;
         ImageView imageView;
         Button deleteButton;
@@ -99,6 +114,8 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
             description = itemView.findViewById(R.id.description);
             imageView = itemView.findViewById(R.id.imageView);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            editButton = itemView.findViewById(R.id.editButton);
+
         }
     }
 }

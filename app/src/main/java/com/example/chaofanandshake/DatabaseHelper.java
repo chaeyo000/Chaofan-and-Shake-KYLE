@@ -270,6 +270,20 @@
             return result > 0;
         }
 
+        public boolean updateProduct(String oldTitle, ProductDomain updatedProduct) {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put("imageName", updatedProduct.getImageName());
+            values.put("title", updatedProduct.getTitle());
+            values.put("description", updatedProduct.getDescription());
+            values.put("price", updatedProduct.getPrice());
+
+            int result = db.update(TABLE_PRODUCTS, values, "title = ?", new String[]{oldTitle});
+            db.close();
+            return result > 0;
+        }
+
         public List<User> getAllUsers() {
             List<User> users = new ArrayList<>();
             SQLiteDatabase db = this.getReadableDatabase();

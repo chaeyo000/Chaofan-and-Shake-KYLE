@@ -63,5 +63,16 @@
             android:layout_marginTop="8dp"
             android:text="Delete"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textContainer"
+            android:layout_toStartOf="@id/deleteButton"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Edit"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
