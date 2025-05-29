@@ -160,27 +160,47 @@ public class ActivityCheckout extends AppCompatActivity {
     }
 
     private void placeOrder() {
+        // Get all required fields
         String name = nameTextView.getText().toString().trim();
         String phone = phoneTextView.getText().toString().trim();
         String username = usernameTextView.getText().toString().trim();
+
+        // Validate phone number
+        if (phone.isEmpty()) {
+            Toast.makeText(this, "Phone number is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get payment method
         int selectedPaymentId = rgPaymentMethod.getCheckedRadioButtonId();
         String paymentMethod = ((RadioButton) findViewById(selectedPaymentId)).getText().toString();
         long timestamp = System.currentTimeMillis();
 
-        boolean inserted = dbHelper.insertOrder(orderSummary, name, phone, username, paymentMethod, totalPrice, timestamp);
-        if (inserted) {
-            SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
-            editor.putString("username", username);
-            editor.putString("name", name);
-            editor.putString("phone", phone);
-            editor.apply();
+        // Save user profile first
+        SharedPreferences.Editor editor = getSharedPreferences("UserProfile", MODE_PRIVATE).edit();
+        editor.putString("username", username);
+        editor.putString("name", name);
+        editor.putString("phone", phone);
+        editor.apply(); // Note: Using commit() would be better here for immediate write
 
+        // Create and save order
+        boolean inserted = dbHelper.insertOrder(
+                orderSummary,
+                name,
+                phone,  // Ensure phone is included
+                username,
+                paymentMethod,
+                totalPrice,
+                timestamp
+        );
+
+        if (inserted) {
+            // Clear cart only after successful order
             if (getIntent().getStringExtra("selected_product") == null) {
                 SharedPreferences.Editor cartEditor = getSharedPreferences("MyCart", MODE_PRIVATE).edit();
                 cartEditor.remove("cart_list");
-                cartEditor.apply();
+                cartEditor.commit(); // Immediate write
             }
-
             showOrderSuccessDialog(username);
         } else {
             Toast.makeText(this, "Failed to place order. Try again.", Toast.LENGTH_LONG).show();

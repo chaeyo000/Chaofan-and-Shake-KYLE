@@ -20,10 +20,14 @@ public class OrderhistoryActivity extends AppCompatActivity {
     private OrderHistoryAdapter adapter;
     private DatabaseHelper dbHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderhistory);
+        dbHelper = new DatabaseHelper(this);
+
+
 
         backBtn = findViewById(R.id.backBtn);
 
@@ -49,7 +53,7 @@ public class OrderhistoryActivity extends AppCompatActivity {
         }
 
         // Set adapter
-        adapter = new OrderHistoryAdapter(orderList); // <- Pass context if needed in adapter
+        adapter = new OrderHistoryAdapter(orderList, dbHelper);
         orderHistoryRecyclerView.setAdapter(adapter);
     }
 

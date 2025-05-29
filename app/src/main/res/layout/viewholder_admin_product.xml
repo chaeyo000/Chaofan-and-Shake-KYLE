@@ -60,6 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textContainer"
             android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/red"
+            android:textColor="@color/white"
             android:layout_marginTop="8dp"
             android:text="Delete"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
@@ -71,6 +73,8 @@
             android:layout_below="@id/textContainer"
             android:layout_toStartOf="@id/deleteButton"
             android:layout_marginTop="8dp"
+            android:backgroundTint="@color/prim_login"
+            android:textColor="@color/white"
             android:layout_marginEnd="8dp"
             android:text="Edit"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>

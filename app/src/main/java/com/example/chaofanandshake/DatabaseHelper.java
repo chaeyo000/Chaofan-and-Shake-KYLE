@@ -9,6 +9,7 @@
         import android.util.Base64;
         import android.util.Log;
 
+        import androidx.annotation.NonNull;
         import androidx.annotation.Nullable;
 
         import com.example.chaofanandshake.Domain.Order;
@@ -57,15 +58,20 @@
 
             private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "order_summary TEXT, " +
+                    getOrderSummary() + " TEXT, " +
                     "name TEXT, " +
-                    "phone TEXT, " +
+                    "phone_number  TEXT, " +
                     "username TEXT, " +
                     "payment_method TEXT, " +
                     "total_price REAL, " +
                     "status TEXT DEFAULT 'Pending', " +
                     "date DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                     "orderPlacedTimestamp INTEGER DEFAULT (strftime('%s','now')));";
+
+            @NonNull
+            private static String getOrderSummary() {
+                return "order_summary";
+            }
 
 
             public DatabaseHelper(@Nullable Context context) {
@@ -344,7 +350,7 @@
                 ContentValues values = new ContentValues();
                 values.put("order_summary", summary);      // <-- corrected column name
                 values.put("name", name);
-                values.put("phone", phone);
+                values.put("phone_number", phone);
                 values.put("username", username);
                 values.put("payment_method", paymentMethod);  // <-- corrected column name
                 values.put("total_price", totalPrice);         // <-- corrected column name
@@ -419,14 +425,21 @@
                 return products;
             }
 
-            public boolean updateOrderStatus(int orderId, String status) {
+            // In DatabaseHelper.java
+            public boolean updateOrderStatus(int orderId, String newStatus) {
                 SQLiteDatabase db = this.getWritableDatabase();
                 ContentValues values = new ContentValues();
-                values.put("status", status);  // Make sure your table has a "status" column
+                values.put("status", newStatus);
 
-                int rowsUpdated = db.update("orders", values, "id = ?", new String[]{String.valueOf(orderId)});
+                int rowsAffected = db.update(
+                        "orders",
+                        values,
+                        "id = ?",
+                        new String[]{String.valueOf(orderId)}
+                );
+
                 db.close();
-                return rowsUpdated > 0;
+                return rowsAffected > 0;
             }
 
 

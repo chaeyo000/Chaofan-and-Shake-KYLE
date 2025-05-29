@@ -1,6 +1,7 @@
 package com.example.chaofanandshake.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import com.example.chaofanandshake.R;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
-
     private Context context;
     private List<Order> orderList;
 
@@ -33,12 +33,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        holder.name.setText(order.getCustomerName());
-        holder.username.setText(order.getUsername());
-        holder.orderSummary.setText("Orders: \n" + order.getOrderSummary());
-        holder.phone.setText(order.getPhoneNumber());
-        holder.paymentMethod.setText(order.getPaymentMethod());
+
+        // Set all fields with null checks
+        holder.name.setText(order.getCustomerName() != null ? order.getCustomerName() : "");
+        holder.username.setText(order.getUsername() != null ? order.getUsername() : "");
+        holder.orderSummary.setText("Orders: \n" + (order.getOrderSummary() != null ? order.getOrderSummary() : ""));
+        holder.phone.setText(order.getPhoneNumber() != null ? order.getPhoneNumber() : "");
+        holder.paymentMethod.setText(order.getPaymentMethod() != null ? order.getPaymentMethod() : "");
         holder.total.setText("₱" + String.format("%.2f", order.getTotalPrice()));
+
+        // Debug log
+        Log.d("OrderAdapter", "Binding - Position: " + position +
+                " Phone: " + order.getPhoneNumber());
     }
 
     @Override
@@ -56,6 +62,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderSummary = itemView.findViewById(R.id.orderSummary);
             phone = itemView.findViewById(R.id.phone);
             paymentMethod = itemView.findViewById(R.id.paymentMethod);
-            total = itemView.findViewById(R.id.total);}
+            total = itemView.findViewById(R.id.total);
+
+            // Initialize with empty strings
+            name.setText("");
+            username.setText("");
+            orderSummary.setText("");
+            phone.setText("");
+            paymentMethod.setText("");
+            total.setText("");
+        }
     }
 }

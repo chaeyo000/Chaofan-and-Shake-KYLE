@@ -23,7 +23,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private DatabaseHelper dbHelper;
 
 
-    public OrderHistoryAdapter(List<Order> orderList) {
+    public OrderHistoryAdapter(List<Order> orderList, DatabaseHelper dbHelper) {
         this.orderList = orderList;
         this.dbHelper = dbHelper;
 
@@ -57,20 +57,23 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         String orderStatus = order.getStatus();
 
         holder.btnCompleteOrder.setOnClickListener(v -> {
-            holder.tvOrderStatus.setText("Completed");
+            holder.tvOrderStatus.setText("Order Picked Up");
             holder.btnCompleteOrder.setVisibility(View.GONE);
+            order.setStatus("Order Pickup Up");
 
-            order.setStatus("Completed");  // update local object
-
-            boolean success = dbHelper.updateOrderStatus(order.getId(), "Completed"); // update DB here
-            if (!success) {
-                Toast.makeText(v.getContext(), "Failed to update status", Toast.LENGTH_SHORT).show();
+            if (dbHelper != null) {
+                boolean success = dbHelper.updateOrderStatus(order.getId(), "Completed");
+                if (!success) {
+                    Toast.makeText(v.getContext(), "Failed to update status", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(v.getContext(), "Order Completed", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         if ("Completed".equals(orderStatus)) {
-            holder.tvOrderStatus.setText("Completed");
+            holder.tvOrderStatus.setText("Order Picked Up");
             holder.btnCompleteOrder.setVisibility(View.GONE);
             if (holder.countDownTimer != null) {
                 holder.countDownTimer.cancel();
