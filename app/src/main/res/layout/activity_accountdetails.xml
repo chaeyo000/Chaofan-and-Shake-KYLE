@@ -5,207 +5,215 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/dashboard_primary">
+    android:background="@drawable/bgnew">
 
+    <!-- Toolbar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <include layout="@layout/toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/userimage"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:elevation="10dp"
-        android:background="@drawable/user" />
-
-    <LinearLayout
+    <!-- Scrollable Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="-70dp"
-        android:paddingTop="80dp"
-        android:elevation="5dp"
-        android:background="@drawable/accountlayoutbg"
-        android:paddingBottom="30dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="10dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/personalinfo"
-                android:layout_width="wrap_content"
+            <!-- User Image -->
+            <ImageView
+                android:id="@+id/userimage"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:elevation="10dp"
+                android:background="@drawable/user" />
+
+            <!-- Form Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="Personal Details"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:textColor="@color/meduimblack"/>
+                android:orientation="vertical"
+                android:layout_marginTop="-70dp"
+                android:paddingTop="80dp"
+                android:elevation="5dp"
+                android:background="@drawable/accountlayoutbg"
+                android:paddingBottom="56dp">
 
+                <!-- Personal Details Title -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/personalinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="Personal Details"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/meduimblack" />
+                </LinearLayout>
+
+                <!-- Name Field -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Name"
+                    android:textColor="@color/gray" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:padding="8dp">
+
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="textPersonName"
+                        android:paddingEnd="40dp"
+                        android:textColor="@color/meduimblack"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/ivEditName"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/edit_icon" />
+                </RelativeLayout>
+
+                <!-- Username Field -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Username"
+                    android:textColor="@color/gray" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:padding="8dp">
+
+                    <EditText
+                        android:id="@+id/etUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textStyle="bold"
+                        android:textSize="18dp"
+                        android:textColor="@color/meduimblack"
+                        android:inputType="textEmailAddress"
+                        android:paddingEnd="40dp" />
+
+                    <ImageView
+                        android:id="@+id/ivEditUsername"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/edit_icon" />
+                </RelativeLayout>
+
+                <!-- Phone Field -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Phone number"
+                    android:textColor="@color/gray" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:padding="8dp">
+
+                    <EditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textStyle="bold"
+                        android:textColor="@color/meduimblack"
+                        android:inputType="phone"
+                        android:paddingEnd="40dp" />
+
+                    <ImageView
+                        android:id="@+id/ivEditPhone"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/edit_icon" />
+                </RelativeLayout>
+
+                <!-- Password Field -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Password"
+                    android:textColor="@color/gray" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:padding="8dp">
+
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textStyle="bold"
+                        android:textColor="@color/meduimblack"
+                        android:inputType="textWebPassword"
+                        android:paddingEnd="40dp" />
+
+                    <ImageView
+                        android:id="@+id/ivEditPassword"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/edit_icon" />
+                </RelativeLayout>
+
+                <!-- Delete Button (now always visible through ScrollView) -->
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:elevation="5dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/white"
+                    android:text="Delete Account"
+                    android:textSize="17dp"
+                    android:textColor="@color/red" />
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- Name Field -->
-        <TextView
-            android:id="@+id/namecategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Name"
-            android:textColor="@color/gray" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:padding="8dp"
-            android:layout_marginRight="23dp">
-
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="351dp"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:inputType="textPersonName"
-                android:paddingEnd="40dp"
-                android:textColor="@color/meduimblack"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/ivEditName"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/edit_icon" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/usernamecategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Username"
-            android:textColor="@color/gray" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:padding="8dp"
-            android:layout_marginRight="23dp">
-
-            <EditText
-                android:id="@+id/etUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:textColor="@color/meduimblack"
-                android:enabled="false"
-                android:inputType="textEmailAddress"
-                android:paddingEnd="40dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditUsername"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/edit_icon" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/phonecategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Phone number"
-            android:textColor="@color/gray" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:padding="8dp"
-            android:layout_marginRight="23dp">
-
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/meduimblack"
-                android:enabled="false"
-                android:inputType="phone"
-                android:paddingEnd="40dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditPhone"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/edit_icon" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/passwordcategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Password"
-            android:textColor="@color/gray" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:padding="8dp"
-            android:layout_marginRight="23dp">
-
-            <EditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/meduimblack"
-                android:enabled="false"
-                android:inputType="textWebPassword"
-                android:paddingEnd="40dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditPassword"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/edit_icon" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:elevation="5dp"
-            android:translationZ="5dp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/dashboard_primary"
-            android:text="Delete Account"
-            android:textColor="@color/red" />
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
