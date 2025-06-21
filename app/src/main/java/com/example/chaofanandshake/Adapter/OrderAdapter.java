@@ -37,7 +37,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Set all fields with null checks
         holder.name.setText(order.getCustomerName() != null ? order.getCustomerName() : "");
         holder.username.setText(order.getUsername() != null ? order.getUsername() : "");
-        holder.orderSummary.setText("Orders: \n" + (order.getOrderSummary() != null ? order.getOrderSummary() : ""));
+        holder.orderSummary.setText("Username: \n" + (order.getOrderSummary() != null ? order.getOrderSummary() : ""));
         holder.phone.setText(order.getPhoneNumber() != null ? order.getPhoneNumber() : "");
         holder.paymentMethod.setText(order.getPaymentMethod() != null ? order.getPaymentMethod() : "");
         holder.total.setText("₱" + String.format("%.2f", order.getTotalPrice()));

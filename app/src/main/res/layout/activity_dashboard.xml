@@ -11,10 +11,6 @@
     android:background="@drawable/backroundxml"
     tools:context=".DashboardbtnActivity">
 
-
-
-
-
     <!-- Main Layout containing Toolbar and Content -->
     <ScrollView
         android:layout_width="match_parent"
